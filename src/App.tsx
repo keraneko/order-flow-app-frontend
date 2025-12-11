@@ -1,23 +1,25 @@
-import { BrowserRouter, Routes, Route,Link } from 'react-router'
+import { BrowserRouter, Routes, Route } from 'react-router'
 import Home from './pages/Home'
-import Orders from './pages/Orders'
-import {Button} from './components/ui/button.tsx'
-import './App.css'
+import Carts from './pages/Carts'
+import CartList from './pages/CartList'
+import Layout from '@/Layoute.tsx'
+import {CartProvider} from './contexts/CartContext'
 function App() {
 
   return (
     <>
+    <CartProvider>
       <BrowserRouter>
-      <nav className="flex gap-4 p-4 list-none ">
-        <li><Link to="/"><Button className="text-blue-600" variant="default">Home</Button></Link></li>
-        <li><Link to="/orders"><Button className="text-blue-600" >Orders</Button></Link></li>
-      </nav>
+      
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/orders" element={<Orders />} />
-
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/carts" element={<Carts />} />
+          <Route path="/cartlist" element={<CartList />} />
+        </Route>
       </Routes>
       </BrowserRouter>
+      </CartProvider>
     </>
   )
 }
