@@ -37,38 +37,21 @@
 
 // AddButton.tsx
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-
+import Home from '@/pages/Home'
+import CartList from'@/pages/CartList'
 function Carts() {
   
 
   return (
     <>
-    <Table>
-  <TableCaption>A list of your recent invoices.</TableCaption>
-  <TableHeader>
-    <TableRow>
-      <TableHead className="">注文商品</TableHead>
-      <TableHead>数量</TableHead>
-      <TableHead>単価</TableHead>
-    </TableRow>
-  </TableHeader>
-  <TableBody>
-    <TableRow>
-      <TableCell className="">弁当</TableCell>
-      <TableCell>Paid個</TableCell>
-      <TableCell>Credit Card円</TableCell>
-    </TableRow>
-  </TableBody>
-</Table>
+    <div className='flex justify-between'>
+      <div className='w-2/3'>
+        <Home />  
+      </div>
+      <div className='w-1/3'>
+        <CartList />
+      </div>
+    </div>
 </>)
 
 }

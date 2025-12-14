@@ -59,6 +59,7 @@ type CartContextType={
   };
 
    const updateQuantity = (id, newQuantity) => {
+    if(newQuantity<1) return
     if(newQuantity === 0 ){
       return setItems((prev) => prev.filter(item => item.id !== id))
     } else{
@@ -77,10 +78,14 @@ type CartContextType={
     return total + item.price * item.quantity
   }, 0)
 
+  const totalItem = items.reduce((total, item) => {
+    return total + item.quantity
+  },0)
+
   
 
   return (
-    <CartContext.Provider value={{ items, addItem,updateQuantity, removeItem, totalPrice }}>
+    <CartContext.Provider value={{ items, addItem,updateQuantity, removeItem, totalPrice, totalItem }}>
       {children}
     </CartContext.Provider>
   );
