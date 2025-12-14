@@ -1,10 +1,10 @@
 import {Card} from "@/components/ui/card"
 import {Button} from '@/components/ui/button.tsx'
-import '../App.css'
+
 import products from "@/Products.tsx"
 import type {Product} from "@/Products.tsx" 
 import {useState,useContext} from 'react'
-import { CartContext } from "@/contexts/CartContext"
+import { CartContext } from "@/context/CartContext"
 
 function Home() {
 
@@ -31,12 +31,12 @@ function Home() {
     };
 
     return (<>
-    <h1>商品一覧ページordersも兼ね備えている</h1>    
-    <div className="grid grid-cols-3 gap-4">
+    <h2>商品一覧ページ</h2>    
+    <div className="grid grid-cols-3 gap-2 w-full">
         {products.map( item =>(
-        <Card key={item.id} className="flex flex-col h-full p-0">
+        <Card key={item.id} className="flex flex-col h-80 p-0">
             <div className="m-auto">
-                <img  src={item.img} alt="テスト"  className=" object-contein h-44 rounded"/>
+                <img  src={item.img} alt="テスト"  className=" object-contain h-44 rounded bg-gray-100"/>
             </div>
             <div className="flex flex-col justify-between p-1 ">
                 

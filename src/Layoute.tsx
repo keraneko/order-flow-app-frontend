@@ -1,17 +1,45 @@
-import {NavLink,Outlet} from 'react-router'
+import {NavLink,Outlet,Link} from 'react-router'
 import {Button} from '@/components/ui/button.tsx'
+import {ShoppingCart,ListChevronsUpDown} from 'lucide-react'
+import { useContext } from "react";
+import { CartContext } from "@/context/CartContext";
+
 
 const Layout = () => {
+  const { totalPrice } = useContext(CartContext);
 
     return(<>
-
+    <header>
+        <div className='flex justify-between h-16 items-center'>
+            <div>
+                <Link to="/"><h2 className='bg-red-400 text-white font-bold w-20 text-center' >OrderFlow-App</h2></Link>
+            </div>
+            <div className='flex'>
+                <Link to="/cartlist"><ShoppingCart/></Link>
+                <ListChevronsUpDown className='ml-2'/>
+            </div>
+        </div>
+    </header>
     <nav className="flex gap-4 p-4 list-none ">
         <li><NavLink to="/"><Button  variant="outline" >Home</Button></NavLink></li>
         <li><NavLink to="/carts"><Button variant="secondary" >Carts</Button></NavLink></li>
         <li><NavLink to="/cartlist"><Button variant="secondary" >Cartlist</Button></NavLink></li>
     </nav>
     <Outlet />
-    フッター
+    <footer className='w-full border-t-2 mt-20 '>
+        <p>フッター</p>
+    </footer>
+    {/* <footer className= ' p-0 bg-gray-200 fixed bottom-0 w-full border-t-2 mt-8 flex justify-between h-30 items-center'>
+        <div className='m-auto '>
+            <p>注文内容</p>
+        </div>
+        <div className='text-center m-auto'>
+            <p className=''>合計金額</p>
+            <h2 className='text-red-600 font-bold'>{totalPrice}円</h2>
+        </div>
+        <Button className='font-bold text-xl p-8 m-auto'>注文確認画面へ</Button> 
+        
+    </footer> */}
     </>)
 
 }

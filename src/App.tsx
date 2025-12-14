@@ -1,9 +1,10 @@
+import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import Home from './pages/Home'
 import Carts from './pages/Carts'
 import CartList from './pages/CartList'
 import Layout from '@/Layoute.tsx'
-import {CartProvider} from './contexts/CartContext'
+import {CartProvider} from './context/CartContext'
 function App() {
 
   return (
