@@ -1,12 +1,9 @@
 import {NavLink,Outlet,Link} from 'react-router'
 import {Button} from '@/components/ui/button.tsx'
 import {ShoppingCart,ListChevronsUpDown} from 'lucide-react'
-import { useContext } from "react";
-import { CartContext } from "@/context/CartContext";
 
 
 const Layout = () => {
-  const { totalPrice } = useContext(CartContext);
 
     return(<>
     <header>
@@ -21,9 +18,11 @@ const Layout = () => {
         </div>
     </header>
     <nav className="flex gap-4 p-4 list-none ">
-        <li><NavLink to="/"><Button  variant="outline" >Home</Button></NavLink></li>
+        <li><NavLink to="/"><Button  variant="secondary" >Home</Button></NavLink></li>
         <li><NavLink to="/carts"><Button variant="secondary" >Carts</Button></NavLink></li>
         <li><NavLink to="/cartlist"><Button variant="secondary" >Cartlist</Button></NavLink></li>
+        <li><NavLink to="/customers"><Button variant="secondary" >Customers</Button></NavLink></li>
+        <li><NavLink to="/confirm"><Button variant="secondary" >confirm</Button></NavLink></li>
     </nav>
     <Outlet />
     <footer className='w-full border-t-2 mt-20 '>

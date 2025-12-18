@@ -1,4 +1,5 @@
 import { useContext,useState,useEffect } from "react";
+import { Link } from "react-router";
 import { CartContext } from "@/context/CartContext";
 import {Plus,Minus,Trash2} from 'lucide-react'
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,7 @@ function CartList() {
             <p>商品小計({totalItem}点)</p>
             <p className="text-xl font-medium text-red-400">¥{totalPrice.toLocaleString('ja-JP')}円</p>
         </div>        
-        <Button className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium">次へ進む</Button>
+        <Button className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium"><Link to="/customers">次へ進む</Link></Button>
     </div>
 </>
   );
