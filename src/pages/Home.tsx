@@ -1,14 +1,14 @@
 import {Card} from "@/components/ui/card"
 import {Button} from '@/components/ui/button.tsx'
 
-import products from "@/Products.tsx"
-import type {Product} from "@/Products.tsx" 
-import {useState,useContext} from 'react'
-import { CartContext } from "@/context/CartContext"
+import products from "@/types/Products"
+import type {Product} from "@/types/Products" 
+import {useState,} from 'react'
+import { useCart } from "@/context/cart/useCart"
 
 function Home() {
 
-    const {addItem} = useContext(CartContext);
+    const {addItem} = useCart()
     const [quantities,setQuantities] = useState<Record<number, number>>({});
      
 
@@ -46,10 +46,7 @@ function Home() {
                 <div className="flex p-2">
                     <select className="border rounded h-full m-auto w-12 bg-amber-50" name="quanity" id="quanity"
                      value={quantities[item.id] || 1} onChange={(e)=>handleQuantityChange(item.id,Number(e.target.value))}>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
+                        {[...Array(30).keys()].map((index)=>(<option key={index} value={index + 1}>{index + 1}</option>))}
                     </select>
                     <Button onClick={ () => addToCart(item)} className="bg-amber-400 mt-auto">カートに入れる</Button>
                 </div>

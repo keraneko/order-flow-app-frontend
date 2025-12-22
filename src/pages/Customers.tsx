@@ -1,28 +1,26 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useContext,useState } from "react"
-import { CustomerContext } from "@/context/CustomerContext"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select,SelectTrigger,SelectValue,SelectContent,SelectItem } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router"
+import stores from "@/Stores"
+import { useCustomer } from "@/context/customer/useCustomer"
 
 function Customers() {
 
-    const context = useContext(CustomerContext)
-    if(!context) return null
-
-    const {updateCustomer,customer} =context
+    const {updateCustomer,customer} = useCustomer()
     
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         const{name,value} = e.target
         updateCustomer({[name]: value})
     }
-    const [deliveryType, setDeliveryType] = useState<"pickup" | "delivery" >("pickup")
-    const handleDeliveryTypeChange = (value: string) => {
-        if(value === "pickup" || value === "delivery"){
-            setDeliveryType(value)
+   const handleDeliveryTypeChange = (value: "pickup" | "delivery") => {
+        if(value === "pickup"){
+            updateCustomer({deliveryType: value,deliveryAddress: undefined})
+        }else{
+            updateCustomer({deliveryType: value,pickupStoreId: undefined})
         }
     }
 
@@ -40,7 +38,7 @@ function Customers() {
     {/* 郵便番号 */}
     {/* 納品日 */}
     <Label className="py-2" >受取方法</Label>
-    <RadioGroup value={deliveryType} onValueChange={handleDeliveryTypeChange} >
+    <RadioGroup value={customer.deliveryType} onValueChange={handleDeliveryTypeChange} >
         <div className="flex items-center space-x-2">
             <RadioGroupItem value="pickup" id="pickup"  />
             <Label htmlFor="pickup">店舗</Label>
@@ -50,27 +48,28 @@ function Customers() {
             <Label htmlFor="delivery">配達</Label>
         </div>
     </RadioGroup>
-    {deliveryType === 'pickup' && (<div className="py-2 ">
-    <Select>
+
+    {customer.deliveryType === 'pickup' && (<div className="py-2 ">
+    <Select value={customer.pickupStoreId ?? ""}  onValueChange = {(value) => updateCustomer({pickupStoreId: value}) } >
         <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="受取店舗" />
         </SelectTrigger>
         <SelectContent>
-            <SelectItem value="1">熊本本店</SelectItem>
-            <SelectItem value="2">東熊本店</SelectItem>
-            <SelectItem value="3">西熊本店</SelectItem>
+            {stores.map((store)=>
+            <SelectItem key={store.id} value={store.id} >{store.name}</SelectItem>)}
         </SelectContent> 
     </Select>
     </div>)}
-    {deliveryType === "delivery" && (
+
+    {customer.deliveryType === "delivery" && (
     <div>
         <Label className="py-2"  id="deliveryAddress" >配達先住所</Label>
-        <Input name="deliveryAddress"/>
+        <Input value={customer.deliveryAddress} onChange = {(e) => updateCustomer({deliveryAddress: e.target.value})}/>
     </div>)}
-    <Label className="py-2" >備考</Label>
-    <Textarea></Textarea>
+    <Label className="py-2" id="note" >備考</Label>
+    <Textarea onChange = {(e) => updateCustomer({note: e.target.value})} value={customer.note} ></Textarea>
 
-        <Button className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium mt-4 h-15 "><Link to="/confirm">次へ進む</Link></Button>
+        <Link to="/confirm"><Button className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium mt-4 h-15 ">次へ進む</Button></Link>
     </>)
 }
 

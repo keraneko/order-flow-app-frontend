@@ -1,19 +1,35 @@
-import { useContext,useState,useEffect } from "react";
+import {useState} from "react";
 import { Link } from "react-router";
-import { CartContext } from "@/context/CartContext";
+import { useCart } from "@/context/cart/useCart";
 import {Plus,Minus,Trash2} from 'lucide-react'
 import { Button } from "@/components/ui/button";
+import type { CartItem } from "@/context/cart/CartContext";
 
-function CartItem({item}) {
-    const { updateQuantity,removeItem } = useContext(CartContext);
-    const [tempQty, setTempQty] = useState(String(item.quantity));
-    useEffect(() => {setTempQty(String(item.quantity))},
-    [item.quantity])
+type CartItemProps = {
+    item: CartItem
+}
+function CartItems({item}: CartItemProps) {
+    const { updateQuantity,removeItem } = useCart()
+    // const [tempQty, setTempQty] = useState(String(item.quantity));
+
+    // const handleBlur =() => {
+    //     const num = Number(tempQty);
+    //     if (Number.isNaN(num) && num < 1) {
+    //     setTempQty(String(item.quantity))
+    //     return
+    //     } 
+    //     updateQuantity(item.id,num)
+    //     }
+
+    const [showBlukButton,setShowBlukButton] = useState(false)
+    
 
 
     return(
         <>
-        <div className="flex items-center max-w-5xl border-b p-1">
+        
+        <Button className="bg-white text-black border" onClick={ () => setShowBlukButton(prev => !prev)}>more</Button>
+        <div className="flex items-center max-w-5xl border-b p-1 mb-2">
             <Trash2 className="m-2 text-red-500 border-2 rounded w-10 h-10 " onClick={ () =>{removeItem(item.id)} } />
             <div>
                 <img className="w-40 h-20 object-cover rounded-md shrink" src={item.img} alt="画像" />
@@ -24,36 +40,30 @@ function CartItem({item}) {
                 </div>
                 <div className=" flex  justify-between items-center">
                     <Minus className="border-2 rounded w-10 h-10 " onClick={() => {updateQuantity(item.id, item.quantity - 1)}} />
-                    <input className="w-10 h-10 text-center border rounded text-base "
-                        type="number"
-                        value={tempQty}
-                        onChange={(e) => setTempQty(e.target.value)}
-                        onBlur={() => {
-                            const num = Number(tempQty);
-                            if (!Number.isNaN(num) && num > 0) {
-                            updateQuantity(item.id, num);
-                            } else {
-                            setTempQty(String(item.quantity));
-                            }
-                        }}
-                    />
+                    <div className="w-10 h-10 border rounded text-base flex justify-center items-center m-1">
+                        <p> {item.quantity}</p>
+                    </div>
                     <Plus className="border-2 rounded w-10 h-10 " onClick={() => { updateQuantity(item.id, item.quantity + 1)}} />  
                     <p className="text-base font-medium ">¥ {(item.price * item.quantity).toLocaleString('ja-JP')}</p>
                 </div>
             </div>
         </div>
+        {showBlukButton && (<div className="flex justify-end">
+            <Button onClick={() => { updateQuantity(item.id, item.quantity + 10)}} >+10</Button>
+            <Button onClick={() => { updateQuantity(item.id, item.quantity + 100)}}>+100</Button>
+        </div>)}
     </>
   );
 }
  
 function CartList() {
-  const { items,totalPrice, totalItem } = useContext(CartContext);
+  const { items,totalPrice, totalItem } = useCart()
 
   return (
     <>
     {items.map((item) => (
         <div key={item.id} className="">
-            <CartItem item={item} />
+            <CartItems item={item} />
         </div>
     ))}
     <div className=" mt-2 border rounded h-20 flex flex-col justify-between bg-gray-100">
@@ -61,7 +71,7 @@ function CartList() {
             <p>商品小計({totalItem}点)</p>
             <p className="text-xl font-medium text-red-400">¥{totalPrice.toLocaleString('ja-JP')}円</p>
         </div>        
-        <Button className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium"><Link to="/customers">次へ進む</Link></Button>
+        <Link to="/customers"><Button className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium">次へ進む</Button></Link>
     </div>
 </>
   );

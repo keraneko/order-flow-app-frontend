@@ -6,8 +6,9 @@ import CartList from './pages/CartList'
 import Customers from './pages/Customers'
 import Confirm from './pages/Confirm'
 import Layout from '@/Layoute.tsx'
-import {CartProvider} from './context/CartContext'
-import { CustomerProvider } from './context/CustomerContext'
+import {CartProvider} from './context/cart/CartProvider'
+import { CustomerProvider } from './context/customer/CustomerProvider' 
+import { OrderProvider } from './context/order/OrderProvider'
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
     <>
     <CustomerProvider>
     <CartProvider>
+      <OrderProvider>
       <BrowserRouter>
       
       <Routes>
@@ -27,6 +29,7 @@ function App() {
         </Route>
       </Routes>
       </BrowserRouter>
+      </OrderProvider>
       </CartProvider>
       </CustomerProvider>
     </>

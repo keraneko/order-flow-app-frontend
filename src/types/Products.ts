@@ -5,7 +5,7 @@ export type Product ={
     img: string;
 }
 
-const products: Product[] =[
+ const products: Product[] =[
     {
         id: 1,
         name: "唐揚げ弁当",
@@ -74,4 +74,4 @@ const products: Product[] =[
     
 ]
 
-export default products;
+export default products
