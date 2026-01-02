@@ -9,6 +9,7 @@ import Layout from '@/Layoute.tsx'
 import {CartProvider} from './context/cart/CartProvider'
 import { CustomerProvider } from './context/customer/CustomerProvider' 
 import { OrderProvider } from './context/order/OrderProvider'
+import Apitest from './pages/apitest'
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/cartlist" element={<CartList />} />
           <Route path="/customers" element={<Customers />} />
           <Route path='/confirm' element={<Confirm />} />
+          <Route path='/test' element={<Apitest />} />
         </Route>
       </Routes>
       </BrowserRouter>

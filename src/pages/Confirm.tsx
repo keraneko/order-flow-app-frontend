@@ -15,8 +15,8 @@ function Confirm () {
     const {createOrder} = useOrder()
 
     const totalAmount = totalPrice
-    const handleConfirm = () => {
-        createOrder({
+    const handleConfirm = async() => {
+        await createOrder({
             customer,
             items,
             totalAmount,
