@@ -18,9 +18,9 @@ function Customers() {
     }
    const handleDeliveryTypeChange = (value: "pickup" | "delivery") => {
         if(value === "pickup"){
-            updateCustomer({deliveryType: value,deliveryAddress: undefined})
+            updateCustomer({deliveryType: value,deliveryAddress: ""})
         }else{
-            updateCustomer({deliveryType: value,pickupStoreId: undefined})
+            updateCustomer({deliveryType: value,pickupStoreId: ""})
         }
     }
 

@@ -8,6 +8,9 @@ const initialCustomer: Customer = {
   address: "",
   phone: "",
   deliveryType: "pickup",
+  pickupStoreId: "",
+  deliveryAddress: "",
+  note: "",
 }
 
  export const CustomerProvider = ({children}: { children: React.ReactNode }) => {

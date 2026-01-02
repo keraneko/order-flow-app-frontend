@@ -1,9 +1,8 @@
 import {Card} from "@/components/ui/card"
 import {Button} from '@/components/ui/button.tsx'
 
-import products from "@/types/Products"
 import type {Product} from "@/types/Products" 
-import {useState,} from 'react'
+import {useState,useEffect} from 'react'
 import { useCart } from "@/context/cart/useCart"
 
 function Home() {
@@ -30,6 +29,26 @@ function Home() {
         );
     };
 
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+    fetch("/api/products")
+        .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+        })
+        .then((data: Product[]) => {
+        setProducts(data);
+        })
+        .catch((e) => setError(e.message))
+        .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
     return (<>
     <h2>商品一覧ページ</h2>    
     <div className="grid grid-cols-3 gap-2 w-full">
@@ -44,7 +63,7 @@ function Home() {
                     <p className="text-sm text-gray-600">{item.price}円</p>
                 </div>
                 <div className="flex p-2">
-                    <select className="border rounded h-full m-auto w-12 bg-amber-50" name="quanity" id="quanity"
+                    <select className="border rounded h-full m-auto w-20 bg-amber-50" name="quanity" id="quanity"
                      value={quantities[item.id] || 1} onChange={(e)=>handleQuantityChange(item.id,Number(e.target.value))}>
                         {[...Array(30).keys()].map((index)=>(<option key={index} value={index + 1}>{index + 1}</option>))}
                     </select>
