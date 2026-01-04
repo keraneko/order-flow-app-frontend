@@ -7,7 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router"
 import { Textarea } from "@/components/ui/textarea"
-import stores from "@/Stores"
+import { useQuery } from "@tanstack/react-query"
+import { fetchStores } from "@/api/Stores"
 
 function Confirm () {
     const {customer} = useCustomer() 
@@ -23,6 +24,10 @@ function Confirm () {
             createdAt: new Date().toISOString(),
         })
     }
+    const { data: stores } = useQuery({ queryKey: ["stores"], queryFn: fetchStores })
+    const storeName =   stores?.find(s => String(s.id) === customer.pickupStoreId)?.name
+
+
 
 
     return(<>    
@@ -73,7 +78,7 @@ function Confirm () {
 
     {customer.deliveryType === 'pickup' && (<div className="py-2 ">
         <p>
-            受取店舗: <span className="font-black">{stores.find( store => store.id === customer.pickupStoreId )?.name}</span>
+            受取店舗: <span className="font-black">{storeName}</span>
         </p>
     </div>)}
 

@@ -5,8 +5,10 @@ import { Select,SelectTrigger,SelectValue,SelectContent,SelectItem } from "@/com
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router"
-import stores from "@/Stores"
 import { useCustomer } from "@/context/customer/useCustomer"
+import { useQuery } from "@tanstack/react-query"
+import { fetchStores, } from "@/api/Stores"
+
 
 function Customers() {
 
@@ -24,7 +26,13 @@ function Customers() {
         }
     }
 
-    
+    const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["stores"],
+    queryFn: fetchStores,
+  })
+
+  if (isLoading) return <div>読み込み中…</div>
+  if (isError) return <div>エラー: {(error as Error).message}</div>
     
     
     return(<>
@@ -55,8 +63,8 @@ function Customers() {
             <SelectValue placeholder="受取店舗" />
         </SelectTrigger>
         <SelectContent>
-            {stores.map((store)=>
-            <SelectItem key={store.id} value={store.id} >{store.name}</SelectItem>)}
+            {(data ?? []).map((store)=>
+            <SelectItem key={store.id} value={String(store.id)} >{store.name}</SelectItem>)}
         </SelectContent> 
     </Select>
     </div>)}

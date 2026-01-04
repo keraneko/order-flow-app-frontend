@@ -9,7 +9,7 @@ import Layout from '@/Layoute.tsx'
 import {CartProvider} from './context/cart/CartProvider'
 import { CustomerProvider } from './context/customer/CustomerProvider' 
 import { OrderProvider } from './context/order/OrderProvider'
-import Apitest from './pages/apitest'
+import Apitest from './pages/Apitest'
 
 function App() {
 
