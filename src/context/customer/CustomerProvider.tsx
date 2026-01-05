@@ -7,6 +7,7 @@ const initialCustomer: Customer = {
   name: "",
   address: "",
   phone: "",
+  orderStoreId: "",
   deliveryType: "pickup",
   pickupStoreId: "",
   deliveryAddress: "",

@@ -8,3 +8,5 @@ export async function fetchStores(): Promise<Store[]> {
   if (!res.ok) throw new Error("storesの取得に失敗しました")
   return res.json()
 }
+
+

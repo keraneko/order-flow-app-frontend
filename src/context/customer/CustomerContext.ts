@@ -5,6 +5,7 @@ export type Customer = {
   name: string;
   address: string;
   phone: string;
+  orderStoreId: string;
   deliveryType: "pickup" | "delivery",
   pickupStoreId?: string,
   deliveryAddress?: string,

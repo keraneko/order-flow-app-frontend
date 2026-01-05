@@ -36,6 +36,16 @@ function Customers() {
     
     
     return(<>
+    <p>受注店舗</p>
+    <Select value={customer.orderStoreId ?? ""}  onValueChange = {(value) => updateCustomer({orderStoreId: value}) } >
+        <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="受注店舗" />
+        </SelectTrigger>
+        <SelectContent>
+            {(data ?? []).map((store)=>
+            <SelectItem key={store.id} value={String(store.id)} >{store.name}</SelectItem>)}
+        </SelectContent> 
+    </Select>
     <p>お客様情報</p>
     <Label htmlFor="name" className="py-2" >名前</Label>
     <Input name="name" value={customer.name} onChange={handleChange} />
