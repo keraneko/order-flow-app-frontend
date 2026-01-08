@@ -4,19 +4,52 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select,SelectTrigger,SelectValue,SelectContent,SelectItem } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Link } from "react-router"
+//import { Link } from "react-router"
+import { useNavigate } from "react-router"
 import { useCustomer } from "@/context/customer/useCustomer"
 import { useQuery } from "@tanstack/react-query"
 import { fetchStores, } from "@/api/Stores"
+import {useState} from "react"
+import { useCart } from "@/context/cart/useCart"
 
 
 function Customers() {
+    //errors
+    const {items} = useCart()
+    const [errors, setErrors] = useState<{orderStore?:string; name?:string; phone?:string; pickupStore?:string; deliveryAddress?:string; items?:string}>({});
+    const validate = () => {
+        const nextErrors: typeof errors = {}; 
+        if (!customer.orderStoreId) nextErrors.orderStore = "受注店舗を選択してください"
+        if (!customer.name.trim()) nextErrors.name = "名前は必須です" 
+        if (!customer.phone.trim()) nextErrors.phone = "電話番号は必須です"
+        if (customer.deliveryType === 'pickup') {
+            if(!customer.pickupStoreId) nextErrors.pickupStore = "受取店舗を選択してください"
+        }
+        if(customer.deliveryType === 'delivery') {
+            if(!customer.deliveryAddress) nextErrors.deliveryAddress = "配達先住所は必須です"
+        }
+        
+        if(!items || items.length === 0 ) {nextErrors.items = "商品を選択してください"}
+        
+        setErrors(nextErrors);
+         return Object.keys(nextErrors).length === 0; //true
+    }
+    const navigate = useNavigate()
+    const onNext = () =>{
+        if(!validate()) return
+        navigate("/confirm")
+    }
+
+
 
     const {updateCustomer,customer} = useCustomer()
     
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         const{name,value} = e.target
         updateCustomer({[name]: value})
+        //errors削除
+        setErrors(prev => ({ ...prev, [name]: undefined }))
+
     }
    const handleDeliveryTypeChange = (value: "pickup" | "delivery") => {
         if(value === "pickup"){
@@ -36,8 +69,13 @@ function Customers() {
     
     
     return(<>
+    {errors.items && <p className="text-red-500 text-sm">{errors.items}</p>}
     <p>受注店舗</p>
-    <Select value={customer.orderStoreId ?? ""}  onValueChange = {(value) => updateCustomer({orderStoreId: value}) } >
+    <Select value={customer.orderStoreId ?? ""}
+      onValueChange = {(value) =>{
+        updateCustomer({orderStoreId: value}) 
+        setErrors(prev =>({...prev, orderStore: undefined}))
+        }} >
         <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="受注店舗" />
         </SelectTrigger>
@@ -46,13 +84,18 @@ function Customers() {
             <SelectItem key={store.id} value={String(store.id)} >{store.name}</SelectItem>)}
         </SelectContent> 
     </Select>
+    {errors.orderStore && <p className="text-red-500 text-sm">{errors.orderStore}</p>}
+
     <p>お客様情報</p>
     <Label htmlFor="name" className="py-2" >名前</Label>
     <Input name="name" value={customer.name} onChange={handleChange} />
+    {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+
     <Label htmlFor="address" className="py-2">住所</Label>
     <Input name="address" value={customer.address} onChange={handleChange} />
     <Label htmlFor="phone" className="py-2">電話番号</Label>
     <Input name="phone" value={customer.phone} onChange={handleChange} />
+    {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
     {/* 郵便番号 */}
     {/* 納品日 */}
     <Label className="py-2" >受取方法</Label>
@@ -68,7 +111,11 @@ function Customers() {
     </RadioGroup>
 
     {customer.deliveryType === 'pickup' && (<div className="py-2 ">
-    <Select value={customer.pickupStoreId ?? ""}  onValueChange = {(value) => updateCustomer({pickupStoreId: value}) } >
+    <Select value={customer.pickupStoreId ?? ""}  
+        onValueChange = {(value) => {
+        updateCustomer({pickupStoreId: value})
+        setErrors(prev => ({ ...prev, pickupStore: undefined }))
+ }} >
         <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="受取店舗" />
         </SelectTrigger>
@@ -77,17 +124,26 @@ function Customers() {
             <SelectItem key={store.id} value={String(store.id)} >{store.name}</SelectItem>)}
         </SelectContent> 
     </Select>
+    {errors.pickupStore && <p className="text-red-500 text-sm">{errors.pickupStore}</p>}
     </div>)}
 
     {customer.deliveryType === "delivery" && (
     <div>
         <Label className="py-2"  id="deliveryAddress" >配達先住所</Label>
-        <Input value={customer.deliveryAddress} onChange = {(e) => updateCustomer({deliveryAddress: e.target.value})}/>
+        <Input value={customer.deliveryAddress}
+         onChange = {(e) => {
+            updateCustomer({deliveryAddress: e.target.value})
+            setErrors(prev => ({...prev, deliveryAddress: undefined}))
+            }}/>
+        {errors.deliveryAddress && <p className="text-red-500 text-sm">{errors.deliveryAddress}</p>}
     </div>)}
     <Label className="py-2" id="note" >備考</Label>
     <Textarea onChange = {(e) => updateCustomer({note: e.target.value})} value={customer.note} ></Textarea>
 
-        <Link to="/confirm"><Button className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium mt-4 h-15 ">次へ進む</Button></Link>
+        {/* <Link to="/confirm"> */}
+        <Button onClick = {onNext} className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium mt-4 h-15 ">次へ進む</Button>
+        {/* </Link> */}
+        <></>
     </>)
 }
 
