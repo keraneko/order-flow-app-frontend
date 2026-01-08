@@ -1,5 +1,5 @@
 import {useState} from "react";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import { useCart } from "@/context/cart/useCart";
 import {Plus,Minus,Trash2} from 'lucide-react'
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,6 @@ function CartItems({item}: CartItemProps) {
 
     const [showBlukButton,setShowBlukButton] = useState(false)
     
-
-
     return(
         <>
         
@@ -59,6 +57,15 @@ function CartItems({item}: CartItemProps) {
 function CartList() {
   const { items,totalPrice, totalItem } = useCart()
 
+   //cartError
+    const[cartError, setCartError] = useState<string | null>(null)
+    const navigate = useNavigate()
+    const onNext = () => {
+        if (items.length === 0) {setCartError("商品を選択してください"); return; }
+        setCartError(null);
+        navigate("/customers")
+    }
+
   return (
     <>
     {items.map((item) => (
@@ -67,11 +74,12 @@ function CartList() {
         </div>
     ))}
     <div className=" mt-2 border rounded h-20 flex flex-col justify-between bg-gray-100">
+        {cartError && items.length === 0 && <p className="text-red-500 text-sm">{cartError}</p>}
         <div className="flex justify-between">
             <p>商品小計({totalItem}点)</p>
             <p className="text-xl font-medium text-red-400">¥{totalPrice.toLocaleString('ja-JP')}円</p>
         </div>        
-        <Link to="/customers"><Button className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium">次へ進む</Button></Link>
+        <Button onClick={onNext}  className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium">次へ進む</Button>
     </div>
 </>
   );
