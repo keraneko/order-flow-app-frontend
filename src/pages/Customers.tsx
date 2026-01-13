@@ -4,8 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select,SelectTrigger,SelectValue,SelectContent,SelectItem } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-//import { Link } from "react-router"
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 import { useCustomer } from "@/context/customer/useCustomer"
 import { useQuery } from "@tanstack/react-query"
 import { fetchStores, } from "@/api/Stores"
@@ -138,11 +137,9 @@ function Customers() {
         {errors.deliveryAddress && <p className="text-red-500 text-sm">{errors.deliveryAddress}</p>}
     </div>)}
     <Label className="py-2" id="note" >備考</Label>
-    <Textarea onChange = {(e) => updateCustomer({note: e.target.value})} value={customer.note} ></Textarea>
-
-        {/* <Link to="/confirm"> */}
-        <Button onClick = {onNext} className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium mt-4 h-15 ">次へ進む</Button>
-        {/* </Link> */}
+    <Textarea onChange = {(e) => updateCustomer({note: e.target.value})} value={customer.note} ></Textarea>    
+    <Button onClick = {onNext} className="w-full bg-rose-500 hover:bg-rose-800 text-xl font-medium mt-4 h-15 ">次へ進む</Button>
+        
         <></>
     </>)
 }
