@@ -1,7 +1,7 @@
 import {Card} from "@/components/ui/card"
 import {Button} from '@/components/ui/button.tsx'
 
-import type {Product} from "@/types/Products" 
+import {getProduct, type Product} from "@/types/Products" 
 import {useState,useEffect} from 'react'
 import { useCart } from "@/context/cart/useCart"
 
@@ -34,11 +34,7 @@ function Home() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-    fetch("/api/products")
-        .then((response) => {
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return response.json();
-        })
+        getProduct()
         .then((data: Product[]) => {
         setProducts(data);
         })
@@ -54,8 +50,18 @@ function Home() {
     <div className="grid grid-cols-3 gap-2 w-full">
         {products.map( item =>(
         <Card key={item.id} className="flex flex-col h-80 p-0">
-            <div className="m-auto">
-                <img  src={item.img} alt="テスト"  className=" object-contain h-44 rounded bg-gray-100"/>
+            <div className="m-auto relative">
+                <img  src={item.img} alt={item.name}
+                  className=
+                  {`object-contain h-44 rounded bg-gray-100
+                    ${!item.isActive ?"grayscale opacity-60" : ""}`
+                  }/>
+                  {!item.isActive &&
+                  <div className=" absolute inset-0 flex items-center justify-center">
+                    <span className="rounded px-3 py-1 text-sm font-bold bg-black/70 text-white">
+                        SOLD OUT
+                    </span>
+                  </div>}
             </div>
             <div className="flex flex-col justify-between p-1 ">
                 
@@ -66,8 +72,14 @@ function Home() {
                     <select className="border rounded h-full m-auto w-20 bg-amber-50" name="quanity" id="quanity"
                      value={quantities[item.id] || 1} onChange={(e)=>handleQuantityChange(item.id,Number(e.target.value))}>
                         {[...Array(30).keys()].map((index)=>(<option key={index} value={index + 1}>{index + 1}</option>))}
-                    </select>
-                    <Button onClick={ () => addToCart(item)} className="bg-amber-400 mt-auto">カートに入れる</Button>
+                    </select>  
+                    <Button onClick={ () => {
+                        if(!item.isActive) return;
+                        addToCart(item);}}
+                        className={!item.isActive ? "bg-gray-400 mt-auto":"bg-amber-400 mt-auto"}
+                        disabled={!item.isActive}>
+                        {!item.isActive ?"SOLD OUT" :"カートに入れる"}</Button>
+                    
                 </div>
         </Card>
         ))}
