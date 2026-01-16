@@ -1,11 +1,10 @@
 
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { useEffect, useState} from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { Input } from "@/components/ui/input"
 import type { CreateProductInput } from "@/types/Products"
-import { Button } from "@/components/ui/button"
+import { normalizeNumberString } from "@/Utils/NumberString";
+import ProductForm from "./ProductForm"
+import { toast } from "sonner";
 
 const createProductInput: CreateProductInput  ={
         name: "",
@@ -15,16 +14,9 @@ const createProductInput: CreateProductInput  ={
 
 function UpdateProductPage() {
     const {id} = useParams()
-        const navigate = useNavigate()
-
-    
+    const navigate = useNavigate()
     const[productInput, setProductInput] = useState<CreateProductInput>(createProductInput)
-    const updateProductInput = (data: Partial<CreateProductInput>) => {
-            setProductInput((prev)=>({
-            ...prev,
-            ...data,
-            }))
-        }
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() =>{
     if(!id) return;
@@ -38,23 +30,17 @@ function UpdateProductPage() {
     }) ()
     },[id])
 
-     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        const{name,value} = e.target
-        updateProductInput({[name]: value})
-    }
 
-    const handleCheckedChange = (checked: boolean | "indeterminate") => {
-      const isStopped = checked === true;
-      updateProductInput({isActive: !isStopped})
-    }
-
-    const toHalfWidthNumberString = (priceInput: string) => {
-      return priceInput.replace(/[０-９]/g, (change) => String.fromCharCode(change.charCodeAt(0) - 0xFEE0));
-    }
-
+    //form
     const handleSubmit = async() => {
-        if(!id) return
-      const raw = toHalfWidthNumberString(productInput.price).trim();
+      if(!id) return
+      if(isSubmitting) return
+      setIsSubmitting(true)
+      // await new Promise((r) => setTimeout(r, 1500)); //動作確認用
+
+
+      try{
+      const raw = normalizeNumberString(productInput.price).trim();
       const payload = {
         name: productInput.name,
         price: Number(raw),
@@ -67,33 +53,22 @@ function UpdateProductPage() {
         body: JSON.stringify(payload),
       })
 
-
       if(!res.ok){
-        console.log("create filede",await res.json())
+        toast.success("更新に失敗しました");
+        console.log("update filede",await res.json())
         return
       }
-      alert("更新しました")
+      toast.success("更新しました");
       navigate("/products")
+      }finally{
+        setIsSubmitting(false)
+      }
     }
     
 
     return(<>
-    <h1>商品登録</h1>
-    <Label htmlFor="name" className="py-2" >商品名</Label>
-    <Input name="name" value={productInput.name} onChange={handleChange}/>
-
-    <Label htmlFor="price" className="py-2">価格</Label>
-    <Input name="price" value={productInput.price} onChange={handleChange} />
-
-    <div className="flex items-center gap-3">
-    <Checkbox  id="isActive"
-    checked={!productInput.isActive}
-    onCheckedChange={handleCheckedChange}
-
-      />
-    <Label htmlFor="isActive" className="py-2">"SOLD OUT"として登録する</Label>
-    </div>
-    <Button onClick={handleSubmit} >登録する</Button>
+    <h1>商品編集</h1>
+    <ProductForm  value={productInput} onChange={setProductInput} onSubmit={handleSubmit} submitLabel="編集を登録する" disabled={isSubmitting}/>
     </>)
 }
 
