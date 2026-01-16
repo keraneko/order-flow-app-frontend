@@ -1,4 +1,5 @@
 import './App.css'
+import { Toaster } from '@/components/ui/sonner'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Carts from './pages/Carts'
@@ -22,7 +23,7 @@ function App() {
     <CartProvider>
       <OrderProvider>
       <BrowserRouter>
-      
+      <Toaster position='top-center'/>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
