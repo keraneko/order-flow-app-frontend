@@ -1,7 +1,8 @@
-export type CreateProductInput ={
+export type ProductFormValues ={
     name: string;
     price: string;
     isActive: boolean;
+    isVisible: boolean;
 }
 
 export type Product ={
@@ -10,6 +11,7 @@ export type Product ={
     price: number;
     img: string;
     isActive: boolean;
+    isVisible: boolean;
 }
 
 export type ProductApi = {
@@ -18,6 +20,7 @@ export type ProductApi = {
     price: number;
     img: string;
     is_active: boolean;
+    is_visible: boolean;
 }
 
 export const toProduct = (p:ProductApi): Product =>({
@@ -26,6 +29,7 @@ export const toProduct = (p:ProductApi): Product =>({
     price: p.price,
     img: p.img,
     isActive: p.is_active,
+    isVisible: p.is_visible,
 }) 
 
 export async function getProduct(): Promise<Product[]> {

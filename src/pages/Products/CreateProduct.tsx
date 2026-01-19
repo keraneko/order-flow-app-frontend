@@ -1,20 +1,21 @@
-import type { CreateProductInput } from "@/types/Products"
+import type { ProductFormValues } from "@/types/Products"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 import ProductForm from "./ProductForm"
 import { normalizeNumberString } from "@/Utils/NumberString"
 import {toast} from "sonner"
 
- const createProductInput: CreateProductInput  ={
+ const createProductInput: ProductFormValues  ={
         name: "",
         price: "",
         isActive: true,
+        isVisible: true,
     }
 
 
  function CreateProductPage() {
   const navigate = useNavigate()
-   const [productInput, setProductInput] = useState<CreateProductInput>(createProductInput)
+   const [productInput, setProductInput] = useState<ProductFormValues>(createProductInput)
    const [isSubmitting, setIsSubmitting] = useState(false)
   //  const updateProductInput = (data: Partial<CreateProductInput>) => {
   //         setProductInput((prev)=>({
@@ -46,12 +47,21 @@ import {toast} from "sonner"
 
     const res = await fetch("/api/products",{
         method: "POST",
-        headers: {"Content-Type" : "application/json"}, 
+        headers: {
+          "Content-Type" : "application/json",
+          "Accept": "application/json",
+          }, 
         body: JSON.stringify(payload),
       })
       if(!res.ok){
+        if(res.status === 422){
+          const err = await res.json()
+          const firstArray = Object.values(err.errors ?? {})[0] as string[] | undefined;
+          const firstMsg = firstArray?.[0] ?? "入力内容を確認してください" 
+          toast.error(firstMsg);
+          return
+        }
         toast.error("登録に失敗しました");
-        console.log("create filede",await res.json())
         return
       }
       toast.success("登録しました");

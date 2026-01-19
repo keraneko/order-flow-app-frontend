@@ -2,20 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { CreateProductInput } from "@/types/Products";
+import type { ProductFormValues } from "@/types/Products";
 import { normalizeNumberString } from "@/Utils/NumberString";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { useState } from "react";
 
 type ProductFormProps = {
-        value: CreateProductInput;
-        onChange: (next:CreateProductInput) =>void
-        onSubmit: ()=>void | Promise<void>
+        value: ProductFormValues;
+        onChange: (next:ProductFormValues) =>void;
+        onSubmit: ()=>void | Promise<void>;
         submitLabel: string;
-        disabled?: boolean
+        disabled?: boolean;
+        showIsVisible?:boolean;
     }
 
-function ProductForm({value, onChange, onSubmit, submitLabel, disabled}: ProductFormProps) {
+function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVisible}: ProductFormProps) {
     //errors
     const [errors, setErrors] = useState<{name?:string; price?:string; }>({})
     const validate = () => {
@@ -62,17 +63,29 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled}: Product
         }} />
         {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
 
+        {/* isActive */}
         <div className="flex items-center gap-3">
-        <Checkbox  id="isActive"
-        checked={!value.isActive}
-        onCheckedChange={(checked: CheckedState) => {
-            const isStopped = checked === true
-            onChange({...value, isActive: !isStopped})
-        }}
-        
-         />
-         <Label htmlFor="isActive" className="py-2">"SOLD OUT"として登録する</Label>
+            <Checkbox  id="isActive"
+            checked={!value.isActive}
+            onCheckedChange={(checked: CheckedState) => {
+                const isStopped = checked === true
+                onChange({...value, isActive: !isStopped})
+            }}/>
+            <Label htmlFor="isActive" className="py-2">SOLD OUT"として登録する</Label>
         </div>
+
+        {/* isVisible   */}
+        {showIsVisible &&
+         <div className="flex items-center gap-3">
+            <Checkbox  id="isVisible"
+            checked={!value.isVisible}
+            onCheckedChange={(checked: CheckedState) => {
+                const isStopped = checked === true
+                onChange({...value, isVisible: !isStopped})
+            }}/>
+            <Label htmlFor="isVisible" className="py-2">非表示にする</Label>
+        </div>}
+
         <Button type="submit" disabled={disabled} >{submitLabel}</Button>
 
 

@@ -32,6 +32,7 @@ function Home() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const visibleProducts = products.filter(p => p.isVisible)
 
     useEffect(() => {
         getProduct()
@@ -48,7 +49,7 @@ function Home() {
     return (<>
     <h2>商品一覧ページ</h2>    
     <div className="grid grid-cols-3 gap-2 w-full">
-        {products.map( item =>(
+        {visibleProducts.map( item =>(
         <Card key={item.id} className="flex flex-col h-80 p-0">
             <div className="m-auto relative">
                 <img  src={item.img} alt={item.name}
