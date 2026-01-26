@@ -1,6 +1,8 @@
 export type ProductFormValues ={
     name: string;
     price: string;
+    image: string | null;
+    imageFile: File | null;
     isActive: boolean;
     isVisible: boolean;
 }
@@ -9,7 +11,7 @@ export type Product ={
     id: number;
     name: string;
     price: number;
-    img: string;
+    image: string | null;
     isActive: boolean;
     isVisible: boolean;
 }
@@ -18,7 +20,7 @@ export type ProductApi = {
     id: number;
     name: string;
     price: number;
-    img: string;
+    image_path: string | null;
     is_active: boolean;
     is_visible: boolean;
 }
@@ -27,7 +29,7 @@ export const toProduct = (p:ProductApi): Product =>({
     id: p.id,
     name: p.name,
     price: p.price,
-    img: p.img,
+    image: p.image_path,
     isActive: p.is_active,
     isVisible: p.is_visible,
 }) 

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import type { ProductFormValues } from "@/types/Products";
 import { normalizeNumberString } from "@/Utils/NumberString";
 import type { CheckedState } from "@radix-ui/react-checkbox";
-import { useState } from "react";
+import {  useRef, useState } from "react";
 
 type ProductFormProps = {
         value: ProductFormValues;
@@ -17,6 +17,9 @@ type ProductFormProps = {
     }
 
 function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVisible}: ProductFormProps) {
+    const [previewUrl, setPreviewUrl] = useState<string| null>(null)
+    const previewRef = useRef<string | null>(null);
+
     //errors
     const [errors, setErrors] = useState<{name?:string; price?:string; }>({})
     const validate = () => {
@@ -37,19 +40,72 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
         return Object.keys(nextErrors).length === 0
             
     }
+
+    const updateValue = (updates: Partial<ProductFormValues>) => {
+        onChange({ ...value, ...updates });
+    };
+
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+            if (!files || files.length === 0) {
+                
+                if (previewRef.current) {
+                URL.revokeObjectURL(previewRef.current);
+                previewRef.current = null;
+                }
+                setPreviewUrl(null);
+                onChange({ ...value, imageFile: null });
+                return;
+            }
+
+            const file = files[0];
+            if (previewRef.current) {
+                URL.revokeObjectURL(previewRef.current);
+            }
+            const url = URL.createObjectURL(file);
+            previewRef.current = url;
+
+            setPreviewUrl(url);
+            updateValue({imageFile: file });
+
+        }
     
+    const cleanupPreviewUrl = () => {
+        if (previewRef.current) {
+            URL.revokeObjectURL(previewRef.current);
+            previewRef.current = null;
+            }
+        setPreviewUrl(null);
+    };
+
 
     return(<>
-    <form onSubmit={(e) =>{
+    <form onSubmit={async(e) =>{
         e.preventDefault(); 
-        if(!validate()) 
-        return; onSubmit() }}>
+        if(!validate()) return;
+        await onSubmit();
+        cleanupPreviewUrl();}}>
+        <div className="m-auto relative">
+        {previewUrl ? (
+            <img src={previewUrl} alt="preview"
+            className="object-contain h-44 rounded bg-gray-100"
+            />
+        ): value.image ?
+            (<img  
+                src={`http://localhost/storage/${value.image}`}
+                alt={value.name} 
+                className="object-contain h-44 rounded bg-gray-100"/>)
+                : (<div className="flex justify-center items-center w-44 h-44 rounded bg-gray-100">Not Image</div>)}              
+        </div>
+        <Label htmlFor="name" className="py-2" >画像</Label>
+        <Input name="image" type="file"onChange = {handleImageChange} />
 
         <Label htmlFor="name" className="py-2" >商品名</Label>
         <Input name="name" 
         value={value.name}
         onChange={(e) => {
-            onChange({...value, name: e.target.value});
+            updateValue({ name: e.target.value});
             setErrors((prev) => ({...prev, name: undefined}));
         }} />
         {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
@@ -58,7 +114,7 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
         <Input name="price"
         value={value.price}
         onChange={(e) => {
-            onChange({...value, price: e.target.value});
+            updateValue({ price: e.target.value});
             setErrors((prev) => ({...prev, price: undefined}));
         }} />
         {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
@@ -69,7 +125,7 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
             checked={!value.isActive}
             onCheckedChange={(checked: CheckedState) => {
                 const isStopped = checked === true
-                onChange({...value, isActive: !isStopped})
+                updateValue({isActive: !isStopped})
             }}/>
             <Label htmlFor="isActive" className="py-2">SOLD OUT"として登録する</Label>
         </div>
@@ -81,7 +137,7 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
             checked={!value.isVisible}
             onCheckedChange={(checked: CheckedState) => {
                 const isStopped = checked === true
-                onChange({...value, isVisible: !isStopped})
+                updateValue({isVisible: !isStopped})
             }}/>
             <Label htmlFor="isVisible" className="py-2">非表示にする</Label>
         </div>}

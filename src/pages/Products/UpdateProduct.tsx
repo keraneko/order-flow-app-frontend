@@ -9,6 +9,8 @@ import { toast } from "sonner";
 const updateProductInput: ProductFormValues  ={
         name: "",
         price: "",
+        image: "",
+        imageFile: null,
         isActive: true,
         isVisible: true,
     }
@@ -25,7 +27,13 @@ function UpdateProductPage() {
     (async() => {
     const res = await fetch(`/api/products/${id}`)
     const data = await res.json()
-    const mapped = {name:data.name, price: String(data.price), isActive:Boolean(data.is_active), isVisible:Boolean(data.is_visible) }
+    const mapped = {
+      name:data.name,
+      price: String(data.price),
+      image: data.image_path,
+      imageFile: null,
+      isActive:Boolean(data.is_active),
+      isVisible:Boolean(data.is_visible) }
     setProductInput(mapped)
     console.log("product:", data)
     }) ()
@@ -42,21 +50,41 @@ function UpdateProductPage() {
 
       try{
       const raw = normalizeNumberString(productInput.price).trim();
-      const payload = {
-        name: productInput.name,
-        price: Number(raw),
-        is_active: productInput.isActive,
-        is_visible: productInput.isVisible,
-      }
+      const num = Number(raw)
+      // const payload = {
+      //   name: productInput.name,
+      //   price: Number(raw),
+      //   is_active: productInput.isActive,
+      //   is_visible: productInput.isVisible,
+      // }
 
-      const res = await fetch(`/api/products/${id}`,{
-        method: "PATCH",
-        headers: {
-          "Content-Type" : "application/json",
-          "Accept": "application/json",
-        }, 
-        body: JSON.stringify(payload),
-      })
+      // const res = await fetch(`/api/products/${id}`,{
+      //   method: "PATCH",
+      //   headers: {
+      //     "Content-Type" : "application/json",
+      //     "Accept": "application/json",
+      //   }, 
+      //   body: JSON.stringify(payload),
+      // })
+
+      //FORM DATA
+      const formData = new FormData();
+        formData. append('_method', 'PATCH')
+        formData.append('name', productInput.name)
+        formData.append('price', String(num))
+        formData.append('is_active', productInput.isActive ? '1' : '0' )
+        formData.append('is_visible', productInput.isVisible ? '1' : '0' )
+        if(productInput.imageFile){
+          formData.append('image', productInput.imageFile)
+        }
+
+        // fetch
+        const res = await fetch(`/api/products/${id}`, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: formData,
+        });
+
 
       if(!res.ok){
         if(res.status === 422){

@@ -30,7 +30,12 @@ function CartItems({item}: CartItemProps) {
         <div className="flex items-center max-w-5xl border-b p-1 mb-2">
             <Trash2 className="m-2 text-red-500 border-2 rounded w-10 h-10 " onClick={ () =>{removeItem(item.id)} } />
             <div>
-                <img className="w-40 h-20 object-cover rounded-md shrink" src={item.img} alt="画像" />
+                {item.image ?(
+                    <img className="w-40 h-20 object-cover rounded-md shrink" src={`http://localhost/storage/${item.image}`} alt="画像" />
+                ) :(
+                    <div className="flex justify-center items-center w-30 h-20">Not Image</div>
+                )}
+                
             </div>
             <div className="flex flex-col justify-between w-full h-20 pl-4">
                 <div>

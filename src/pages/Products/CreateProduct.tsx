@@ -8,6 +8,8 @@ import {toast} from "sonner"
  const createProductInput: ProductFormValues  ={
         name: "",
         price: "",
+        image: null,
+        imageFile: null,
         isActive: true,
         isVisible: true,
     }
@@ -17,41 +19,28 @@ import {toast} from "sonner"
   const navigate = useNavigate()
    const [productInput, setProductInput] = useState<ProductFormValues>(createProductInput)
    const [isSubmitting, setIsSubmitting] = useState(false)
-  //  const updateProductInput = (data: Partial<CreateProductInput>) => {
-  //         setProductInput((prev)=>({
-  //           ...prev,
-  //           ...data,
-  //         }))
-  //      }
-
-  //  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-  //       const{name,value} = e.target
-  //       updateProductInput({[name]: value})
-  //   }
-    
-    // const handleCheckedChange = (checked: boolean | "indeterminate") => {
-    //   const isStopped = checked === true;
-    //   updateProductInput({isActive: !isStopped})
-    // }
-
+  
     const handleSubmit = async() => {
       if(isSubmitting) return 
       setIsSubmitting(true)
       try{
       const raw = normalizeNumberString(productInput.price).trim();
-      const payload = {
-        name: productInput.name,
-        price: Number(raw),
-        is_active: productInput.isActive,
-      }
+      const num = Number(raw)
 
+      //Form Data
+      const formData = new FormData();
+        formData.append('name', productInput.name)
+        formData.append('price', String(num))
+        formData.append('is_active', productInput.isActive ? '1' : '0' )
+        formData.append('is_visible', productInput.isVisible ? '1' : '0' )
+        if(productInput.imageFile){
+          formData.append('image', productInput.imageFile)
+        }
+    
     const res = await fetch("/api/products",{
         method: "POST",
-        headers: {
-          "Content-Type" : "application/json",
-          "Accept": "application/json",
-          }, 
-        body: JSON.stringify(payload),
+        headers: {Accept: "application/json",}, 
+        body: formData,
       })
       if(!res.ok){
         if(res.status === 422){

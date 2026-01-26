@@ -52,11 +52,14 @@ function Home() {
         {visibleProducts.map( item =>(
         <Card key={item.id} className="flex flex-col h-80 p-0">
             <div className="m-auto relative">
-                <img  src={item.img} alt={item.name}
+                {item.image ? 
+                (<img  src={`http://localhost/storage/${item.image}`} alt={item.name}
                   className=
                   {`object-contain h-44 rounded bg-gray-100
                     ${!item.isActive ?"grayscale opacity-60" : ""}`
-                  }/>
+                  }/>) :
+                (<div>Not Image</div>)}
+                
                   {!item.isActive &&
                   <div className=" absolute inset-0 flex items-center justify-center">
                     <span className="rounded px-3 py-1 text-sm font-bold bg-black/70 text-white">

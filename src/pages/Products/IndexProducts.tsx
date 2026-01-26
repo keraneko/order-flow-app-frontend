@@ -91,7 +91,10 @@ function ProductsPage() {
         {filteredProducts.map( item =>(
         <Card key={item.id} className="flex flex-col h-80 p-0"> 
             <div className="m-auto relative">
-                <img  src={item.img} alt={item.name} className="object-contain h-44 rounded bg-gray-100"/>
+                {item.image ?
+                (<img  src={`http://localhost/storage/${item.image}`}alt={item.name} className="object-contain h-44 rounded bg-gray-100"/>)
+                 : (<div>Not Image</div>)}
+                
             </div>
             <div className="flex justify-between p-1 ">
                     <p className="font-semibold">{item.name}</p>
