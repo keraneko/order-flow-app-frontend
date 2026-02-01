@@ -1,6 +1,7 @@
-import {NavLink,Outlet,Link} from 'react-router-dom'
+import {ListChevronsUpDown,ShoppingCart} from 'lucide-react'
+import {Link,NavLink,Outlet} from 'react-router-dom'
+
 import {Button} from '@/components/ui/button.tsx'
-import {ShoppingCart,ListChevronsUpDown} from 'lucide-react'
 
 
 const Layout = () => {

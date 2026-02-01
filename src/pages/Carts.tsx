@@ -1,5 +1,5 @@
-import Home from '@/pages/Home'
 import CartList from'@/pages/CartList'
+import Home from '@/pages/Home'
 
 function Carts() {
   

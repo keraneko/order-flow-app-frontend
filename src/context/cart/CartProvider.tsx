@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import {CartContext} from './CartContext'
+
 import type { CartItem } from './CartContext'; 
+import {CartContext} from './CartContext'
 
 
 

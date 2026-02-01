@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
-import StoreForm from "./StoreForm" 
 import {toast} from "sonner"
+
 import type { StoreFormValue } from "@/types/Stores"
+
+import StoreForm from "./StoreForm" 
 
  const createStoreInput: StoreFormValue  ={
     code: "",

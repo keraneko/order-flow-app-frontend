@@ -1,9 +1,9 @@
-import {Card} from "@/components/ui/card"
-import {Button} from '@/components/ui/button.tsx'
+import {useEffect,useState} from 'react'
 
-import {getProduct, type Product} from "@/types/Products" 
-import {useState,useEffect} from 'react'
+import {Button} from '@/components/ui/button.tsx'
+import {Card} from "@/components/ui/card"
 import { useCart } from "@/context/cart/useCart"
+import {getProduct, type Product} from "@/types/Products" 
 
 function Home() {
 

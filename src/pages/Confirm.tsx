@@ -1,14 +1,15 @@
-import { useCustomer } from "@/context/customer/useCustomer"
-import { useCart } from "@/context/cart/useCart"
-import { useOrder } from "@/context/order/useOrder"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
-import { Textarea } from "@/components/ui/textarea"
 import { useQuery } from "@tanstack/react-query"
+import { Link } from "react-router-dom"
+
 import { fetchStores } from "@/api/Stores"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Textarea } from "@/components/ui/textarea"
+import { useCart } from "@/context/cart/useCart"
+import { useCustomer } from "@/context/customer/useCustomer"
+import { useOrder } from "@/context/order/useOrder"
 
 function Confirm () {
     const {customer} = useCustomer() 

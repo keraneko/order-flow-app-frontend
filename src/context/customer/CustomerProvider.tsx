@@ -1,7 +1,8 @@
 
-import { CustomerContext } from "./CustomerContext";
-import type { Customer } from "./CustomerContext";
 import { useState } from "react"; 
+
+import type { Customer } from "./CustomerContext";
+import { CustomerContext } from "./CustomerContext";
 
 const initialCustomer: Customer = {
   name: "",

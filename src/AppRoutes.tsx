@@ -1,19 +1,20 @@
-import { Routes, Route, useLocation } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
-import { AppErrorFallback } from "./components/ui/AppErrorFallback";
+import { Route, Routes, useLocation } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Carts from "./pages/Carts";
-import CartList from "./pages/CartList";
-import Customers from "./pages/Customers";
-import Confirm from "./pages/Confirm";
+import Layout from "@/Layoute.tsx";
+
+import { AppErrorFallback } from "./components/ui/AppErrorFallback";
 import Apitest from "./pages/Apitest";
+import CartList from "./pages/CartList";
+import Carts from "./pages/Carts";
+import Confirm from "./pages/Confirm";
+import Customers from "./pages/Customers";
+import Home from "./pages/Home";
 import CreateProductPage from "./pages/Products/CreateProduct";
 import ProductsPage from "./pages/Products/IndexProducts";
 import UpdateProductPage from "./pages/Products/UpdateProduct";
-import Layout from "@/Layoute.tsx";
-import StoresPage from "./pages/Stores/Indexstores";
 import CreateStorePage from "./pages/Stores/CreateStore";
+import StoresPage from "./pages/Stores/Indexstores";
 import UpdateStorePage from "./pages/Stores/UpdateStore";
 
 export default function AppRoutes() {

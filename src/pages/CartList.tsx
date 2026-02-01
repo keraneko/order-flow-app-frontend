@@ -1,9 +1,10 @@
+import {Minus,Plus,Trash2} from 'lucide-react'
 import {useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "@/context/cart/useCart";
-import {Plus,Minus,Trash2} from 'lucide-react'
+
 import { Button } from "@/components/ui/button";
 import type { CartItem } from "@/context/cart/CartContext";
+import { useCart } from "@/context/cart/useCart";
 
 type CartItemProps = {
     item: CartItem

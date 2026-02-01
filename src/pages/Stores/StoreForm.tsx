@@ -1,11 +1,12 @@
+import type { CheckedState } from "@radix-ui/react-checkbox";
+import {  useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { StoreFormValue } from "@/types/Stores";
 import { normalizeNumberString } from "@/Utils/NumberString";
-import type { CheckedState } from "@radix-ui/react-checkbox";
-import {  useState } from "react";
 
 type StoreFormProps = {
         value: StoreFormValue;

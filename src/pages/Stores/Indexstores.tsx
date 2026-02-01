@@ -1,7 +1,8 @@
-import {getStore, type Store} from "@/types/Stores" 
+import {useEffect,useState} from 'react'
 import { Link } from "react-router";
-import {useState,useEffect} from 'react'
+
 import { Button } from "@/components/ui/button";
+import {getStore, type Store} from "@/types/Stores" 
 
 function StoresPage() {
 

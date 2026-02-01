@@ -1,6 +1,7 @@
-import { OrderContext } from "./OrderContext"
-import type { Order } from "./OrderContext"
 import {useState} from "react"
+
+import type { Order } from "./OrderContext"
+import { OrderContext } from "./OrderContext"
 
 
 export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
