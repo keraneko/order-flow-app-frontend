@@ -1,6 +1,5 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, Routes, useLocation } from "react-router-dom";
-
 import Layout from "@/Layoute.tsx";
 
 import { AppErrorFallback } from "./components/ui/AppErrorFallback";

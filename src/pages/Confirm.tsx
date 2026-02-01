@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
-
+import { useQuery } from "@tanstack/react-query"
 import { fetchStores } from "@/api/Stores"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

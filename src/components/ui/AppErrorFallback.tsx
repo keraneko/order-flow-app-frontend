@@ -19,10 +19,10 @@
 //   </>);
 // }
 
-import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import type { FallbackProps } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
+import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner"; 
 
 import { Button } from "./button";

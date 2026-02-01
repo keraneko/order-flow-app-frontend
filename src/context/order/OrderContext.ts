@@ -1,5 +1,4 @@
 import { createContext} from "react"
-
 import type { Customer } from "@/context/customer/CustomerContext"
 
 import type { CartItem } from "../cart/CartContext" 

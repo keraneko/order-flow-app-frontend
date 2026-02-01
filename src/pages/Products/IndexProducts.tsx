@@ -1,7 +1,6 @@
 import {useEffect,useState} from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-
 import {Button} from '@/components/ui/button.tsx'
 import {Card} from "@/components/ui/card"
 import {getProduct, type Product} from "@/types/Products" 

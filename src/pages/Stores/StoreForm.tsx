@@ -1,6 +1,5 @@
-import type { CheckedState } from "@radix-ui/react-checkbox";
 import {  useState } from "react";
-
+import type { CheckedState } from "@radix-ui/react-checkbox";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
