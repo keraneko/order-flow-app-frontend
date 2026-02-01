@@ -32,7 +32,6 @@ export default defineConfig([
       "unused-imports": pluginUnusedImports,
     },
     settings: {
-    // TSのパス解決（@/〜など）を import ルールが理解できるように
     "import/resolver": {
       typescript: {
         alwaysTryTypes: true,},
@@ -46,7 +45,15 @@ export default defineConfig([
       "import/no-duplicates": "error",
 
       // 並び替え
-      "simple-import-sort/imports": "error",
+      "simple-import-sort/imports": [
+        "error",
+        {
+      groups: [
+          ['^react(-dom)?', '^node:', '^@?\\w', '^@/.*'],
+          ['^\\.+/(?!assets/)', '^.+\\.json$', '^.+\\.(svg|png|jpg)$', '^.+\\.s?css$'],
+        ],
+      },
+    ],
       "simple-import-sort/exports": "error",
 
       // 未使用import削除
