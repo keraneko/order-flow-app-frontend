@@ -45,7 +45,13 @@ function Confirm () {
         {items.map((item)=>(
         <TableBody className="border-b" key={item.id}>
             <TableRow >
-                <TableCell className="w-25" ><img className="h-20 w-20 object-cover rounded-md shrink " src={`http://localhost/storage/${item.image}`} alt={item.name} /></TableCell>
+                <TableCell className="w-25" >
+                    {item.image ? <img className="h-20 w-20 object-cover rounded-md shrink " 
+                    src={`http://localhost/storage/${item.image}`} 
+                    alt={item.name} /> :
+                    <div className="h-20 w-20 object-cover rounded-md shrink " >Not Image</div>
+                        }
+                </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.quantity}個</TableCell>
                 <TableCell>¥{item.price}</TableCell>

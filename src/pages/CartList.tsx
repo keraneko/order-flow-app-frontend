@@ -31,7 +31,7 @@ function CartItems({item}: CartItemProps) {
             <Trash2 className="m-2 text-red-500 border-2 rounded w-10 h-10 " onClick={ () =>{removeItem(item.id)} } />
             <div>
                 {item.image ?(
-                    <img className="w-40 h-20 object-cover rounded-md shrink" src={`http://localhost/storage/${item.image}`} alt="画像" />
+                    <img className="w-40 h-20 object-cover rounded-md shrink" src={`http://localhost/storage/${item.image}`} alt={item.name} />
                 ) :(
                     <div className="flex justify-center items-center w-30 h-20">Not Image</div>
                 )}

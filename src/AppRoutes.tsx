@@ -12,6 +12,9 @@ import CreateProductPage from "./pages/Products/CreateProduct";
 import ProductsPage from "./pages/Products/IndexProducts";
 import UpdateProductPage from "./pages/Products/UpdateProduct";
 import Layout from "@/Layoute.tsx";
+import StoresPage from "./pages/Stores/Indexstores";
+import CreateStorePage from "./pages/Stores/CreateStore";
+import UpdateStorePage from "./pages/Stores/UpdateStore";
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -32,6 +35,9 @@ export default function AppRoutes() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/new" element={<CreateProductPage />} />
           <Route path="/products/:id/edit" element={<UpdateProductPage />} />
+          <Route path="/stores" element={<StoresPage />} />
+          <Route path="/stores/new" element={<CreateStorePage />} />
+          <Route path="/stores/:storeid/edit" element={<UpdateStorePage />} />
         </Route>
       </Routes>
     </ErrorBoundary>

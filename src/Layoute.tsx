@@ -24,7 +24,8 @@ const Layout = () => {
         <li><NavLink to="/customers"><Button variant="secondary" >Customers</Button></NavLink></li>
         <li><NavLink to="/confirm"><Button variant="secondary" >confirm</Button></NavLink></li>
         <li><NavLink to="/products"><Button variant="secondary" >ProductIndex</Button></NavLink></li>
-        <li><NavLink to="/products/new"><Button variant="secondary" >newProduct</Button></NavLink></li>
+        <li><NavLink to="/stores"><Button variant="secondary" >storeIndex</Button></NavLink></li>
+        
     </nav>
     <Outlet />
     <footer className='w-full border-t-2 mt-20 '>

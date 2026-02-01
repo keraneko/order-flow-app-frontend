@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { useCustomer } from "@/context/customer/useCustomer"
 import { useQuery } from "@tanstack/react-query"
-import { fetchStores, } from "@/api/Stores"
+
 import {useState} from "react"
 import { useCart } from "@/context/cart/useCart"
+import { getStore } from "@/types/Stores"
 
 
 function Customers() {
@@ -60,7 +61,7 @@ function Customers() {
 
     const { data, isLoading, isError, error } = useQuery({
     queryKey: ["stores"],
-    queryFn: fetchStores,
+    queryFn: getStore,
   })
 
   if (isLoading) return <div>読み込み中…</div>
