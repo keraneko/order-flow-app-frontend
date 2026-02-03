@@ -1,31 +1,10 @@
-// import type { FallbackProps } from "react-error-boundary";
-// import { Link } from "react-router-dom";
-// import { Button } from "./button";
-
-// export function AppErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
-//   const message = error instanceof Error ? error.message : String(error);
-
-//   return (<>
-//     <div className="p-6">
-//       <h1>予期しないエラーが発生しました</h1>
-//       <p className="whitespace-pre-wrap">{message}</p>
-
-//       <div className="flex flex-col items-center gap-4 mt-4" >
-//         <Button variant="outline" onClick={resetErrorBoundary}>再読み込み</Button>
-//         <Button variant="outline"><Link to="/">ホームへ戻る</Link></Button>
-//       </div>
-//     </div>
-
-//   </>);
-// }
-
 import { useState } from "react";
 import type { FallbackProps } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner"; 
 
-import { Button } from "./button";
+import { Button } from "../ui/button";
 
 
 export function AppErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
@@ -38,7 +17,7 @@ export function AppErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const goHome = () => {
     // ErrorBoundary状態を先にリセット → その後に遷移（事故が減る）
     resetErrorBoundary();
-    navigate("/");
+    void navigate("/");
     toast.message("ホームへ戻りました"); 
   };
 
@@ -64,7 +43,7 @@ export function AppErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
             </p>
 
             <div className="mt-4 rounded-lg bg-muted p-3">
-              <p className="text-sm whitespace-pre-wrap break-words">
+              <p className="text-sm whitespace-pre-wrap wrap-break-word">
                 {message || "エラーメッセージが取得できませんでした"}
               </p>
 
@@ -80,7 +59,7 @@ export function AppErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
                   </Button>
 
                   {showDetail && (
-                    <pre className="mt-2 max-h-48 overflow-auto rounded-md border bg-background p-3 text-xs whitespace-pre-wrap break-words">
+                    <pre className="mt-2 max-h-48 overflow-auto rounded-md border bg-background p-3 text-xs whitespace-pre-wrap wrap-break-word">
                       {stack}
                     </pre>
                   )}
