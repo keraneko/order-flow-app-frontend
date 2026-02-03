@@ -1,7 +1,8 @@
 import { useEffect,useState } from "react"
 import { useNavigate,useParams } from "react-router"
 import {toast} from "sonner"
-import type { StoreFormValue } from "@/types/Stores"
+import type { StoreApi, StoreFormValue } from "@/types/Stores"
+import { getFirstValidationMessage } from "@/Utils/LaravelValidationError"
 
 import StoreForm from "./StoreForm" 
 
@@ -26,9 +27,9 @@ import StoreForm from "./StoreForm"
    useEffect(() =>{
        if(!storeid) return;
    
-       (async() => {
+       void (async() => {
        const res = await fetch(`/api/stores/${storeid}`)
-       const data = await res.json()
+       const data = (await res.json()) as StoreApi
        const mapped = {
          code:data.code,
          name: data.name,
@@ -65,19 +66,19 @@ import StoreForm from "./StoreForm"
         }, 
         body: JSON.stringify(payload),
       })
+
       if(!res.ok){
         if(res.status === 422){
-          const err = await res.json()
-          const firstArray = Object.values(err.errors ?? {})[0] as string[] | undefined;
-          const firstMsg = firstArray?.[0] ?? "入力内容を確認してください" 
-          toast.error(firstMsg);
+          toast.error(getFirstValidationMessage(res));
+
           return
         }
         toast.error("登録に失敗しました");
+
         return
       }
       toast.success("登録しました");
-      navigate("/stores")
+      void navigate("/stores")
       }finally{
         setIsSubmitting(false)
       }

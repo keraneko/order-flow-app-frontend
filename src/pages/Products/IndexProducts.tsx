@@ -4,6 +4,7 @@ import { toast } from "sonner"
 import {Button} from '@/components/ui/button.tsx'
 import {Card} from "@/components/ui/card"
 import {getProduct, type Product} from "@/types/Products" 
+import { getFirstValidationMessage } from '@/Utils/LaravelValidationError'
 
 type VisibilityFilter = "visible" | "hidden" | "all"
 
@@ -32,12 +33,12 @@ function ProductsPage() {
 
         if (!res.ok) {
         if (res.status === 422) {
-            const err = await res.json();
-            const firstArray = Object.values(err.errors ?? {})[0] as string[] | undefined;
-            toast.error(firstArray?.[0] ?? "入力内容を確認してください");
+            toast.error(getFirstValidationMessage(res));
+
             return;
         }
             toast.error("更新に失敗しました");
+
             return;
         }
 
@@ -53,7 +54,9 @@ function ProductsPage() {
 
     const filteredProducts = products.filter((p) =>{
         if(filter === "visible") return p.isVisible === true;
+
         if(filter === "hidden") return p.isVisible === false;
+
         return true
      })
    
@@ -63,11 +66,15 @@ function ProductsPage() {
         .then((data: Product[]) => {
         setProducts(data);
         })
-        .catch((e) => setError(e.message))
+        .catch((err: unknown) => {
+                const message = err instanceof Error ? err.message : String(err)
+                setError(message)
+            })
         .finally(() => setLoading(false));
     }, []);
 
     if (loading) return <div>Loading...</div>;
+
     if (error) return <div>Error: {error}</div>;
 
     
@@ -104,11 +111,11 @@ function ProductsPage() {
                     <p className="border bg-red-400 rounded text-white text-base">販売停止中</p>} */}
                 </div>
                 <div className="flex justify-between">
-                    <Button className="m-2" onClick={()=>(navigate(`/products/${item.id}/edit`))} >編集する</Button>
+                    <Button className="m-2" onClick={()=>(void navigate(`/products/${item.id}/edit`))} >編集する</Button>
 
                     
                         <Button className={`mt-2 ${item.isActive?"bg-red-400" :"bg-blue-400" }`}
-                            onClick={() => handleRestore(item.id, !item.isActive)}
+                            onClick={() => {void handleRestore(item.id, !item.isActive)}}
                             disabled={!!submittingIds[item.id]}>
                             {item.isActive ? "販売停止にする": "販売中にする"}
                         </Button>

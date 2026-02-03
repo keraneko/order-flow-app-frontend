@@ -67,7 +67,7 @@ function Confirm () {
                 <p className=" text-xl font-medium text-red-400">¥{totalPrice.toLocaleString('ja-JP')}円</p>
             </div>
             <div className="p-2 flex flex-col">        
-            <Button onClick={handleConfirm} className="w-full mb-1 h-15 bg-rose-500 hover:bg-rose-800 text-xl font-medium">注文を確定する</Button>
+            <Button onClick={()=> {void handleConfirm()}} className="w-full mb-1 h-15 bg-rose-500 hover:bg-rose-800 text-xl font-medium">注文を確定する</Button>
             <Link to="/carts" ><Button className="w-full h-15 bg-gray-500 hover:bg-gray-800 text-xl font-medium">カートに戻る</Button></Link>
             </div>
         </div>

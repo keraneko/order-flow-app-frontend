@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import type { CartItem } from "@/context/cart/CartContext";
 import { useCart } from "@/context/cart/useCart";
 
-type CartItemProps = {
+interface CartItemProps {
     item: CartItem
 }
+
 function CartItems({item}: CartItemProps) {
     const { updateQuantity,removeItem } = useCart()
     // const [tempQty, setTempQty] = useState(String(item.quantity));
@@ -66,9 +67,11 @@ function CartList() {
     const[cartError, setCartError] = useState<string | null>(null)
     const navigate = useNavigate()
     const onNext = () => {
-        if (items.length === 0) {setCartError("商品を選択してください"); return; }
+        if (items.length === 0) {setCartError("商品を選択してください");
+
+ return; }
         setCartError(null);
-        navigate("/customers")
+        void navigate("/customers")
     }
 
   return (

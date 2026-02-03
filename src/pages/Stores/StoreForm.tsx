@@ -7,10 +7,10 @@ import { Label } from "@/components/ui/label";
 import type { StoreFormValue } from "@/types/Stores";
 import { normalizeNumberString } from "@/Utils/NumberString";
 
-type StoreFormProps = {
+interface StoreFormProps {
         value: StoreFormValue;
         onChange: (next:StoreFormValue) =>void;
-        onSubmit: ()=>void | Promise<void>;
+        onSubmit: ()=>Promise<void>;
         submitLabel: string;
         disabled?: boolean;
     }
@@ -21,9 +21,11 @@ function StoreForm({value, onChange, onSubmit, submitLabel, disabled }: StoreFor
     const [errors, setErrors] = useState<{code?:string; name?:string; postalCode?:string; prefecture?:string; city?:string; addressLine?:string; }>({})
     const validate = () =>{
         const nextErrors: typeof errors = {}
+
         if (!value.code) {nextErrors.code = "店舗コードは必須です";
         } else {
                 const row = normalizeNumberString(value.code).trim();
+
                 if (!row) {nextErrors.code = "店舗コードは必須です";
                 } else if (!/^\d{6}$/.test(row)) {nextErrors.code = "店舗コードは6桁の数字で入力してください";
                     }
@@ -31,12 +33,17 @@ function StoreForm({value, onChange, onSubmit, submitLabel, disabled }: StoreFor
 
 
         if(!value.name) nextErrors.name = "店舗名は必須です"
+
         if(!value.postalCode) nextErrors.postalCode = "郵便番号は必須です"
+
         if(!value.prefecture) nextErrors.prefecture = "都道府県は必須です"
+
         if(!value.city) nextErrors.city = "市町村は必須です"
+
         if(!value.addressLine) nextErrors.addressLine = "番地以下は必須です"
 
         setErrors(nextErrors)
+
         return Object.keys(nextErrors).length === 0
     }
 
@@ -45,10 +52,11 @@ function StoreForm({value, onChange, onSubmit, submitLabel, disabled }: StoreFor
     };
 
     return(<>
-    <form onSubmit={async(e) =>{
-        e.preventDefault(); 
+    <form onSubmit={(e) =>{
+        e.preventDefault();
+ 
         if(!validate()) return;
-        await onSubmit();}}>
+        void onSubmit();}}>
         
 
         <Label htmlFor="code" className="py-2" >店舗コード</Label>

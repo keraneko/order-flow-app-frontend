@@ -1,4 +1,4 @@
-export type StoreFormValue ={
+export interface StoreFormValue {
     code: string;
     name: string;
     postalCode: string;
@@ -8,7 +8,7 @@ export type StoreFormValue ={
     isActive: boolean;
 }
 
-export type Store ={
+export interface Store {
     id: number ;
     code: string;
     name: string;
@@ -19,7 +19,7 @@ export type Store ={
     isActive: boolean;
 }
 
-export type StoreApi = {
+export interface StoreApi {
     id: number;
     code: string;
     name: string;
@@ -42,10 +42,12 @@ export const toStore = (s:StoreApi): Store =>({
     isActive: s.is_active,
 }) 
 
-export async function getStore(): Promise<Store[]> {
+export async function getStores(): Promise<Store[]> {
     const res = await fetch("/api/stores")
+
     if(!res.ok) throw new Error(`HTTP${res.status}`)
     const data = (await res.json()) as StoreApi[]
+
     return data.map(toStore)
 }
 

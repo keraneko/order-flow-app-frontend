@@ -5,7 +5,7 @@ export type CartItem  = Product & {
   quantity: number
 }
 
-export type CartContextType={
+export interface CartContextType {
   items: CartItem[];
   addItem: (item: CartItem) => void;
   updateQuantity: (id: number, quantity: number) => void;

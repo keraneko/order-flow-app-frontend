@@ -20,9 +20,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     })
       console.log("status:", res.status)
       const text = await res.text()
-      console.log(text)
-      
-
+      console.log(text)  
   }
 
   const resetOrder = () => {

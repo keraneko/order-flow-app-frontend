@@ -5,16 +5,16 @@ import type { CartItem } from "../cart/CartContext"
 
 
 
-export type Order = {
+export interface Order {
   customer: Customer
   items: CartItem[]
   totalAmount: number
   createdAt: string
 }
 
-type OrderContextType = {
+interface OrderContextType {
   order: Order | null
-  createOrder: (order: Order) => void
+  createOrder: (order: Order) => Promise<void>
   resetOrder: () => void
 }
 

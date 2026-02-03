@@ -9,7 +9,7 @@ import { Select,SelectContent,SelectItem,SelectTrigger,SelectValue } from "@/com
 import { Textarea } from "@/components/ui/textarea"
 import { useCart } from "@/context/cart/useCart"
 import { useCustomer } from "@/context/customer/useCustomer"
-import { getStore } from "@/types/Stores"
+import { getStores } from "@/types/Stores"
 
 
 function Customers() {
@@ -17,13 +17,18 @@ function Customers() {
     const {items} = useCart()
     const [errors, setErrors] = useState<{orderStore?:string; name?:string; phone?:string; pickupStore?:string; deliveryAddress?:string; items?:string}>({});
     const validate = () => {
-        const nextErrors: typeof errors = {}; 
+        const nextErrors: typeof errors = {};
+ 
         if (!customer.orderStoreId) nextErrors.orderStore = "受注店舗を選択してください"
-        if (!customer.name.trim()) nextErrors.name = "名前は必須です" 
+
+        if (!customer.name.trim()) nextErrors.name = "名前は必須です"
+ 
         if (!customer.phone.trim()) nextErrors.phone = "電話番号は必須です"
+
         if (customer.deliveryType === 'pickup') {
             if(!customer.pickupStoreId) nextErrors.pickupStore = "受取店舗を選択してください"
         }
+
         if(customer.deliveryType === 'delivery') {
             if(!customer.deliveryAddress) nextErrors.deliveryAddress = "配達先住所は必須です"
         }
@@ -31,12 +36,13 @@ function Customers() {
         if(!items || items.length === 0 ) {nextErrors.items = "商品を選択してください"}
         
         setErrors(nextErrors);
+
          return Object.keys(nextErrors).length === 0; //true
     }
     const navigate = useNavigate()
     const onNext = () =>{
         if(!validate()) return
-        navigate("/confirm")
+        void navigate("/confirm")
     }
 
 
@@ -60,11 +66,12 @@ function Customers() {
 
     const { data, isLoading, isError, error } = useQuery({
     queryKey: ["stores"],
-    queryFn: getStore,
+    queryFn: getStores,
   })
 
   if (isLoading) return <div>読み込み中…</div>
-  if (isError) return <div>エラー: {(error as Error).message}</div>
+
+  if (isError) return <div>エラー: {(error).message}</div>
     
     
     return(<>

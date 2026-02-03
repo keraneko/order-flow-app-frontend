@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router"
 import {toast} from "sonner"
 import type { ProductFormValues } from "@/types/Products"
+import { getFirstValidationMessage } from "@/Utils/LaravelValidationError"
 import { normalizeNumberString } from "@/Utils/NumberString"
 
 import ProductForm from "./ProductForm"
@@ -34,6 +35,7 @@ import ProductForm from "./ProductForm"
         formData.append('price', String(num))
         formData.append('is_active', productInput.isActive ? '1' : '0' )
         formData.append('is_visible', productInput.isVisible ? '1' : '0' )
+
         if(productInput.imageFile){
           formData.append('image', productInput.imageFile)
         }
@@ -43,19 +45,19 @@ import ProductForm from "./ProductForm"
         headers: {Accept: "application/json",}, 
         body: formData,
       })
+
       if(!res.ok){
         if(res.status === 422){
-          const err = await res.json()
-          const firstArray = Object.values(err.errors ?? {})[0] as string[] | undefined;
-          const firstMsg = firstArray?.[0] ?? "入力内容を確認してください" 
-          toast.error(firstMsg);
+          toast.error(getFirstValidationMessage(res));
+
           return
         }
         toast.error("登録に失敗しました");
+
         return
       }
       toast.success("登録しました");
-      navigate("/products")
+      void navigate("/products")
       }finally{
         setIsSubmitting(false)
       }

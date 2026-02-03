@@ -38,11 +38,15 @@ function Home() {
         .then((data: Product[]) => {
         setProducts(data);
         })
-        .catch((e) => setError(e.message))
+        .catch((err: unknown) => {
+            const message = err instanceof Error ? err.message : String(err)
+            setError(message)
+        })
         .finally(() => setLoading(false));
     }, []);
 
     if (loading) return <div>Loading...</div>;
+
     if (error) return <div>Error: {error}</div>;
 
     return (<>

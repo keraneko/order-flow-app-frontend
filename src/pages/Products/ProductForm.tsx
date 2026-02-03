@@ -7,10 +7,10 @@ import { Label } from "@/components/ui/label";
 import type { ProductFormValues } from "@/types/Products";
 import { normalizeNumberString } from "@/Utils/NumberString";
 
-type ProductFormProps = {
+interface ProductFormProps {
         value: ProductFormValues;
         onChange: (next:ProductFormValues) =>void;
-        onSubmit: ()=>void | Promise<void>;
+        onSubmit: ()=>Promise<void>;
         submitLabel: string;
         disabled?: boolean;
         showIsVisible?:boolean;
@@ -24,19 +24,24 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
     const [errors, setErrors] = useState<{name?:string; price?:string; }>({})
     const validate = () => {
         const nextErrors: typeof errors = {};
+
         if(!value.name) nextErrors.name = "商品名を入力してください"
+
         if(!value.price){ nextErrors.price = "価格を入力してください"
          }else{
             const row  = normalizeNumberString(value.price).trim()
+
             if (!row) nextErrors.price = "価格を入力してください";
             else{
                 const n = Number(row)
+
                 if(Number.isNaN(n)){nextErrors.price = "価格は数字で入力してください"}
                 else if(n<1) nextErrors.price = "価格は１以上にしてください"
                 }
             } 
 
         setErrors(nextErrors)
+
         return Object.keys(nextErrors).length === 0
             
     }
@@ -48,6 +53,7 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
+
             if (!files || files.length === 0) {
                 
                 if (previewRef.current) {
@@ -56,10 +62,12 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
                 }
                 setPreviewUrl(null);
                 onChange({ ...value, imageFile: null });
+
                 return;
             }
 
             const file = files[0];
+
             if (previewRef.current) {
                 URL.revokeObjectURL(previewRef.current);
             }
@@ -81,11 +89,19 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
 
 
     return(<>
-    <form onSubmit={async(e) =>{
-        e.preventDefault(); 
-        if(!validate()) return;
-        await onSubmit();
-        cleanupPreviewUrl();}}>
+    <form
+  onSubmit={(e) => {
+    e.preventDefault()
+
+    if (!validate()) return
+
+    void onSubmit()
+    .then(() => {
+        cleanupPreviewUrl() 
+      })
+  }}
+>
+
         <div className="m-auto relative">
         {previewUrl ? (
             <img src={previewUrl} alt="preview"
@@ -127,7 +143,7 @@ function ProductForm({value, onChange, onSubmit, submitLabel, disabled, showIsVi
                 const isStopped = checked === true
                 updateValue({isActive: !isStopped})
             }}/>
-            <Label htmlFor="isActive" className="py-2">SOLD OUT"として登録する</Label>
+            <Label htmlFor="isActive" className="py-2">SOLD OUTとして登録する</Label>
         </div>
 
         {/* isVisible   */}

@@ -1,7 +1,7 @@
 import {useEffect,useState} from 'react'
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
-import {getStore, type Store} from "@/types/Stores" 
+import {getStores, type Store} from "@/types/Stores" 
 
 function StoresPage() {
 
@@ -10,15 +10,19 @@ function StoresPage() {
         const [error, setError] = useState<string | null>(null);
     
         useEffect(() => {
-            getStore()
+            getStores()
             .then((data: Store[]) => {
-            setSores(data);
+                setSores(data);
             })
-            .catch((e) => setError(e.message))
+            .catch((err: unknown) => {
+                const message = err instanceof Error ? err.message : String(err)
+                setError(message)
+            })
             .finally(() => setLoading(false));
         }, []);
     
         if (loading) return <div>Loading...</div>;
+
         if (error) return <div>Error: {error}</div>;
 
     

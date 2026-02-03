@@ -1,4 +1,4 @@
-export type ProductFormValues ={
+export interface ProductFormValues {
     name: string;
     price: string;
     image: string | null;
@@ -7,7 +7,7 @@ export type ProductFormValues ={
     isVisible: boolean;
 }
 
-export type Product ={
+export interface Product {
     id: number;
     name: string;
     price: number;
@@ -16,7 +16,7 @@ export type Product ={
     isVisible: boolean;
 }
 
-export type ProductApi = {
+export interface ProductApi {
     id: number;
     name: string;
     price: number;
@@ -36,8 +36,10 @@ export const toProduct = (p:ProductApi): Product =>({
 
 export async function getProduct(): Promise<Product[]> {
     const res = await fetch("api/products")
+
     if(!res.ok) throw new Error(`HTTP${res.status}`)
     const data = (await res.json()) as ProductApi[]
+
     return data.map(toProduct)
 }
 

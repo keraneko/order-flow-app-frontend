@@ -2,8 +2,9 @@
 import { useEffect, useState} from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner";
-import type { ProductFormValues } from "@/types/Products"
-import { normalizeNumberString } from "@/Utils/NumberString";
+import type { ProductApi, ProductFormValues } from "@/types/Products"
+import { getFirstValidationMessage } from "@/Utils/LaravelValidationError"
+import { normalizeNumberString } from "@/Utils/NumberString"
 
 import ProductForm from "./ProductForm"
 
@@ -25,9 +26,9 @@ function UpdateProductPage() {
     useEffect(() =>{
     if(!id) return;
 
-    (async() => {
+    void (async() => {
     const res = await fetch(`/api/products/${id}`)
-    const data = await res.json()
+    const data = (await res.json()) as ProductApi
     const mapped = {
       name:data.name,
       price: String(data.price),
@@ -44,6 +45,7 @@ function UpdateProductPage() {
     //form
     const handleSubmit = async() => {
       if(!id) return
+
       if(isSubmitting) return
       setIsSubmitting(true)
       // await new Promise((r) => setTimeout(r, 1500)); //動作確認用
@@ -75,6 +77,7 @@ function UpdateProductPage() {
         formData.append('price', String(num))
         formData.append('is_active', productInput.isActive ? '1' : '0' )
         formData.append('is_visible', productInput.isVisible ? '1' : '0' )
+
         if(productInput.imageFile){
           formData.append('image', productInput.imageFile)
         }
@@ -86,20 +89,19 @@ function UpdateProductPage() {
           body: formData,
         });
 
-
+        
       if(!res.ok){
         if(res.status === 422){
-          const err = await res.json()
-          const firstArray = Object.values(err.errors ?? {})[0] as string[] | undefined;
-          const firstMsg = firstArray?.[0] ?? "入力内容を確認してください" 
-          toast.error(firstMsg);
+          toast.error(getFirstValidationMessage(res));
+
           return
         }
         toast.error("更新に失敗しました");
+
         return
       }
       toast.success("更新しました");
-      navigate("/products")
+      void navigate("/products")
       }finally{
         setIsSubmitting(false)
       }
