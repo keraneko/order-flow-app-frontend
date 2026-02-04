@@ -1,0 +1,9 @@
+**/.git
+**/.svn
+**/.hg
+**/node_modules
+**/.next
+**/.react-router
+**/dist
+**/build
+src/components/ui/**
