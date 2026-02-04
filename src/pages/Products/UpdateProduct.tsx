@@ -1,59 +1,58 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import type { ProductApi, ProductFormValues } from '@/types/Products';
+import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
+import { normalizeNumberString } from '@/Utils/NumberString';
 
-import { useEffect, useState} from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { toast } from "sonner";
-import type { ProductApi, ProductFormValues } from "@/types/Products"
-import { getFirstValidationMessage } from "@/Utils/LaravelValidationError"
-import { normalizeNumberString } from "@/Utils/NumberString"
+import ProductForm from './ProductForm';
 
-import ProductForm from "./ProductForm"
-
-const updateProductInput: ProductFormValues  ={
-        name: "",
-        price: "",
-        image: "",
-        imageFile: null,
-        isActive: true,
-        isVisible: true,
-    }
+const updateProductInput: ProductFormValues = {
+  name: '',
+  price: '',
+  image: '',
+  imageFile: null,
+  isActive: true,
+  isVisible: true,
+};
 
 function UpdateProductPage() {
-    const {id} = useParams()
-    const navigate = useNavigate()
-    const[productInput, setProductInput] = useState<ProductFormValues>(updateProductInput)
-    const [isSubmitting, setIsSubmitting] = useState(false)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [productInput, setProductInput] =
+    useState<ProductFormValues>(updateProductInput);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    useEffect(() =>{
-    if(!id) return;
+  useEffect(() => {
+    if (!id) return;
 
-    void (async() => {
-    const res = await fetch(`/api/products/${id}`)
-    const data = (await res.json()) as ProductApi
-    const mapped = {
-      name:data.name,
-      price: String(data.price),
-      image: data.image_path,
-      imageFile: null,
-      isActive:Boolean(data.is_active),
-      isVisible:Boolean(data.is_visible) }
-    setProductInput(mapped)
-    console.log("product:", data)
-    }) ()
-    },[id])
+    void (async () => {
+      const res = await fetch(`/api/products/${id}`);
+      const data = (await res.json()) as ProductApi;
+      const mapped = {
+        name: data.name,
+        price: String(data.price),
+        image: data.image_path,
+        imageFile: null,
+        isActive: Boolean(data.is_active),
+        isVisible: Boolean(data.is_visible),
+      };
+      setProductInput(mapped);
+      console.log('product:', data);
+    })();
+  }, [id]);
 
+  //form
+  const handleSubmit = async () => {
+    if (!id) return;
 
-    //form
-    const handleSubmit = async() => {
-      if(!id) return
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    // await new Promise((r) => setTimeout(r, 1500)); //動作確認用
 
-      if(isSubmitting) return
-      setIsSubmitting(true)
-      // await new Promise((r) => setTimeout(r, 1500)); //動作確認用
-
-
-      try{
+    try {
       const raw = normalizeNumberString(productInput.price).trim();
-      const num = Number(raw)
+      const num = Number(raw);
       // const payload = {
       //   name: productInput.name,
       //   price: Number(raw),
@@ -66,59 +65,59 @@ function UpdateProductPage() {
       //   headers: {
       //     "Content-Type" : "application/json",
       //     "Accept": "application/json",
-      //   }, 
+      //   },
       //   body: JSON.stringify(payload),
       // })
 
       //FORM DATA
       const formData = new FormData();
-        formData. append('_method', 'PATCH')
-        formData.append('name', productInput.name)
-        formData.append('price', String(num))
-        formData.append('is_active', productInput.isActive ? '1' : '0' )
-        formData.append('is_visible', productInput.isVisible ? '1' : '0' )
+      formData.append('_method', 'PATCH');
+      formData.append('name', productInput.name);
+      formData.append('price', String(num));
+      formData.append('is_active', productInput.isActive ? '1' : '0');
+      formData.append('is_visible', productInput.isVisible ? '1' : '0');
 
-        if(productInput.imageFile){
-          formData.append('image', productInput.imageFile)
-        }
+      if (productInput.imageFile) {
+        formData.append('image', productInput.imageFile);
+      }
 
-        // fetch
-        const res = await fetch(`/api/products/${id}`, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: formData,
-        });
+      // fetch
+      const res = await fetch(`/api/products/${id}`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: formData,
+      });
 
-        
-      if(!res.ok){
-        if(res.status === 422){
+      if (!res.ok) {
+        if (res.status === 422) {
           toast.error(getFirstValidationMessage(res));
 
-          return
+          return;
         }
-        toast.error("更新に失敗しました");
+        toast.error('更新に失敗しました');
 
-        return
+        return;
       }
-      toast.success("更新しました");
-      void navigate("/products")
-      }finally{
-        setIsSubmitting(false)
-      }
+      toast.success('更新しました');
+      void navigate('/products');
+    } finally {
+      setIsSubmitting(false);
     }
-    
+  };
 
-    return(<>
-    <h1>商品編集</h1>
-    <ProductForm  
-      value={productInput} 
-      onChange={setProductInput} 
-      onSubmit={handleSubmit} 
-      submitLabel="編集を登録する" 
-      disabled={isSubmitting}
-      showIsVisible={true}  
-    />
-    </>)
+  return (
+    <>
+      <h1>商品編集</h1>
+      <ProductForm
+        value={productInput}
+        onChange={setProductInput}
+        onSubmit={handleSubmit}
+        submitLabel="編集を登録する"
+        disabled={isSubmitting}
+        showIsVisible={true}
+      />
+    </>
+  );
 }
 
 export default UpdateProductPage;

@@ -5,6 +5,7 @@
 バックエンド（Laravel API）は別リポジトリです。
 
 ## Status
+
 - ✅ Done:
   - 商品一覧の表示
   - 注文フォームUI
@@ -15,19 +16,23 @@
   - 認証（ログイン）連携
 
 ## Tech Stack
+
 - React
 - TypeScript
 - Vite
 - Tailwind CSS / shadcn/ui
 
 ## Requirements
+
 - Node.js: v20+
-- npm: 
+- npm:
 
 ## Setup
+
 ```bash
 # install
 npm install
 
 # dev
 npm run dev
+```

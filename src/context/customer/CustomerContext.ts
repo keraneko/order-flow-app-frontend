@@ -1,15 +1,14 @@
+import { createContext } from 'react';
 
-import { createContext} from "react"; 
-
-export interface Customer { 
+export interface Customer {
   name: string;
   address: string;
   phone: string;
   orderStoreId: string;
-  deliveryType: "pickup" | "delivery",
-  pickupStoreId?: string,
-  deliveryAddress?: string,
-  note?: string,
+  deliveryType: 'pickup' | 'delivery';
+  pickupStoreId?: string;
+  deliveryAddress?: string;
+  note?: string;
 }
 
 interface CustomerContextType {
@@ -18,4 +17,4 @@ interface CustomerContextType {
   resetCustomer: () => void; //まだリセット機能は作らない
 }
 
- export const CustomerContext = createContext<CustomerContextType | null> (null);
+export const CustomerContext = createContext<CustomerContextType | null>(null);
