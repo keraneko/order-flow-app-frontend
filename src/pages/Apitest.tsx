@@ -43,13 +43,12 @@
 //   );
 // }
 
-
 // "use client"
 
 // import { toast } from "sonner"
 
 // import { Button } from "@/components/ui/button"
- 
+
 // export default function SonnerDemo() {
 //   return (
 //     <Button
@@ -69,13 +68,13 @@
 //   )
 // }
 
-import { useState } from "react";
+import { useState } from 'react';
 
 export default function ErrorTest() {
   const [crash, setCrash] = useState(false);
 
   if (crash) {
-    throw new Error("ErrorBoundary検証: わざと落としました");
+    throw new Error('ErrorBoundary検証: わざと落としました');
   }
 
   return (

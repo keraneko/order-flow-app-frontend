@@ -1,20 +1,19 @@
-import { createContext} from "react"
-import type { Customer } from "@/context/customer/CustomerContext"
-import type { CartItem } from "../cart/CartContext" 
+import { createContext } from 'react';
+import type { Customer } from '@/context/customer/CustomerContext';
 
+import type { CartItem } from '../cart/CartContext';
 
-
-export type Order = {
-  customer: Customer
-  items: CartItem[]
-  totalAmount: number
-  createdAt: string
+export interface Order {
+  customer: Customer;
+  items: CartItem[];
+  totalAmount: number;
+  createdAt: string;
 }
 
-type OrderContextType = {
-  order: Order | null
-  createOrder: (order: Order) => void
-  resetOrder: () => void
+interface OrderContextType {
+  order: Order | null;
+  createOrder: (order: Order) => Promise<void>;
+  resetOrder: () => void;
 }
 
-export const OrderContext = createContext<OrderContextType | null>(null)
+export const OrderContext = createContext<OrderContextType | null>(null);
