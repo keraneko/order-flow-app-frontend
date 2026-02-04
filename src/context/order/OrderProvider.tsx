@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
 
 import type { Order } from './OrderContext';
 import { OrderContext } from './OrderContext';
@@ -8,9 +9,8 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
 
   const createOrder = async (order: Order) => {
     setOrder(order);
-    console.log('created order:', order);
 
-    const res = await fetch('api/orders', {
+    const res = await fetch('/api/orders', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,9 +18,14 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
       },
       body: JSON.stringify(order),
     });
-    console.log('status:', res.status);
-    const text = await res.text();
-    console.log(text);
+
+    if (!res.ok) {
+      if (res.status === 422) {
+        const message = await getFirstValidationMessage(res);
+        throw new Error(message);
+      }
+      throw new Error(`HTTP ${res.status}`);
+    }
   };
 
   const resetOrder = () => {

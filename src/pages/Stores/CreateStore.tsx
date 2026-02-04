@@ -47,7 +47,7 @@ function CreateStorePage() {
 
       if (!res.ok) {
         if (res.status === 422) {
-          toast.error(getFirstValidationMessage(res));
+          toast.error(await getFirstValidationMessage(res));
 
           return;
         }

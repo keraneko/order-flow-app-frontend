@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import NotFound from '@/pages/NotFound';
 import type { ProductApi, ProductFormValues } from '@/types/Products';
 import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
 import { normalizeNumberString } from '@/Utils/NumberString';
@@ -23,53 +24,65 @@ function UpdateProductPage() {
     useState<ProductFormValues>(updateProductInput);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
+
   useEffect(() => {
     if (!id) return;
 
+    setLoading(true);
+    setError(null);
+    setNotFound(false);
+
     void (async () => {
-      const res = await fetch(`/api/products/${id}`);
-      const data = (await res.json()) as ProductApi;
-      const mapped = {
-        name: data.name,
-        price: String(data.price),
-        image: data.image_path,
-        imageFile: null,
-        isActive: Boolean(data.is_active),
-        isVisible: Boolean(data.is_visible),
-      };
-      setProductInput(mapped);
-      console.log('product:', data);
+      try {
+        const res = await fetch(`/api/products/${id}`);
+
+        if (res.status === 404) {
+          setNotFound(true);
+
+          return;
+        }
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = (await res.json()) as ProductApi;
+        const mapped = {
+          name: data.name,
+          price: String(data.price),
+          image: data.image_path,
+          imageFile: null,
+          isActive: Boolean(data.is_active),
+          isVisible: Boolean(data.is_visible),
+        };
+        setProductInput(mapped);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, [id]);
 
-  //form
+  if (loading) return <div>Loading...</div>;
+
+  if (error) return <div>Error: {error}</div>;
+
+  if (notFound) return <NotFound />;
+
   const handleSubmit = async () => {
     if (!id) return;
 
     if (isSubmitting) return;
+
     setIsSubmitting(true);
-    // await new Promise((r) => setTimeout(r, 1500)); //動作確認用
 
     try {
       const raw = normalizeNumberString(productInput.price).trim();
       const num = Number(raw);
-      // const payload = {
-      //   name: productInput.name,
-      //   price: Number(raw),
-      //   is_active: productInput.isActive,
-      //   is_visible: productInput.isVisible,
-      // }
 
-      // const res = await fetch(`/api/products/${id}`,{
-      //   method: "PATCH",
-      //   headers: {
-      //     "Content-Type" : "application/json",
-      //     "Accept": "application/json",
-      //   },
-      //   body: JSON.stringify(payload),
-      // })
-
-      //FORM DATA
       const formData = new FormData();
       formData.append('_method', 'PATCH');
       formData.append('name', productInput.name);
@@ -81,7 +94,6 @@ function UpdateProductPage() {
         formData.append('image', productInput.imageFile);
       }
 
-      // fetch
       const res = await fetch(`/api/products/${id}`, {
         method: 'POST',
         headers: { Accept: 'application/json' },
@@ -90,7 +102,7 @@ function UpdateProductPage() {
 
       if (!res.ok) {
         if (res.status === 422) {
-          toast.error(getFirstValidationMessage(res));
+          toast.error(await getFirstValidationMessage(res));
 
           return;
         }
@@ -98,6 +110,7 @@ function UpdateProductPage() {
 
         return;
       }
+
       toast.success('更新しました');
       void navigate('/products');
     } finally {
