@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { fetchStores } from '@/api/Stores';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,24 +17,39 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/context/cart/useCart';
 import { useCustomer } from '@/context/customer/useCustomer';
 import { useOrder } from '@/context/order/useOrder';
+import { getStores } from '@/types/Stores';
 
 function Confirm() {
+  const navigate = useNavigate();
   const { customer } = useCustomer();
   const { items, totalPrice, totalItem } = useCart();
   const { createOrder } = useOrder();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const totalAmount = totalPrice;
   const handleConfirm = async () => {
-    await createOrder({
-      customer,
-      items,
-      totalAmount,
-      createdAt: new Date().toISOString(),
-    });
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await createOrder({
+        customer,
+        items,
+        totalAmount,
+        createdAt: new Date().toISOString(),
+      });
+      toast.success('注文を確定しました');
+      void navigate('/');
+    } catch (e) {
+      const message = e instanceof Error ? e.message : '注文に失敗しました';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
   const { data: stores } = useQuery({
     queryKey: ['stores'],
-    queryFn: fetchStores,
+    queryFn: getStores,
   });
   const storeName = stores?.find(
     (s) => String(s.id) === customer.pickupStoreId,
@@ -88,6 +104,7 @@ function Confirm() {
           </div>
           <div className="flex flex-col p-2">
             <Button
+              disabled={isSubmitting}
               onClick={() => {
                 void handleConfirm();
               }}
