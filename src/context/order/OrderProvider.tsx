@@ -9,6 +9,19 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
 
   const createOrder = async (order: Order) => {
     setOrder(order);
+    const customer = { ...order.customer };
+
+    if (customer.deliveryType === 'pickup') {
+      delete customer.deliveryAddress;
+    } else {
+      delete customer.pickupStoreId;
+    }
+
+    const payload = {
+      customer,
+      items: order.items,
+      totalAmount: order.totalAmount,
+    };
 
     const res = await fetch('/api/orders', {
       method: 'POST',
@@ -16,7 +29,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      body: JSON.stringify(order),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {

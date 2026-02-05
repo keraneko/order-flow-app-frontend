@@ -35,7 +35,6 @@ function Confirm() {
         customer,
         items,
         totalAmount,
-        createdAt: new Date().toISOString(),
       });
       toast.success('注文を確定しました');
       void navigate('/');

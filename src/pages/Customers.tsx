@@ -72,9 +72,9 @@ function Customers() {
   };
   const handleDeliveryTypeChange = (value: 'pickup' | 'delivery') => {
     if (value === 'pickup') {
-      updateCustomer({ deliveryType: value, deliveryAddress: '' });
+      updateCustomer({ deliveryType: value });
     } else {
-      updateCustomer({ deliveryType: value, pickupStoreId: '' });
+      updateCustomer({ deliveryType: value });
     }
   };
 
