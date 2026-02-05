@@ -7,7 +7,6 @@ export interface Order {
   customer: Customer;
   items: CartItem[];
   totalAmount: number;
-  createdAt: string;
 }
 
 interface OrderContextType {
