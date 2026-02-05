@@ -21,9 +21,9 @@ import { getStores } from '@/types/Stores';
 
 function Confirm() {
   const navigate = useNavigate();
-  const { customer } = useCustomer();
-  const { items, totalPrice, totalItem } = useCart();
-  const { createOrder } = useOrder();
+  const { customer, resetCustomer } = useCustomer();
+  const { items, totalPrice, totalItem, clearCart } = useCart();
+  const { createOrder, resetOrder } = useOrder();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const totalAmount = totalPrice;
@@ -37,6 +37,10 @@ function Confirm() {
         totalAmount,
       });
       toast.success('注文を確定しました');
+      resetOrder();
+      clearCart();
+      resetCustomer();
+
       void navigate('/');
     } catch (e) {
       const message = e instanceof Error ? e.message : '注文に失敗しました';
