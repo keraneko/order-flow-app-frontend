@@ -8,6 +8,7 @@ export interface Customer {
   deliveryType: 'pickup' | 'delivery';
   pickupStoreId?: string;
   deliveryAddress?: string;
+  deliveryPostalCode?: string;
   note?: string;
 }
 

@@ -154,6 +154,10 @@ function Confirm() {
 
         {customer.deliveryType === 'delivery' && (
           <div>
+            <Label className="py-2" id="deliveryPostalCode">
+              郵便番号
+            </Label>
+            <Input value={customer.deliveryPostalCode} readOnly />
             <Label className="py-2" id="deliveryAddress">
               配達先住所
             </Label>
