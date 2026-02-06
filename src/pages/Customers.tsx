@@ -26,6 +26,7 @@ function Customers() {
     phone?: string;
     pickupStore?: string;
     deliveryAddress?: string;
+    deliveryPostalCode?: string;
     items?: string;
   }>({});
   const validate = () => {
@@ -46,6 +47,9 @@ function Customers() {
     if (customer.deliveryType === 'delivery') {
       if (!customer.deliveryAddress)
         nextErrors.deliveryAddress = '配達先住所は必須です';
+
+      if (!customer.deliveryPostalCode)
+        nextErrors.deliveryPostalCode = '郵便番号は必須です';
     }
 
     if (!items || items.length === 0) {
@@ -174,6 +178,17 @@ function Customers() {
 
       {customer.deliveryType === 'delivery' && (
         <div>
+          <Label htmlFor="deliveryPostalCode" className="py-2">
+            郵便番号
+          </Label>
+          <Input
+            name="deliveryPostalCode"
+            value={customer.deliveryPostalCode}
+            onChange={handleChange}
+          />
+          {errors.deliveryPostalCode && (
+            <p className="text-sm text-red-500">{errors.deliveryPostalCode}</p>
+          )}
           <Label className="py-2" id="deliveryAddress">
             配達先住所
           </Label>

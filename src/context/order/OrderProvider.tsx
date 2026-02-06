@@ -13,6 +13,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (customer.deliveryType === 'pickup') {
       delete customer.deliveryAddress;
+      delete customer.deliveryPostalCode;
     } else {
       delete customer.pickupStoreId;
     }
