@@ -3,7 +3,7 @@ import { type Order } from '@/types/Order';
 export interface OrderApi {
   id: number;
   ordered_at: string;
-  status: string;
+  status: 'received' | 'canceled' | 'completed';
   total_amount: number;
 }
 

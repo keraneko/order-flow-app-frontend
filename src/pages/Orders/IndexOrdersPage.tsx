@@ -10,6 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { Order } from '@/types/Order';
+import { formatOrderStatus } from '@/Utils/formatOrderStatus';
 
 function IndexOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -63,7 +64,7 @@ function IndexOrdersPage() {
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.id}</TableCell>
                 <TableCell>{formatOrderedAt(order.orderedAt)}</TableCell>
-                <TableCell>{order.status}</TableCell>
+                <TableCell>{formatOrderStatus(order.status)}</TableCell>
                 <TableCell className="text-right">
                   ¥{formatYen(order.totalAmount)}
                 </TableCell>

@@ -1,6 +1,8 @@
+export type OrderStatus = 'received' | 'canceled' | 'completed';
+
 export interface Order {
   id: number;
   orderedAt: string;
-  status: string;
+  status: OrderStatus;
   totalAmount: number;
 }
