@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
+import { getProducts } from '@/api/products';
 import { Button } from '@/components/ui/button.tsx';
 import { Card } from '@/components/ui/card';
 import { useCart } from '@/context/cart/useCart';
-import { getProduct, type Product } from '@/types/Products';
+import { type Product } from '@/types/Product';
 
 function Home() {
   const { addItem } = useCart();
@@ -30,7 +31,7 @@ function Home() {
   const visibleProducts = products.filter((p) => p.isVisible);
 
   useEffect(() => {
-    getProduct()
+    getProducts()
       .then((data: Product[]) => {
         setProducts(data);
       })

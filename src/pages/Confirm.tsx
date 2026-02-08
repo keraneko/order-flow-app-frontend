@@ -17,7 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/context/cart/useCart';
 import { useCustomer } from '@/context/customer/useCustomer';
 import { useOrder } from '@/context/order/useOrder';
-import { getStores } from '@/types/Stores';
+import { getStores } from '@/types/Store';
 
 function Confirm() {
   const navigate = useNavigate();

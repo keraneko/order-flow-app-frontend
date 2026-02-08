@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { getProducts } from '@/api/products';
 import { Button } from '@/components/ui/button.tsx';
 import { Card } from '@/components/ui/card';
-import { getProduct, type Product } from '@/types/Products';
+import { type Product } from '@/types/Product';
 import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
 
 type VisibilityFilter = 'visible' | 'hidden' | 'all';
@@ -63,7 +64,7 @@ function ProductsPage() {
   });
 
   useEffect(() => {
-    getProduct()
+    getProducts()
       .then((data: Product[]) => {
         setProducts(data);
       })

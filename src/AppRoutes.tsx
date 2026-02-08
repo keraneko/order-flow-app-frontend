@@ -10,6 +10,7 @@ import Confirm from './pages/Confirm';
 import Customers from './pages/Customers';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import OrderIndexPage from './pages/Orders/IndexOrdersPage';
 import CreateProductPage from './pages/Products/CreateProduct';
 import ProductsPage from './pages/Products/IndexProducts';
 import UpdateProductPage from './pages/Products/UpdateProduct';
@@ -40,6 +41,7 @@ export default function AppRoutes() {
           <Route path="/stores" element={<StoresPage />} />
           <Route path="/stores/new" element={<CreateStorePage />} />
           <Route path="/stores/:storeId/edit" element={<UpdateStorePage />} />
+          <Route path="/orders" element={<OrderIndexPage />} />
         </Route>
       </Routes>
     </ErrorBoundary>
