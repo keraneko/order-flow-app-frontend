@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import type { ProductFormValues } from '@/types/Product';
-import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
-import { normalizeNumberString } from '@/Utils/NumberString';
+import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { normalizeNumberString } from '@/utils/NumberString';
 
 import ProductForm from './ProductForm';
 

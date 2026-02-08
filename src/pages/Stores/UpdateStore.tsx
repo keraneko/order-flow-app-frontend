@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import NotFound from '@/pages/NotFound';
 import type { StoreApi, StoreFormValue } from '@/types/Store';
-import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
+import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
 
 import StoreForm from './StoreForm';
 

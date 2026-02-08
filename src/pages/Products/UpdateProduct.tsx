@@ -4,8 +4,8 @@ import { toast } from 'sonner';
 import type { ProductApi } from '@/api/products';
 import NotFound from '@/pages/NotFound';
 import type { ProductFormValues } from '@/types/Product';
-import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
-import { normalizeNumberString } from '@/Utils/NumberString';
+import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { normalizeNumberString } from '@/utils/NumberString';
 
 import ProductForm from './ProductForm';
 

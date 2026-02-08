@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
+import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
 
 import type { Order } from './OrderContext';
 import { OrderContext } from './OrderContext';
