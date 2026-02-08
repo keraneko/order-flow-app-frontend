@@ -1,4 +1,4 @@
-import type { OrderStatus } from '@/types/Order';
+import type { OrderStatus } from '@/types/order';
 
 const assertUnreachable = (x: never): never => {
   throw new Error(`Unknown order status: ${String(x)}`);

@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { Order } from '@/types/Order';
+import type { Order } from '@/types/order';
 import { formatOrderStatus } from '@/utils/formatOrderStatus';
 
 function IndexOrdersPage() {

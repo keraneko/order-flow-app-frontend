@@ -1,4 +1,4 @@
-import { type Order } from '@/types/Order';
+import { type Order } from '@/types/order';
 
 export interface OrderApi {
   id: number;

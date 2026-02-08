@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import type { ProductApi } from '@/api/products';
 import NotFound from '@/pages/NotFound';
-import type { ProductFormValues } from '@/types/Product';
+import type { ProductFormValues } from '@/types/product';
 import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
 import { normalizeNumberString } from '@/utils/NumberString';
 

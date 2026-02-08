@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { getProducts } from '@/api/products';
 import { Button } from '@/components/ui/button.tsx';
 import { Card } from '@/components/ui/card';
-import { type Product } from '@/types/Product';
+import { type Product } from '@/types/product';
 import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
 
 type VisibilityFilter = 'visible' | 'hidden' | 'all';

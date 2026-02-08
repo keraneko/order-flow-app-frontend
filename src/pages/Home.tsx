@@ -3,7 +3,7 @@ import { getProducts } from '@/api/products';
 import { Button } from '@/components/ui/button.tsx';
 import { Card } from '@/components/ui/card';
 import { useCart } from '@/context/cart/useCart';
-import { type Product } from '@/types/Product';
+import { type Product } from '@/types/product';
 
 function Home() {
   const { addItem } = useCart();
