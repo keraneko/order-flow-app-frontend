@@ -1,9 +1,4 @@
-export interface Order {
-  id: number;
-  orderedAt: string;
-  status: string;
-  totalAmount: number;
-}
+import { type Order } from '@/types/Order';
 
 export interface OrderApi {
   id: number;

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import type { ProductApi } from '@/api/products';
 import NotFound from '@/pages/NotFound';
-import type { ProductApi, ProductFormValues } from '@/types/Products';
+import type { ProductFormValues } from '@/types/Product';
 import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
 import { normalizeNumberString } from '@/Utils/NumberString';
 

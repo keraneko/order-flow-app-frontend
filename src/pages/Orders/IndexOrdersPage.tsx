@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { getOrders } from '@/api/orders';
 import {
   Table,
   TableBody,
@@ -8,8 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { Order } from '@/types/Orders';
-import { getOrders } from '@/types/Orders';
+import type { Order } from '@/types/Order';
 
 function IndexOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -33,32 +33,45 @@ function IndexOrdersPage() {
 
   if (isLoading) return <div>Loading... </div>;
 
+  const formatYen = (num: number) => num.toLocaleString();
+
+  const formatOrderedAt = (s: string): string => {
+    const parts = s.split(' ');
+    const date = parts[0].replace(/-/g, '/');
+    const time = parts[1].slice(0, 5);
+
+    return `${date} ${time}`;
+  };
+
   return (
     <>
-      {error}
-
-      <Table>
-        <TableCaption>注文一覧表</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-5">ID</TableHead>
-            <TableHead>注文日</TableHead>
-            <TableHead className="w-[100px]">ステータス</TableHead>
-            <TableHead className="text-right">合計金額</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {orders.map((order: Order) => (
-            <TableRow key={order.id}>
-              <TableCell className="font-medium">{order.id}</TableCell>
-              <TableCell>{order.orderedAt}</TableCell>
-              <TableCell>{order.status}</TableCell>
-              <TableCell className="text-right">¥{order.totalAmount}</TableCell>
+      {error !== null && <div className="text-red-500">{error}</div>}
+      {error === null && (
+        <Table>
+          <TableCaption>注文一覧表</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-5">ID</TableHead>
+              <TableHead>注文日</TableHead>
+              <TableHead className="w-[100px]">ステータス</TableHead>
+              <TableHead className="text-right">合計金額</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+
+          <TableBody>
+            {orders.map((order: Order) => (
+              <TableRow key={order.id}>
+                <TableCell className="font-medium">{order.id}</TableCell>
+                <TableCell>{formatOrderedAt(order.orderedAt)}</TableCell>
+                <TableCell>{order.status}</TableCell>
+                <TableCell className="text-right">
+                  ¥{formatYen(order.totalAmount)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </>
   );
 }

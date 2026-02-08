@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { ProductFormValues } from '@/types/Products';
+import type { ProductFormValues } from '@/types/Product';
 import { normalizeNumberString } from '@/Utils/NumberString';
 
 interface ProductFormProps {
