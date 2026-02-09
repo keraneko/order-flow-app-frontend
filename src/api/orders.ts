@@ -22,3 +22,14 @@ export async function getOrders(): Promise<Order[]> {
 
   return data.map(toOrder);
 }
+
+export async function getOrder(id: number): Promise<Order | null> {
+  const res = await fetch(`/api/orders/${id}`);
+
+  if (res.status === 404) return null;
+
+  if (!res.ok) throw new Error(`HTTP${res.status}`);
+  const data = (await res.json()) as OrderApi;
+
+  return toOrder(data);
+}
