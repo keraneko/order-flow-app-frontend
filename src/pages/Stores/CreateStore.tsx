@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import type { StoreFormValue } from '@/types/Store';
+import type { StoreFormValue } from '@/types/store';
 import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
 
 import StoreForm from './StoreForm';

@@ -15,7 +15,7 @@ import CreateProductPage from './pages/products/CreateProduct';
 import ProductsPage from './pages/products/IndexProducts';
 import UpdateProductPage from './pages/products/UpdateProduct';
 import CreateStorePage from './pages/stores/CreateStore';
-import StoresPage from './pages/stores/Indexstores';
+import StoresPage from './pages/stores/IndexStores';
 import UpdateStorePage from './pages/stores/UpdateStore';
 
 export default function AppRoutes() {

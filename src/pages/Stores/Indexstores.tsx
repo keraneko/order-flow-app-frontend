@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
+import { getStores } from '@/api/stores';
 import { Button } from '@/components/ui/button';
-import { getStores, type Store } from '@/types/Store';
+import { type Store } from '@/types/store';
 
 function StoresPage() {
   const [stores, setSores] = useState<Store[]>([]);
