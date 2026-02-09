@@ -12,7 +12,7 @@ interface StoreFormProps {
   onChange: (next: StoreFormValue) => void;
   onSubmit: () => Promise<void>;
   submitLabel: string;
-  disabled?: boolean;
+  isSubmitting?: boolean;
 }
 
 function StoreForm({
@@ -20,7 +20,7 @@ function StoreForm({
   onChange,
   onSubmit,
   submitLabel,
-  disabled,
+  isSubmitting,
 }: StoreFormProps) {
   //errors
   const [errors, setErrors] = useState<{
@@ -158,7 +158,7 @@ function StoreForm({
           </Label>
         </div>
 
-        <Button type="submit" disabled={disabled}>
+        <Button type="submit" disabled={isSubmitting}>
           {submitLabel}
         </Button>
       </form>

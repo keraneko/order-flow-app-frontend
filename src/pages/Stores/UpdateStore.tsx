@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import type { StoreApi } from '@/api/stores';
+import StoreForm from '@/components/store/StoreForm';
 import NotFound from '@/pages/NotFound';
 import type { StoreFormValue } from '@/types/store';
 import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
-
-import StoreForm from './StoreForm';
 
 const updateStoreInput: StoreFormValue = {
   code: '',
@@ -123,7 +122,7 @@ function UpdateStorePage() {
         onChange={setStoreInput}
         onSubmit={handleSubmit}
         submitLabel="編集を登録する"
-        disabled={isSubmitting}
+        isSubmitting={isSubmitting}
       />
     </>
   );

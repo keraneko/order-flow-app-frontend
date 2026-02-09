@@ -12,7 +12,7 @@ interface ProductFormProps {
   onChange: (next: ProductFormValues) => void;
   onSubmit: () => Promise<void>;
   submitLabel: string;
-  disabled?: boolean;
+  isSubmitting?: boolean;
   showIsVisible?: boolean;
 }
 
@@ -21,7 +21,7 @@ function ProductForm({
   onChange,
   onSubmit,
   submitLabel,
-  disabled,
+  isSubmitting,
   showIsVisible,
 }: ProductFormProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -187,7 +187,7 @@ function ProductForm({
           </div>
         )}
 
-        <Button type="submit" disabled={disabled}>
+        <Button type="submit" disabled={isSubmitting}>
           {submitLabel}
         </Button>
       </form>
