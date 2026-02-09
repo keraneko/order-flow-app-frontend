@@ -4,15 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { StoreFormValue } from '@/types/Store';
-import { normalizeNumberString } from '@/Utils/NumberString';
+import type { StoreFormValue } from '@/types/store';
+import { normalizeNumberString } from '@/utils/NumberString';
 
 interface StoreFormProps {
   value: StoreFormValue;
   onChange: (next: StoreFormValue) => void;
   onSubmit: () => Promise<void>;
   submitLabel: string;
-  disabled?: boolean;
+  isSubmitting?: boolean;
 }
 
 function StoreForm({
@@ -20,7 +20,7 @@ function StoreForm({
   onChange,
   onSubmit,
   submitLabel,
-  disabled,
+  isSubmitting,
 }: StoreFormProps) {
   //errors
   const [errors, setErrors] = useState<{
@@ -158,7 +158,7 @@ function StoreForm({
           </Label>
         </div>
 
-        <Button type="submit" disabled={disabled}>
+        <Button type="submit" disabled={isSubmitting}>
           {submitLabel}
         </Button>
       </form>

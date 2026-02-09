@@ -4,15 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { ProductFormValues } from '@/types/Product';
-import { normalizeNumberString } from '@/Utils/NumberString';
+import type { ProductFormValues } from '@/types/product';
+import { normalizeNumberString } from '@/utils/NumberString';
 
 interface ProductFormProps {
   value: ProductFormValues;
   onChange: (next: ProductFormValues) => void;
   onSubmit: () => Promise<void>;
   submitLabel: string;
-  disabled?: boolean;
+  isSubmitting?: boolean;
   showIsVisible?: boolean;
 }
 
@@ -21,7 +21,7 @@ function ProductForm({
   onChange,
   onSubmit,
   submitLabel,
-  disabled,
+  isSubmitting,
   showIsVisible,
 }: ProductFormProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -187,7 +187,7 @@ function ProductForm({
           </div>
         )}
 
-        <Button type="submit" disabled={disabled}>
+        <Button type="submit" disabled={isSubmitting}>
           {submitLabel}
         </Button>
       </form>

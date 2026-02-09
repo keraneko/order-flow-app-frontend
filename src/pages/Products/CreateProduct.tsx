@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import type { ProductFormValues } from '@/types/Product';
-import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
-import { normalizeNumberString } from '@/Utils/NumberString';
-
-import ProductForm from './ProductForm';
+import ProductForm from '@/components/product/ProductForm';
+import type { ProductFormValues } from '@/types/product';
+import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { normalizeNumberString } from '@/utils/NumberString';
 
 const createProductInput: ProductFormValues = {
   name: '',
@@ -71,7 +70,7 @@ function CreateProductPage() {
         onChange={setProductInput}
         onSubmit={handleSubmit}
         submitLabel="登録する"
-        disabled={isSubmitting}
+        isSubmitting={isSubmitting}
       />
     </>
   );

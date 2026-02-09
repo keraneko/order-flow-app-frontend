@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import type { StoreFormValue } from '@/types/Store';
-import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
-
-import StoreForm from './StoreForm';
+import StoreForm from '@/components/store/StoreForm';
+import type { StoreFormValue } from '@/types/store';
+import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
 
 const createStoreInput: StoreFormValue = {
   code: '',
@@ -73,7 +72,7 @@ function CreateStorePage() {
         onChange={setStoreInput}
         onSubmit={handleSubmit}
         submitLabel="登録する"
-        disabled={isSubmitting}
+        isSubmitting={isSubmitting}
       />
     </>
   );

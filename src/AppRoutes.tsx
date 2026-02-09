@@ -10,13 +10,13 @@ import Confirm from './pages/Confirm';
 import Customers from './pages/Customers';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
-import OrderIndexPage from './pages/Orders/IndexOrdersPage';
-import CreateProductPage from './pages/Products/CreateProduct';
-import ProductsPage from './pages/Products/IndexProducts';
-import UpdateProductPage from './pages/Products/UpdateProduct';
-import CreateStorePage from './pages/Stores/CreateStore';
-import StoresPage from './pages/Stores/Indexstores';
-import UpdateStorePage from './pages/Stores/UpdateStore';
+import OrderIndexPage from './pages/orders/IndexOrdersPage';
+import CreateProductPage from './pages/products/CreateProduct';
+import ProductsPage from './pages/products/IndexProducts';
+import UpdateProductPage from './pages/products/UpdateProduct';
+import CreateStorePage from './pages/stores/CreateStore';
+import StoresPage from './pages/stores/IndexStores';
+import UpdateStorePage from './pages/stores/UpdateStore';
 
 export default function AppRoutes() {
   const location = useLocation();

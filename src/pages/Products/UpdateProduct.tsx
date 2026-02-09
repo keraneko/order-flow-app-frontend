@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import type { ProductApi } from '@/api/products';
+import ProductForm from '@/components/product/ProductForm';
 import NotFound from '@/pages/NotFound';
-import type { ProductFormValues } from '@/types/Product';
-import { getFirstValidationMessage } from '@/Utils/LaravelValidationError';
-import { normalizeNumberString } from '@/Utils/NumberString';
-
-import ProductForm from './ProductForm';
+import type { ProductFormValues } from '@/types/product';
+import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { normalizeNumberString } from '@/utils/NumberString';
 
 const updateProductInput: ProductFormValues = {
   name: '',
@@ -127,7 +126,7 @@ function UpdateProductPage() {
         onChange={setProductInput}
         onSubmit={handleSubmit}
         submitLabel="編集を登録する"
-        disabled={isSubmitting}
+        isSubmitting={isSubmitting}
         showIsVisible={true}
       />
     </>
