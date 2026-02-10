@@ -9,11 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { Order } from '@/types/order';
+import type { OrderIndex } from '@/types/order';
 import { formatOrderStatus } from '@/utils/formatOrderStatus';
 
 function IndexOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderIndex[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +60,7 @@ function IndexOrdersPage() {
           </TableHeader>
 
           <TableBody>
-            {orders.map((order: Order) => (
+            {orders.map((order: OrderIndex) => (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.id}</TableCell>
                 <TableCell>{formatOrderedAt(order.orderedAt)}</TableCell>

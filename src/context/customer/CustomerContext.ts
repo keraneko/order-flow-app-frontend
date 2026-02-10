@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-export interface Customer {
+export interface OrderCustomerInput {
   name: string;
   address: string;
   phone: string;
@@ -13,8 +13,8 @@ export interface Customer {
 }
 
 interface CustomerContextType {
-  customer: Customer;
-  updateCustomer: (data: Partial<Customer>) => void;
+  customer: OrderCustomerInput;
+  updateCustomer: (data: Partial<OrderCustomerInput>) => void;
   resetCustomer: () => void; //まだリセット機能は作らない
 }
 

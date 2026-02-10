@@ -1,35 +1,78 @@
-import { type Order } from '@/types/order';
+import type {
+  OrderIndex,
+  OrderItem,
+  OrderShow,
+  OrderStatus,
+} from '@/types/order';
 
-export interface OrderApi {
+import { type CustomerApi, toCustomer } from './customers';
+import { type ProductApi, toProduct } from './products';
+
+//OrderIndex用変換
+
+export interface OrderApiIndex {
   id: number;
   ordered_at: string;
-  status: 'received' | 'canceled' | 'completed';
+  status: OrderStatus;
   total_amount: number;
 }
 
-const toOrder = (o: OrderApi): Order => ({
+const toOrderIndex = (o: OrderApiIndex): OrderIndex => ({
   id: o.id,
   orderedAt: o.ordered_at,
   status: o.status,
   totalAmount: o.total_amount,
 });
 
-export async function getOrders(): Promise<Order[]> {
+//OrderIndexへのfetch
+export async function getOrders(): Promise<OrderIndex[]> {
   const res = await fetch('/api/orders');
 
   if (!res.ok) throw new Error(`HTTP${res.status}`);
-  const data = (await res.json()) as OrderApi[];
+  const data = (await res.json()) as OrderApiIndex[];
 
-  return data.map(toOrder);
+  return data.map(toOrderIndex);
 }
 
-export async function getOrder(id: number): Promise<Order | null> {
+//OrderShow用変換
+
+interface OrderItemsApi {
+  product: ProductApi;
+  quantity: number;
+  unit_price: number;
+}
+
+const toOrderItems = (i: OrderItemsApi): OrderItem => ({
+  product: toProduct(i.product),
+  quantity: i.quantity,
+  unitPrice: i.unit_price,
+});
+
+export interface OrderApiShow {
+  id: number;
+  ordered_at: string;
+  status: OrderStatus;
+  total_amount: number;
+  customer: CustomerApi;
+  items: OrderItemsApi[];
+}
+const toOrderShow = (o: OrderApiShow): OrderShow => ({
+  id: o.id,
+  orderedAt: o.ordered_at,
+  status: o.status,
+  totalAmount: o.total_amount,
+  customer: toCustomer(o.customer),
+  items: o.items.map(toOrderItems),
+});
+
+//OrderShowへのfetch
+export async function getOrder(id: number): Promise<OrderShow | null> {
   const res = await fetch(`/api/orders/${id}`);
 
   if (res.status === 404) return null;
 
   if (!res.ok) throw new Error(`HTTP${res.status}`);
-  const data = (await res.json()) as OrderApi;
+  const data = (await res.json()) as OrderApiShow;
 
-  return toOrder(data);
+  return toOrderShow(data);
 }
