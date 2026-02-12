@@ -13,7 +13,7 @@ import {
 import type { OrderIndex } from '@/types/order';
 import { formatOrderStatus } from '@/utils/formatOrderStatus';
 
-function IndexOrderPage() {
+function IndexOrderPageTest() {
   const navigate = useNavigate();
   const {
     data: orders,
@@ -28,8 +28,6 @@ function IndexOrderPage() {
 
   const formatYen = (num: number) => num.toLocaleString();
 
-  const handleClick = (orderId: number) => navigate(`/orders/${orderId}`);
-
   const formatOrderedAt = (s: string): string => {
     const parts = s.split(' ');
     const data = parts[0].replace(/-/g, '/');
@@ -37,6 +35,10 @@ function IndexOrderPage() {
 
     return `${data} ${time}`;
   };
+
+  const handleClick = (orderId: number) => navigate(`/orders/${orderId}`);
+
+  console.log(orders);
 
   if (isPending) return <span>読み込み中...</span>;
 
@@ -80,4 +82,4 @@ function IndexOrderPage() {
   );
 }
 
-export default IndexOrderPage;
+export default IndexOrderPageTest;

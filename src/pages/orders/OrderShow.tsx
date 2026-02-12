@@ -5,15 +5,15 @@ import NotFound from '@/pages/NotFound';
 import { type OrderShow } from '@/types/order';
 
 function OrderShowPage() {
-  const { id } = useParams();
-  const orderId = Number(id);
+  const { orderId } = useParams();
+  const idNum = Number(orderId);
 
   const [order, setOrder] = useState<OrderShow | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (Number.isNaN(orderId)) {
+    if (Number.isNaN(idNum)) {
       setError('不正なIDです');
       setIsLoading(false);
 
@@ -25,14 +25,8 @@ function OrderShowPage() {
 
     async function fetchOrderShow() {
       try {
-        const data = await getOrder(orderId);
+        const data = await getOrder(idNum);
         setOrder(data);
-
-        if (data === null) {
-          setOrder(null);
-
-          return;
-        }
       } catch (e: unknown) {
         setError(e instanceof Error ? e.message : 'unknown error');
       } finally {
@@ -40,7 +34,7 @@ function OrderShowPage() {
       }
     }
     void fetchOrderShow();
-  }, [orderId]);
+  }, [idNum]);
 
   if (isLoading) return <div>Loading...</div>;
 
