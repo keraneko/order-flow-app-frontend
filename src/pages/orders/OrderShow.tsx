@@ -1,50 +1,77 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 import { getOrder } from '@/api/orders';
-import NotFound from '@/pages/NotFound';
-import { type OrderShow } from '@/types/order';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import type { OrderShow } from '@/types/order';
+import { formatOrderStatus } from '@/utils/formatOrderStatus';
 
-function OrderShowPage() {
-  const { orderId } = useParams();
-  const idNum = Number(orderId);
+function IndexOrderPageTest() {
+  const { id } = useParams();
+  const orderId = Number(id);
+  const enabled = Number.isFinite(orderId) && orderId > 0;
 
-  const [order, setOrder] = useState<OrderShow | null | undefined>(undefined);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    data: order,
+    isPending,
+    isError,
+    error,
+  } = useQuery<OrderShow>({
+    queryKey: ['orders', orderId],
+    enabled,
+    queryFn: () => getOrder(orderId),
+  });
 
-  useEffect(() => {
-    if (Number.isNaN(idNum)) {
-      setError('不正なIDです');
-      setIsLoading(false);
+  const formatYen = (num: number) => num.toLocaleString();
 
-      return;
-    }
+  const formatOrderedAt = (s: string): string => {
+    const parts = s.split(' ');
+    const data = parts[0].replace(/-/g, '/');
+    const time = parts[1].slice(0, 5);
 
-    setIsLoading(true);
-    setError(null);
+    return `${data} ${time}`;
+  };
 
-    async function fetchOrderShow() {
-      try {
-        const data = await getOrder(idNum);
-        setOrder(data);
-      } catch (e: unknown) {
-        setError(e instanceof Error ? e.message : 'unknown error');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    void fetchOrderShow();
-  }, [idNum]);
+  console.log(order);
+  console.log(orderId);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <span>読み込み中...</span>;
 
-  if (order === null) return <NotFound />;
+  if (isError) return <span>エラーコード: {error.message}</span>;
 
-  if (order === undefined) return null;
+  if (!order) return <span>データがありません</span>;
 
   return (
     <>
-      {error}
+      <Table>
+        <TableCaption>注文一覧表</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-5">注文ID</TableHead>
+            <TableHead>注文日</TableHead>
+            <TableHead className="w-[100px]">ステータス</TableHead>
+            <TableHead className="text-right">合計金額</TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          <TableRow key={order.id}>
+            <TableCell className="font-medium">{order.id}</TableCell>
+            <TableCell>{formatOrderedAt(order.orderedAt)}</TableCell>
+            <TableCell>{formatOrderStatus(order.status)}</TableCell>
+            <TableCell className="text-right">
+              ¥{formatYen(order.totalAmount)}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
       <p>{order.id}</p>
       <p>{order.customer.name}</p>
       <p>{order.orderedAt}</p>
@@ -57,9 +84,8 @@ function OrderShowPage() {
           </div>
         </div>
       ))}
-      {order.totalAmount}円
     </>
   );
 }
 
-export default OrderShowPage;
+export default IndexOrderPageTest;

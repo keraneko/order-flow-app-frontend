@@ -10,7 +10,7 @@ import { type ProductApi, toProduct } from './products';
 
 //OrderIndex用変換
 
-export interface OrderApiIndex {
+interface OrderApiIndex {
   id: number;
   ordered_at: string;
   status: OrderStatus;
@@ -48,7 +48,7 @@ const toOrderItems = (i: OrderItemsApi): OrderItem => ({
   unitPrice: i.unit_price,
 });
 
-export interface OrderApiShow {
+interface OrderApiShow {
   id: number;
   ordered_at: string;
   status: OrderStatus;
@@ -66,10 +66,10 @@ const toOrderShow = (o: OrderApiShow): OrderShow => ({
 });
 
 //OrderShowへのfetch
-export async function getOrder(id: number): Promise<OrderShow | null> {
+export async function getOrder(id: number): Promise<OrderShow> {
   const res = await fetch(`/api/orders/${id}`);
 
-  if (res.status === 404) return null;
+  //if (res.status === 404) return null;
 
   if (!res.ok) throw new Error(`HTTP${res.status}`);
   const data = (await res.json()) as OrderApiShow;

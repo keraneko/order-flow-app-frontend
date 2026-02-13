@@ -22,13 +22,13 @@ function IndexOrderPage() {
     isError,
     error,
   } = useQuery<OrderIndex[]>({
-    queryKey: ['orderShows'],
+    queryKey: ['orders'],
     queryFn: getOrders,
   });
 
   const formatYen = (num: number) => num.toLocaleString();
 
-  const handleClick = (orderId: number) => navigate(`/orders/${orderId}`);
+  const handleClick = (id: number) => navigate(`/orders/${id}`);
 
   const formatOrderedAt = (s: string): string => {
     const parts = s.split(' ');

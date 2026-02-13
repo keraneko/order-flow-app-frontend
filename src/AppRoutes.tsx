@@ -3,8 +3,8 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Layout from '@/Layoute.tsx';
 
 import { AppErrorFallback } from './components/errors/AppErrorFallback';
-import Apitest from './pages/__practice__/react-query/OrderUseQueryTest';
-import Test from './pages/__practice__/react-query/Test';
+import Apitest from './pages/__practice__/react-query/Apitest';
+import Test from './pages/__practice__/react-query/OrderUseQueryTest';
 import CartList from './pages/CartList';
 import Carts from './pages/Carts';
 import Confirm from './pages/Confirm';
@@ -37,7 +37,7 @@ export default function AppRoutes() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/confirm" element={<Confirm />} />
           <Route path="/test" element={<Apitest />} />
-          <Route path="/test/:postId" element={<Test />} />
+          <Route path="/test/:id" element={<Test />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/new" element={<CreateProductPage />} />
           <Route path="/products/:id/edit" element={<UpdateProductPage />} />
@@ -45,7 +45,7 @@ export default function AppRoutes() {
           <Route path="/stores/new" element={<CreateStorePage />} />
           <Route path="/stores/:storeId/edit" element={<UpdateStorePage />} />
           <Route path="/orders" element={<OrderIndexPage />} />
-          <Route path="/orders/:orderId" element={<OrderShowPage />} />
+          <Route path="/orders/:id" element={<OrderShowPage />} />
         </Route>
       </Routes>
     </ErrorBoundary>
