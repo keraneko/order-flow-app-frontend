@@ -20,6 +20,11 @@ export interface OrderShow {
   id: number;
   orderedAt: string;
   status: OrderStatus;
+  deliveryType: 'pickup' | 'delivery';
+  pickupStoreId?: string;
+  deliveryAddress?: string;
+  deliveryPostalCode?: string;
+  note?: string;
   totalAmount: number;
   customer: Customer;
   items: OrderItem[];

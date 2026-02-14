@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Phone, User } from 'lucide-react';
+import { MapPin, Phone, User } from 'lucide-react';
 import { getOrder } from '@/api/orders';
 import OrderItemsTable from '@/components/order/OrderItemsTable';
 import OrderSummary from '@/components/order/OrderSummary';
@@ -52,17 +52,17 @@ function IndexOrderPageTest() {
         <div>
           <div className="rounded-sm border">
             <Label className="h-10 border-b pl-4 font-semibold">顧客情報</Label>
-            <div className="flex h-20 flex-col justify-around">
-              <div className="flex h-20 border-b py-2">
+            <div className="flex flex-col justify-around">
+              <div className="flex items-start border-b p-2">
                 <div>
-                  <User className="text-muted-foreground mx-4 h-5 w-5" />
+                  <User className="text-muted-foreground mx-4 mt-2 h-5 w-5" />
                 </div>
-                <div className="flex flex-col justify-between">
-                  <Label>{order.customer.name} 様</Label>
+                <div className="flex flex-col justify-between p-2">
+                  <Label className="pb-2">{order.customer.name} 様</Label>
                   <Label>{order.customer.address}</Label>
                 </div>
               </div>
-              <div className="flex py-2">
+              <div className="flex p-2">
                 <Phone className="text-muted-foreground mx-4 h-5 w-5" />
                 <Label>{order.customer.phone}</Label>
               </div>
@@ -70,7 +70,19 @@ function IndexOrderPageTest() {
           </div>
 
           <div className="mt-5 rounded-sm border">
-            <Label className="h-10 pl-4 font-semibold">配送情報</Label>
+            <Label className="h-10 border-b pl-4 font-semibold">配送情報</Label>
+            {order.deliveryType === 'delivery' && (
+              <div className="flex items-start p-2">
+                <MapPin className="text-muted-foreground mx-4 mt-1 h-6 w-6" />
+                <div>
+                  <Label className="pb-2">〒 {order.deliveryPostalCode}</Label>
+                  <Label className="">{order.deliveryAddress}</Label>
+                </div>
+              </div>
+            )}
+            {order.deliveryType === 'pickup' && (
+              <Label className="h-10 pl-4">{order.pickupStoreId}</Label>
+            )}
           </div>
         </div>
 

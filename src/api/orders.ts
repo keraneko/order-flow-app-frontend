@@ -53,6 +53,11 @@ interface OrderApiShow {
   ordered_at: string;
   status: OrderStatus;
   total_amount: number;
+  delivery_type: 'pickup' | 'delivery';
+  pickup_store_id?: string;
+  delivery_address?: string;
+  delivery_postal_code?: string;
+  note?: string;
   customer: CustomerApi;
   items: OrderItemsApi[];
 }
@@ -61,6 +66,11 @@ const toOrderShow = (o: OrderApiShow): OrderShow => ({
   orderedAt: o.ordered_at,
   status: o.status,
   totalAmount: o.total_amount,
+  deliveryType: o.delivery_type,
+  pickupStoreId: o.pickup_store_id,
+  deliveryAddress: o.delivery_address,
+  deliveryPostalCode: o.delivery_postal_code,
+  note: o.note,
   customer: toCustomer(o.customer),
   items: o.items.map(toOrderItems),
 });
