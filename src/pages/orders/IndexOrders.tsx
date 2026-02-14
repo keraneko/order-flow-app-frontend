@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getOrders } from '@/api/orders';
+import OrderStatusBadge from '@/components/order/OrderStatusBadge';
 import {
   Table,
   TableBody,
@@ -11,7 +12,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { OrderIndex } from '@/types/order';
-import { formatOrderStatus } from '@/utils/formatOrderStatus';
 
 function IndexOrderPage() {
   const navigate = useNavigate();
@@ -62,7 +62,9 @@ function IndexOrderPage() {
             <TableRow key={order.id}>
               <TableCell className="font-medium">{order.id}</TableCell>
               <TableCell>{formatOrderedAt(order.orderedAt)}</TableCell>
-              <TableCell>{formatOrderStatus(order.status)}</TableCell>
+              <TableCell>
+                <OrderStatusBadge status={order.status} />
+              </TableCell>
               <TableCell className="text-right">
                 ¥{formatYen(order.totalAmount)}
               </TableCell>
