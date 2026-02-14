@@ -1,5 +1,6 @@
 import { type Customer } from './customer';
 import type { Product } from './product';
+import type { StoreSummary } from './store';
 
 export type OrderStatus = 'received' | 'canceled' | 'completed';
 
@@ -21,7 +22,7 @@ export interface OrderShow {
   orderedAt: string;
   status: OrderStatus;
   deliveryType: 'pickup' | 'delivery';
-  pickupStoreId?: string;
+  pickupStore: StoreSummary | null;
   deliveryAddress?: string;
   deliveryPostalCode?: string;
   note?: string;

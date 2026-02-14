@@ -75,13 +75,23 @@ function IndexOrderPageTest() {
               <div className="flex items-start p-2">
                 <MapPin className="text-muted-foreground mx-4 mt-1 h-6 w-6" />
                 <div>
-                  <Label className="pb-2">〒 {order.deliveryPostalCode}</Label>
-                  <Label className="">{order.deliveryAddress}</Label>
+                  <Label className="text-sx pb-2">
+                    〒 {order.deliveryPostalCode}
+                  </Label>
+                  <Label className="text-sm">{order.deliveryAddress}</Label>
                 </div>
               </div>
             )}
-            {order.deliveryType === 'pickup' && (
-              <Label className="h-10 pl-4">{order.pickupStoreId}</Label>
+            {order.deliveryType === 'pickup' && order.pickupStore === null && (
+              <Label className="text-muted-foreground text-sm">
+                店舗情報を情報を取得できませんでした
+              </Label>
+            )}
+            {order.deliveryType === 'pickup' && order.pickupStore !== null && (
+              <div className="ml-4 flex p-2">
+                <Label className="text-sx pr-4 text-gray-500">配達店舗:</Label>
+                <Label className="text-base">{order.pickupStore.name}</Label>
+              </div>
             )}
           </div>
         </div>

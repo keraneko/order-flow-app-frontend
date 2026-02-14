@@ -4,6 +4,7 @@ import type {
   OrderShow,
   OrderStatus,
 } from '@/types/order';
+import type { StoreSummary } from '@/types/store';
 
 import { type CustomerApi, toCustomer } from './customers';
 import { type ProductApi, toProduct } from './products';
@@ -54,7 +55,7 @@ interface OrderApiShow {
   status: OrderStatus;
   total_amount: number;
   delivery_type: 'pickup' | 'delivery';
-  pickup_store_id?: string;
+  pickup_store: StoreSummary | null;
   delivery_address?: string;
   delivery_postal_code?: string;
   note?: string;
@@ -67,7 +68,7 @@ const toOrderShow = (o: OrderApiShow): OrderShow => ({
   status: o.status,
   totalAmount: o.total_amount,
   deliveryType: o.delivery_type,
-  pickupStoreId: o.pickup_store_id,
+  pickupStore: o.pickup_store,
   deliveryAddress: o.delivery_address,
   deliveryPostalCode: o.delivery_postal_code,
   note: o.note,

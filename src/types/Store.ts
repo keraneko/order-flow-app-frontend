@@ -18,3 +18,8 @@ export interface Store {
   addressLine: string;
   isActive: boolean;
 }
+
+export interface StoreSummary {
+  id: number;
+  name: string;
+}
