@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import type { Customer } from './CustomerContext';
+import type { OrderCustomerInput } from './CustomerContext';
 import { CustomerContext } from './CustomerContext';
 
-const initialCustomer: Customer = {
+const initialCustomer: OrderCustomerInput = {
   name: '',
   address: '',
   phone: '',
@@ -20,9 +20,9 @@ export const CustomerProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [customer, setCustomer] = useState<Customer>(initialCustomer);
+  const [customer, setCustomer] = useState<OrderCustomerInput>(initialCustomer);
 
-  const updateCustomer = (data: Partial<Customer>) => {
+  const updateCustomer = (data: Partial<OrderCustomerInput>) => {
     setCustomer((prev) => ({
       ...prev,
       ...data,

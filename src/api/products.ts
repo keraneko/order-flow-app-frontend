@@ -9,7 +9,7 @@ export interface ProductApi {
   is_visible: boolean;
 }
 
-const toProduct = (p: ProductApi): Product => ({
+export const toProduct = (p: ProductApi): Product => ({
   id: p.id,
   name: p.name,
   price: p.price,

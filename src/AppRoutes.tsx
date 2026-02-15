@@ -3,14 +3,16 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Layout from '@/Layoute.tsx';
 
 import { AppErrorFallback } from './components/errors/AppErrorFallback';
-import Apitest from './pages/Apitest';
+import Apitest from './pages/__practice__/react-query/Apitest';
+import Test from './pages/__practice__/react-query/OrderUseQueryTest';
 import CartList from './pages/CartList';
 import Carts from './pages/Carts';
 import Confirm from './pages/Confirm';
 import Customers from './pages/Customers';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
-import OrderIndexPage from './pages/orders/IndexOrdersPage';
+import OrderIndexPage from './pages/orders/IndexOrders';
+import OrderShowPage from './pages/orders/OrderShow';
 import CreateProductPage from './pages/products/CreateProduct';
 import ProductsPage from './pages/products/IndexProducts';
 import UpdateProductPage from './pages/products/UpdateProduct';
@@ -35,6 +37,7 @@ export default function AppRoutes() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/confirm" element={<Confirm />} />
           <Route path="/test" element={<Apitest />} />
+          <Route path="/test/:id" element={<Test />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/new" element={<CreateProductPage />} />
           <Route path="/products/:id/edit" element={<UpdateProductPage />} />
@@ -42,6 +45,7 @@ export default function AppRoutes() {
           <Route path="/stores/new" element={<CreateStorePage />} />
           <Route path="/stores/:storeId/edit" element={<UpdateStorePage />} />
           <Route path="/orders" element={<OrderIndexPage />} />
+          <Route path="/orders/:id" element={<OrderShowPage />} />
         </Route>
       </Routes>
     </ErrorBoundary>
