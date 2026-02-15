@@ -83,7 +83,7 @@ function IndexOrderPageTest() {
               </div>
             )}
             {order.deliveryType === 'pickup' && order.pickupStore === null && (
-              <Label className="text-muted-foreground text-sm">
+              <Label className="ml-4 p-2 text-sm text-red-400">
                 店舗情報を情報を取得できませんでした
               </Label>
             )}
