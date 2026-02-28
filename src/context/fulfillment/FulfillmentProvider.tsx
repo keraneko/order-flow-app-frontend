@@ -23,15 +23,17 @@ export const FulfillmentProvider = ({
     setFulfillment((prev) => {
       const next: FulfillmentType = { ...prev, ...data };
 
-      if (
-        data.deliveryType === 'pickup' &&
-        prev.pickupStoreId === null &&
-        next.orderStoreId === null
-      ) {
-        next.pickupStoreId = next.orderStoreId;
-      }
+      const switchedToPickup =
+        prev.deliveryType !== 'pickup' && next.deliveryType === 'pickup';
 
-      return next;
+      if (!switchedToPickup) return next;
+
+      if (next.pickupStoreId !== null) return next;
+
+      if (next.orderStoreId === null) return next;
+
+      // 一回だけpickupStoreIdにデータを入れる
+      return { ...next, pickupStoreId: next.orderStoreId };
     });
   };
 
