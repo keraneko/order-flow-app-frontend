@@ -192,7 +192,7 @@ function DeliveryTypeSelector() {
         )}
       </div>
       <Button
-        onClick={() => void navigate('/carts')}
+        onClick={() => void navigate('/order/cart')}
         disabled={isDisabled || isOrderStoreUnselected}
         className="m-10"
       >

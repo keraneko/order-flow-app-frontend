@@ -118,7 +118,7 @@ function Confirm() {
             >
               注文を確定する
             </Button>
-            <Link to="/carts">
+            <Link to="/order/cart">
               <Button className="h-15 w-full bg-gray-500 text-xl font-medium hover:bg-gray-800">
                 カートに戻る
               </Button>

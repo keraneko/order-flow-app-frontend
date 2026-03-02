@@ -15,37 +15,36 @@ const Layout = () => {
             </Link>
           </div>
           <div className="flex">
-            <Link to="/cartlist">
-              <ShoppingCart />
-            </Link>
+            <ShoppingCart />
+
             <ListChevronsUpDown className="ml-2" />
           </div>
         </div>
       </header>
       <nav className="flex list-none gap-4 p-4">
         <li>
-          <NavLink to="/">
-            <Button variant="secondary">Home</Button>
+          <NavLink to="/order/new">
+            <Button variant="secondary">orderNew</Button>
           </NavLink>
         </li>
         <li>
-          <NavLink to="/carts">
-            <Button variant="secondary">Carts</Button>
+          <NavLink to="/order/cart">
+            <Button variant="secondary">Cart</Button>
           </NavLink>
         </li>
         <li>
-          <NavLink to="/cartlist">
-            <Button variant="secondary">Cartlist</Button>
+          <NavLink to="/order/customer">
+            <Button variant="secondary">Customer</Button>
           </NavLink>
         </li>
         <li>
-          <NavLink to="/customers">
-            <Button variant="secondary">Customers</Button>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/confirm">
+          <NavLink to="/order/confirm">
             <Button variant="secondary">confirm</Button>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/orders">
+            <Button variant="secondary">Orders</Button>
           </NavLink>
         </li>
         <li>

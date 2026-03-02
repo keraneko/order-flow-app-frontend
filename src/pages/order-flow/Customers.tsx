@@ -61,7 +61,7 @@ function Customers() {
   const navigate = useNavigate();
   const onNext = () => {
     if (!validate()) return;
-    void navigate('/confirm');
+    void navigate('/order/confirm');
   };
 
   const { updateCustomer, customer } = useCustomer();
