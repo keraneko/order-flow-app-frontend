@@ -17,10 +17,12 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/context/cart/useCart';
 import { useCustomer } from '@/context/customer/useCustomer';
+import { useFulfillment } from '@/context/fulfillment/useFulfillment';
 import { useOrder } from '@/context/order/useOrder';
 
 function Confirm() {
   const navigate = useNavigate();
+  const { fulfillment } = useFulfillment();
   const { customer, resetCustomer } = useCustomer();
   const { items, totalPrice, totalItem, clearCart } = useCart();
   const { createOrder, resetOrder } = useOrder();
@@ -32,6 +34,7 @@ function Confirm() {
     setIsSubmitting(true);
     try {
       await createOrder({
+        fulfillment,
         customer,
         items,
         totalAmount,
@@ -55,7 +58,7 @@ function Confirm() {
     queryFn: getStores,
   });
   const storeName = stores?.find(
-    (s) => String(s.id) === customer.pickupStoreId,
+    (s) => s.id === fulfillment.pickupStoreId,
   )?.name;
 
   return (
@@ -140,11 +143,11 @@ function Confirm() {
         <p className="py-2">
           受取方法:{' '}
           <span className="font-black">
-            {customer.deliveryType === 'pickup' ? '店舗受取' : '配達'}
+            {fulfillment.deliveryType === 'pickup' ? '店舗受取' : '配達'}
           </span>
         </p>
 
-        {customer.deliveryType === 'pickup' && (
+        {fulfillment.deliveryType === 'pickup' && (
           <div className="py-2">
             <p>
               受取店舗: <span className="font-black">{storeName}</span>
@@ -152,7 +155,7 @@ function Confirm() {
           </div>
         )}
 
-        {customer.deliveryType === 'delivery' && (
+        {fulfillment.deliveryType === 'delivery' && (
           <div>
             <Label className="py-2" id="deliveryPostalCode">
               郵便番号

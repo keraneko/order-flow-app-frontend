@@ -5,7 +5,6 @@ import { getStores } from '@/api/stores';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   Select,
   SelectContent,
@@ -16,10 +15,12 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/context/cart/useCart';
 import { useCustomer } from '@/context/customer/useCustomer';
+import { useFulfillment } from '@/context/fulfillment/useFulfillment';
 
 function Customers() {
   //errors
   const { items } = useCart();
+  const { fulfillment, updateFulfillment } = useFulfillment();
   const [errors, setErrors] = useState<{
     orderStore?: string;
     name?: string;
@@ -32,19 +33,16 @@ function Customers() {
   const validate = () => {
     const nextErrors: typeof errors = {};
 
-    if (!customer.orderStoreId)
-      nextErrors.orderStore = '受注店舗を選択してください';
-
     if (!customer.name.trim()) nextErrors.name = '名前は必須です';
 
     if (!customer.phone.trim()) nextErrors.phone = '電話番号は必須です';
 
-    if (customer.deliveryType === 'pickup') {
-      if (!customer.pickupStoreId)
+    if (fulfillment.deliveryType === 'pickup') {
+      if (!fulfillment.pickupStoreId)
         nextErrors.pickupStore = '受取店舗を選択してください';
     }
 
-    if (customer.deliveryType === 'delivery') {
+    if (fulfillment.deliveryType === 'delivery') {
       if (!customer.deliveryAddress)
         nextErrors.deliveryAddress = '配達先住所は必須です';
 
@@ -74,13 +72,6 @@ function Customers() {
     //errors削除
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
-  const handleDeliveryTypeChange = (value: 'pickup' | 'delivery') => {
-    if (value === 'pickup') {
-      updateCustomer({ deliveryType: value });
-    } else {
-      updateCustomer({ deliveryType: value });
-    }
-  };
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['stores'],
@@ -94,25 +85,7 @@ function Customers() {
   return (
     <>
       {errors.items && <p className="text-sm text-red-500">{errors.items}</p>}
-      <p>受注店舗</p>
-      <Select
-        value={customer.orderStoreId ?? ''}
-        onValueChange={(value) => {
-          updateCustomer({ orderStoreId: value });
-          setErrors((prev) => ({ ...prev, orderStore: undefined }));
-        }}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="受注店舗" />
-        </SelectTrigger>
-        <SelectContent>
-          {(data ?? []).map((store) => (
-            <SelectItem key={store.id} value={String(store.id)}>
-              {store.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+
       {errors.orderStore && (
         <p className="text-sm text-red-500">{errors.orderStore}</p>
       )}
@@ -136,26 +109,17 @@ function Customers() {
       {/* 郵便番号 */}
       {/* 納品日 */}
       <Label className="py-2">受取方法</Label>
-      <RadioGroup
-        value={customer.deliveryType}
-        onValueChange={handleDeliveryTypeChange}
-      >
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="pickup" id="pickup" />
-          <Label htmlFor="pickup">店舗</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="delivery" id="delivery" />
-          <Label htmlFor="delivery">配達</Label>
-        </div>
-      </RadioGroup>
 
-      {customer.deliveryType === 'pickup' && (
+      {fulfillment.deliveryType === 'pickup' && (
         <div className="py-2">
           <Select
-            value={customer.pickupStoreId ?? ''}
+            value={
+              fulfillment.orderStoreId !== null
+                ? String(fulfillment.pickupStoreId)
+                : ''
+            }
             onValueChange={(value) => {
-              updateCustomer({ pickupStoreId: value });
+              updateFulfillment({ pickupStoreId: Number(value) });
               setErrors((prev) => ({ ...prev, pickupStore: undefined }));
             }}
           >
@@ -176,7 +140,7 @@ function Customers() {
         </div>
       )}
 
-      {customer.deliveryType === 'delivery' && (
+      {fulfillment.deliveryType === 'delivery' && (
         <div>
           <Label htmlFor="deliveryPostalCode" className="py-2">
             郵便番号
