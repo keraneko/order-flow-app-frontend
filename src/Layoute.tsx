@@ -23,8 +23,8 @@ const Layout = () => {
       </header>
       <nav className="flex list-none gap-4 p-4">
         <li>
-          <NavLink to="/order/new">
-            <Button variant="secondary">orderNew</Button>
+          <NavLink to="/order/options">
+            <Button variant="secondary">orderOptions</Button>
           </NavLink>
         </li>
         <li>

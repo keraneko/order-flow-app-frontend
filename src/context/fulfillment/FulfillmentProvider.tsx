@@ -23,10 +23,12 @@ export const FulfillmentProvider = ({
     setFulfillment((prev) => {
       const next: FulfillmentType = { ...prev, ...data };
 
-      const switchedToPickup =
-        prev.deliveryType !== 'pickup' && next.deliveryType === 'pickup';
+      const orderStoreIdChanged = prev.orderStoreId !== next.orderStoreId; //orderStoreidが変更したらture 変更しなければfalse
 
-      if (!switchedToPickup) return next;
+      const switchedToPickup =
+        prev.deliveryType !== 'pickup' && next.deliveryType === 'pickup'; //delivery=>pickupであればture それ以外はfalse
+
+      if (!switchedToPickup && !orderStoreIdChanged) return next;
 
       if (next.pickupStoreId !== null) return next;
 
@@ -37,8 +39,14 @@ export const FulfillmentProvider = ({
     });
   };
 
+  const resetFulfillment = () => {
+    setFulfillment(initialFulfillment);
+  };
+
   return (
-    <FulfillmentContext.Provider value={{ fulfillment, updateFulfillment }}>
+    <FulfillmentContext.Provider
+      value={{ fulfillment, updateFulfillment, resetFulfillment }}
+    >
       {children}
     </FulfillmentContext.Provider>
   );

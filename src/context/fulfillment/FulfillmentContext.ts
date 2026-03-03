@@ -11,6 +11,7 @@ export interface FulfillmentType {
 interface FulfillmentContextType {
   fulfillment: FulfillmentType;
   updateFulfillment: (data: Partial<FulfillmentType>) => void;
+  resetFulfillment: () => void;
 }
 
 export const FulfillmentContext = createContext<FulfillmentContextType | null>(
