@@ -204,7 +204,7 @@ function Customers() {
         <Button
           type="submit"
           className="mt-4 h-15 w-full bg-rose-500 text-xl font-medium hover:bg-rose-800"
-          // disabled={items.length === 0}
+          disabled={items.length === 0}
         >
           次へ進む
         </Button>
