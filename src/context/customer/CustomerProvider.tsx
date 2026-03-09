@@ -1,15 +1,12 @@
 import { useState } from 'react';
+import { type OrderCustomerInput } from '@/types/customer';
 
-import type { OrderCustomerInput } from './CustomerContext';
 import { CustomerContext } from './CustomerContext';
 
 const initialCustomer: OrderCustomerInput = {
   name: '',
   address: '',
   phone: '',
-  orderStoreId: '',
-  deliveryType: 'pickup',
-  pickupStoreId: '',
   deliveryAddress: '',
   deliveryPostalCode: '',
   note: '',

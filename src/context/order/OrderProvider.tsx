@@ -7,22 +7,59 @@ import { OrderContext } from './OrderContext';
 export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const [order, setOrder] = useState<Order | null>(null);
 
-  const createOrder = async (order: Order) => {
-    setOrder(order);
-    const customer = { ...order.customer };
+  const buildOrderPayload = (order: Order) => {
+    const { customer, fulfillment, items, totalAmount } = order;
 
-    if (customer.deliveryType === 'pickup') {
-      delete customer.deliveryAddress;
-      delete customer.deliveryPostalCode;
-    } else {
-      delete customer.pickupStoreId;
-    }
+    const customerPayload =
+      fulfillment.deliveryType === 'pickup'
+        ? {
+            name: customer.name,
+            address: customer.address,
+            phone: customer.phone,
+            note: customer.note,
+          }
+        : {
+            name: customer.name,
+            address: customer.address,
+            phone: customer.phone,
+            deliveryPostalCode: customer.deliveryPostalCode,
+            deliveryAddress: customer.deliveryAddress,
+            note: customer.note,
+          };
 
-    const payload = {
-      customer,
-      items: order.items,
-      totalAmount: order.totalAmount,
+    const fulfillmentPayload =
+      fulfillment.deliveryType === 'pickup'
+        ? {
+            orderStoreId: fulfillment.orderStoreId,
+            pickupStoreId: fulfillment.pickupStoreId,
+            deliveryType: fulfillment.deliveryType,
+            deliveryDate: fulfillment.deliveryDate,
+            deliveryFrom: fulfillment.deliveryFrom,
+          }
+        : {
+            orderStoreId: fulfillment.orderStoreId,
+            deliveryType: fulfillment.deliveryType,
+            deliveryDate: fulfillment.deliveryDate,
+            deliveryFrom: fulfillment.deliveryFrom,
+            deliveryTo: fulfillment.deliveryTo,
+          };
+
+    const itemsPayload = items.map((i) => ({
+      productId: i.id,
+      price: i.price,
+      quantity: i.quantity,
+    }));
+
+    return {
+      customer: customerPayload,
+      fulfillment: fulfillmentPayload,
+      items: itemsPayload,
+      totalAmount,
     };
+  };
+
+  const createOrder = async (order: Order) => {
+    const payload = buildOrderPayload(order);
 
     const res = await fetch('/api/orders', {
       method: 'POST',
@@ -40,6 +77,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
       }
       throw new Error(`HTTP ${res.status}`);
     }
+    setOrder(order);
   };
 
   const resetOrder = () => {

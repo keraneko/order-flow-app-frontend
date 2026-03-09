@@ -17,10 +17,12 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/context/cart/useCart';
 import { useCustomer } from '@/context/customer/useCustomer';
+import { useFulfillment } from '@/context/fulfillment/useFulfillment';
 import { useOrder } from '@/context/order/useOrder';
 
 function Confirm() {
   const navigate = useNavigate();
+  const { fulfillment, resetFulfillment } = useFulfillment();
   const { customer, resetCustomer } = useCustomer();
   const { items, totalPrice, totalItem, clearCart } = useCart();
   const { createOrder, resetOrder } = useOrder();
@@ -32,11 +34,13 @@ function Confirm() {
     setIsSubmitting(true);
     try {
       await createOrder({
+        fulfillment,
         customer,
         items,
         totalAmount,
       });
       toast.success('注文を確定しました');
+      resetFulfillment();
       resetOrder();
       clearCart();
       resetCustomer();
@@ -55,12 +59,12 @@ function Confirm() {
     queryFn: getStores,
   });
   const storeName = stores?.find(
-    (s) => String(s.id) === customer.pickupStoreId,
+    (s) => s.id === fulfillment.pickupStoreId,
   )?.name;
 
   return (
     <>
-      <div className="flex">
+      <div className="flex pb-4">
         <Table className="">
           <TableHeader>
             <TableRow>
@@ -115,13 +119,47 @@ function Confirm() {
             >
               注文を確定する
             </Button>
-            <Link to="/carts">
+            <Link to="/order/cart">
               <Button className="h-15 w-full bg-gray-500 text-xl font-medium hover:bg-gray-800">
                 カートに戻る
               </Button>
             </Link>
           </div>
         </div>
+      </div>
+      <div className="grid grid-cols-3 gap-4 border-t py-4">
+        <div>納品日:{fulfillment.deliveryDate}</div>
+        <div>
+          <p>
+            納品方法:{' '}
+            <span className="font-black">
+              {fulfillment.deliveryType === 'pickup'
+                ? '店舗で受け渡し'
+                : '配達'}
+            </span>
+          </p>
+        </div>
+        <div>
+          納品時間:
+          {fulfillment.deliveryType === 'pickup'
+            ? fulfillment.deliveryFrom
+            : `${fulfillment.deliveryFrom}〜${fulfillment.deliveryTo}`}
+        </div>
+      </div>
+      <div className="pb-4">
+        {fulfillment.deliveryType === 'pickup' && (
+          <div className="py-2">
+            <p>
+              納品先: <span className="font-black">{storeName}</span>
+            </p>
+          </div>
+        )}
+        {fulfillment.deliveryType === 'delivery' && (
+          <div className="">
+            <div>郵便番号:{customer.deliveryPostalCode}</div>
+            <div>配達先住所:{customer.deliveryAddress}</div>
+          </div>
+        )}
       </div>
       <div>
         <p>お客様情報</p>
@@ -137,33 +175,7 @@ function Confirm() {
           電話番号
         </Label>
         <Input name="phone" value={customer.phone} readOnly />
-        <p className="py-2">
-          受取方法:{' '}
-          <span className="font-black">
-            {customer.deliveryType === 'pickup' ? '店舗受取' : '配達'}
-          </span>
-        </p>
 
-        {customer.deliveryType === 'pickup' && (
-          <div className="py-2">
-            <p>
-              受取店舗: <span className="font-black">{storeName}</span>
-            </p>
-          </div>
-        )}
-
-        {customer.deliveryType === 'delivery' && (
-          <div>
-            <Label className="py-2" id="deliveryPostalCode">
-              郵便番号
-            </Label>
-            <Input value={customer.deliveryPostalCode} readOnly />
-            <Label className="py-2" id="deliveryAddress">
-              配達先住所
-            </Label>
-            <Input value={customer.deliveryAddress} readOnly />
-          </div>
-        )}
         <Label className="py-2" id="note">
           備考
         </Label>

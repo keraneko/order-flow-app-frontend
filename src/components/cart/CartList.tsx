@@ -113,7 +113,7 @@ function CartList() {
       return;
     }
     setCartError(null);
-    void navigate('/customers');
+    void navigate('/order/customer');
   };
 
   return (

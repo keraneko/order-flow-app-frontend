@@ -1,9 +1,10 @@
 import { createContext } from 'react';
+import type { CartItem } from '@/context/cart/CartContext';
 import type { OrderCustomerInput } from '@/context/customer/CustomerContext';
-
-import type { CartItem } from '../cart/CartContext';
+import type { FulfillmentType } from '@/context/fulfillment/FulfillmentContext';
 
 export interface Order {
+  fulfillment: FulfillmentType;
   customer: OrderCustomerInput;
   items: CartItem[];
   totalAmount: number;
