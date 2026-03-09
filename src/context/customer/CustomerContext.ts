@@ -1,13 +1,5 @@
 import { createContext } from 'react';
-
-export interface OrderCustomerInput {
-  name: string;
-  address: string;
-  phone: string;
-  deliveryAddress?: string;
-  deliveryPostalCode?: string;
-  note?: string;
-}
+import { type OrderCustomerInput } from '@/types/customer';
 
 interface CustomerContextType {
   customer: OrderCustomerInput;
