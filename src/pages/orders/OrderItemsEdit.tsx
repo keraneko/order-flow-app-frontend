@@ -25,6 +25,19 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
   const queryClient = useQueryClient();
   const [items, setItems] = useState<OrderItem[]>(initialItems);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormErrors] = useState<string | null>(null);
+
+  const validate = () => {
+    if (items.some((i) => i.quantity < 1)) {
+      return '数量は1以上で入力してください';
+    }
+
+    if (items.length === 0) {
+      return '商品を選択してください';
+    }
+
+    return null;
+  };
 
   const handleChange = (id: number, newQuantity: number) => {
     setItems((prev) =>
@@ -34,11 +47,16 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
     );
   };
 
+  const removeItem = (id: number) => {
+    setItems((prev) => prev.filter((item) => item.productId !== id));
+  };
+
   const totalPrice = items.reduce((total, item) => {
     return total + item.price * item.quantity;
   }, 0);
 
   const handleSubmit = async () => {
+    if (items.length === 0) return;
     const itemsPayload = items.map((i) => ({
       product_id: i.productId,
       quantity: i.quantity,
@@ -69,12 +87,20 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+
+          const error = validate();
+          setFormErrors(error);
+
+          if (error) {
+            return;
+          }
           void handleSubmit();
         }}
       >
+        {formError && <span className="text-sm text-red-500">{formError}</span>}
         {items.map((item) => (
           <div key={item.productId}>
-            <div className="grid grid-cols-4 border-b py-2 text-center">
+            <div className="grid grid-cols-5 border-b py-2 text-center">
               <div>{item.productName}</div>
               <div>{formatYen(item.price)}</div>
               <Input
@@ -86,6 +112,17 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
                 }}
               />
               <div>{formatYen(item.quantity * item.price)}</div>
+              <div>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => {
+                    removeItem(item.productId);
+                  }}
+                >
+                  削除する
+                </Button>
+              </div>
             </div>
           </div>
         ))}
@@ -94,9 +131,18 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
           <span>{formatYen(totalPrice)}</span>
         </div>
         <div className="mt-10 text-center">
-          <Button disabled={isSubmitting} variant="outline">
+          <Button
+            type="submit"
+            disabled={isSubmitting || items.length === 0}
+            variant="outline"
+          >
             変更を保存する
           </Button>
+          {items.length === 0 && (
+            <div className="mt-5 text-sm text-red-400">
+              商品を選択してください
+            </div>
+          )}
         </div>
       </form>
     </>
