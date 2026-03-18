@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { getOrder, updateOrderItems } from '@/api/orders';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,7 @@ interface OrderItemsEditorProps {
 
 function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [items, setItems] = useState<OrderItem[]>(initialItems);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -49,6 +50,11 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
     setIsSubmitting(true);
     try {
       await updateOrderItems(orderId, payload);
+      await queryClient.invalidateQueries({
+        queryKey: ['ordersItem', orderId],
+        exact: true,
+      });
+
       toast.success('更新に成功しました');
       void navigate(`/orders/${orderId}`);
     } catch {
@@ -99,6 +105,7 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
 
 export default function OrderItemsEdit() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const orderId = Number(id);
   const enabled = Number.isFinite(orderId) && orderId > 0;
 
@@ -130,7 +137,15 @@ export default function OrderItemsEdit() {
 
   return (
     <>
-      <span>{id}番目のitems</span>
+      <button
+        onClick={() => {
+          void navigate(-1);
+        }}
+        className="mb-3 border-b text-xs text-gray-500 hover:text-blue-400"
+      >
+        ←戻る
+      </button>
+
       <OrderItemsEditor initialItems={initialItems} orderId={orderId} />
     </>
   );
