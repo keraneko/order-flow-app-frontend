@@ -10,6 +10,7 @@ import Carts from './pages/order-flow/Carts';
 import Confirm from './pages/order-flow/Confirm';
 import Customers from './pages/order-flow/Customers';
 import OrderIndexPage from './pages/orders/IndexOrders';
+import OrderItemsEdit from './pages/orders/OrderItemsEdit';
 import OrderShowPage from './pages/orders/OrderShow';
 import CreateProductPage from './pages/products/CreateProduct';
 import ProductsPage from './pages/products/IndexProducts';
@@ -42,6 +43,7 @@ export default function AppRoutes() {
           <Route path="/stores/:storeId/edit" element={<UpdateStorePage />} />
           <Route path="/orders" element={<OrderIndexPage />} />
           <Route path="/orders/:id" element={<OrderShowPage />} />
+          <Route path="/orders/:id/items/edit" element={<OrderItemsEdit />} />
         </Route>
       </Routes>
     </ErrorBoundary>

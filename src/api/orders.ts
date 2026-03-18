@@ -87,3 +87,30 @@ export async function getOrder(id: number): Promise<OrderShow> {
 
   return toOrderShow(data);
 }
+
+export interface UpdateOrderItemsPayload {
+  items: {
+    product_id: number;
+    quantity: number;
+  }[];
+}
+export async function updateOrderItems(
+  orderId: number,
+  payload: UpdateOrderItemsPayload,
+) {
+  const res = await fetch(`/api/orders/${orderId}/items`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      // apiの処理を書いてる途中で終わってます
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    throw new Error('注文の更新に失敗しました');
+  }
+
+  return;
+}

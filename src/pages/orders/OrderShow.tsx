@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { MapPin, Phone, User } from 'lucide-react';
 import { getOrder } from '@/api/orders';
@@ -97,7 +97,17 @@ function IndexOrderPageTest() {
         </div>
 
         {/* 注文詳細 */}
-        <OrderItemsTable order={order} />
+        <div>
+          <OrderItemsTable order={order} />
+          <div className="text-right">
+            <Link
+              to={`/orders/${order.id}/items/edit`}
+              className="border-b text-sm text-violet-600"
+            >
+              注文商品を変更する→
+            </Link>
+          </div>
+        </div>
       </div>
     </>
   );
