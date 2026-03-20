@@ -15,3 +15,9 @@ export interface Product {
   isActive: boolean;
   isVisible: boolean;
 }
+
+export interface OrderItemsCandidateProduct {
+  id: number;
+  name: string;
+  price: number;
+}

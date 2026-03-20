@@ -6,6 +6,7 @@ import { getOrder, updateOrderItems } from '@/api/orders';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { type OrderShow } from '@/types/order';
+import type { OrderItemsCandidateProduct } from '@/types/product';
 import { formatYen } from '@/utils/formatYen';
 
 interface OrderItem {
@@ -18,15 +19,27 @@ interface OrderItem {
 interface OrderItemsEditorProps {
   initialItems: OrderItem[];
   orderId: number;
+  products: OrderItemsCandidateProduct[];
 }
 
-function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
+interface OrderProductsApi {
+  id: number;
+  name: string;
+  price: number;
+}
+
+function OrderItemsEditor({
+  initialItems,
+  orderId,
+  products,
+}: OrderItemsEditorProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [items, setItems] = useState<OrderItem[]>(initialItems);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormErrors] = useState<string | null>(null);
 
+  //orderItemsロジック
   const validate = () => {
     if (items.some((i) => i.quantity < 1)) {
       return '数量は1以上で入力してください';
@@ -81,6 +94,40 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
       setIsSubmitting(false);
     }
   };
+  //productロジック
+  type Draftquantity = Record<number, number>;
+
+  const [draftQuantities, setDraftQuantities] = useState<Draftquantity>({});
+  const filteredProduct = products.filter(
+    (p) => !items.some((item) => item.productId === p.id),
+  );
+
+  const handleDraftChange = (productId: number, quantity: number) => {
+    setDraftQuantities((prev) => ({ ...prev, [productId]: quantity }));
+  };
+  // 次はdraftquantityをitemsStateに入れるsetItems(draftquantity)かな？
+
+  const handleAddProduct = (product: OrderProductsApi) => {
+    const quantity = draftQuantities[product.id];
+
+    if (quantity === undefined || quantity < 1) return;
+    setItems((prev) => [
+      ...prev,
+      {
+        productId: product.id,
+        productName: product.name,
+        price: product.price,
+        quantity,
+      },
+    ]);
+
+    setDraftQuantities((prev) => {
+      const next = { ...prev };
+      delete next[product.id];
+
+      return next;
+    });
+  };
 
   return (
     <>
@@ -97,6 +144,27 @@ function OrderItemsEditor({ initialItems, orderId }: OrderItemsEditorProps) {
           void handleSubmit();
         }}
       >
+        {filteredProduct.map((product) => (
+          <div key={product.id} className="grid grid-cols-4 gap-4 py-2">
+            <div>{product.name}</div>
+            <div>{product.price}</div>
+            <div>
+              <Input
+                type="number"
+                className="w-20"
+                onChange={(e) =>
+                  handleDraftChange(product.id, Number(e.target.value))
+                }
+              />
+            </div>
+            <div>
+              <Button type="button" onClick={() => handleAddProduct(product)}>
+                追加する
+              </Button>
+            </div>
+          </div>
+        ))}
+
         {formError && <span className="text-sm text-red-500">{formError}</span>}
         {items.map((item) => (
           <div key={item.productId}>
@@ -157,20 +225,52 @@ export default function OrderItemsEdit() {
 
   const {
     data: order,
-    isPending,
-    isError,
-    error,
+    isPending: isOrderPending,
+    isError: isOrderError,
+    error: orderError,
   } = useQuery<OrderShow>({
     queryKey: ['ordersItem', orderId],
     enabled,
     queryFn: () => getOrder(orderId),
   });
 
-  if (isPending) return <span>読み込み中...</span>;
+  const {
+    data: products,
+    isLoading: isProductsLoading,
+    isError: isProductError,
+    error: productsError,
+  } = useQuery<OrderItemsCandidateProduct[]>({
+    queryKey: ['orderItemsProducts'],
+    queryFn: async () => {
+      const res = await fetch('/api/products');
 
-  if (isError) return <span>エラーコード: {error.message}</span>;
+      if (!res.ok) throw new Error(`HTTP${res.status}`);
+      const data = (await res.json()) as OrderProductsApi[];
 
-  if (!order) return <span>データがありません</span>;
+      const products = data.map((p) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+      }));
+
+      return products;
+    },
+  });
+
+  console.log(products);
+
+  if (isOrderPending) return <span>order読み込み中...</span>;
+
+  if (isProductsLoading) return <span>product読み込み中...</span>;
+
+  if (isOrderError) return <span>orderエラーコード: {orderError.message}</span>;
+
+  if (isProductError)
+    return <span>productsエラーコード: {productsError.message}</span>;
+
+  if (!order) return <span>orderデータがありません</span>;
+
+  if (!products) return <span>productsデータがありません</span>;
 
   const orderItemsApi: OrderItem[] = order.items.map((i) => ({
     productId: i.product.id,
@@ -192,7 +292,11 @@ export default function OrderItemsEdit() {
         ←戻る
       </button>
 
-      <OrderItemsEditor initialItems={initialItems} orderId={orderId} />
+      <OrderItemsEditor
+        initialItems={initialItems}
+        orderId={orderId}
+        products={products}
+      />
     </>
   );
 }
