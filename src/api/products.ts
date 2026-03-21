@@ -1,4 +1,4 @@
-import { type Product } from '@/types/product';
+import { type OrderItemsCandidateProduct, type Product } from '@/types/product';
 
 export interface ProductApi {
   id: number;
@@ -25,4 +25,19 @@ export async function getProducts(): Promise<Product[]> {
   const data = (await res.json()) as ProductApi[];
 
   return data.map(toProduct);
+}
+
+export async function getOrderProducts() {
+  const res = await fetch('/api/products');
+
+  if (!res.ok) throw new Error(`HTTP${res.status}`);
+  const data = (await res.json()) as OrderItemsCandidateProduct[];
+
+  const products = data.map((p) => ({
+    id: p.id,
+    name: p.name,
+    price: p.price,
+  }));
+
+  return products;
 }

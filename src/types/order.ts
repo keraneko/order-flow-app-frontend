@@ -37,3 +37,10 @@ export interface Order {
   status: OrderStatus;
   totalAmount: number;
 }
+
+export interface OrderEditItem {
+  productId: number;
+  productName: string;
+  quantity: number;
+  price: number;
+}
