@@ -5,6 +5,14 @@ import { toast } from 'sonner';
 import { getOrder, updateOrderItems } from '@/api/orders';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { type OrderShow } from '@/types/order';
 import type { OrderItemsCandidateProduct } from '@/types/product';
 import { formatYen } from '@/utils/formatYen';
@@ -28,6 +36,7 @@ interface OrderProductsApi {
   price: number;
 }
 
+//* ----------- OrderItemsEditor -------- *//
 function OrderItemsEditor({
   initialItems,
   orderId,
@@ -105,12 +114,11 @@ function OrderItemsEditor({
   const handleDraftChange = (productId: number, quantity: number) => {
     setDraftQuantities((prev) => ({ ...prev, [productId]: quantity }));
   };
-  // 次はdraftquantityをitemsStateに入れるsetItems(draftquantity)かな？
 
   const handleAddProduct = (product: OrderProductsApi) => {
-    const quantity = draftQuantities[product.id];
+    const quantity = draftQuantities[product.id] ?? 1;
 
-    if (quantity === undefined || quantity < 1) return;
+    if (quantity < 1) return;
     setItems((prev) => [
       ...prev,
       {
@@ -131,6 +139,7 @@ function OrderItemsEditor({
 
   return (
     <>
+      {/* ----------- From -------- */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -144,61 +153,118 @@ function OrderItemsEditor({
           void handleSubmit();
         }}
       >
-        {filteredProduct.map((product) => (
-          <div key={product.id} className="grid grid-cols-4 gap-4 py-2">
-            <div>{product.name}</div>
-            <div>{product.price}</div>
-            <div>
-              <Input
-                type="number"
-                className="w-20"
-                onChange={(e) =>
-                  handleDraftChange(product.id, Number(e.target.value))
-                }
-              />
-            </div>
-            <div>
-              <Button type="button" onClick={() => handleAddProduct(product)}>
-                追加する
-              </Button>
-            </div>
-          </div>
-        ))}
-
         {formError && <span className="text-sm text-red-500">{formError}</span>}
-        {items.map((item) => (
-          <div key={item.productId}>
-            <div className="grid grid-cols-5 border-b py-2 text-center">
-              <div>{item.productName}</div>
-              <div>{formatYen(item.price)}</div>
-              <Input
-                type="number"
-                className="w-15 text-center"
-                value={item.quantity}
-                onChange={(e) => {
-                  handleChange(item.productId, Number(e.target.value));
-                }}
-              />
-              <div>{formatYen(item.quantity * item.price)}</div>
-              <div>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => {
-                    removeItem(item.productId);
-                  }}
-                >
-                  削除する
-                </Button>
-              </div>
-            </div>
-          </div>
-        ))}
-        <div className="text-right">
-          <span>合計金額</span>
-          <span>{formatYen(totalPrice)}</span>
+
+        {/* ----------- ItemsUI -------- */}
+        {items.length === 0 && (
+          <div className="text-sm text-red-400">商品を選択してください</div>
+        )}
+        <div className="my-2 flex">
+          <span className="text- border-b text-base font-bold">
+            現在の注文内容
+          </span>
         </div>
-        <div className="mt-10 text-center">
+        <Table className="border">
+          <TableHeader>
+            <TableRow className="bg-blue-50 hover:bg-blue-50">
+              <TableHead className="">商品名</TableHead>
+              <TableHead className="">単価</TableHead>
+              <TableHead>数量</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {items.map((item) => (
+              <TableRow key={item.productId} className="hover:bg-transparent">
+                <TableCell className="">{item.productName}</TableCell>
+                <TableCell>{formatYen(item.price)}</TableCell>
+                <TableCell>
+                  <Input
+                    type="number"
+                    className="w-13 text-center"
+                    value={item.quantity}
+                    onChange={(e) => {
+                      handleChange(item.productId, Number(e.target.value));
+                    }}
+                  />
+                  <span className="ml-2">個</span>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => {
+                      removeItem(item.productId);
+                    }}
+                  >
+                    削除する
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <div className="px-2 py-1 text-right">
+          <span className="border-b">
+            <span className="mr-2">合計金額 </span>
+            <span className="font-bold">{formatYen(totalPrice)}</span>
+          </span>
+        </div>
+
+        {/* ↑↑↑↑↑↑↑↑↑↑ ItemsUI ↑↑↑↑↑↑↑↑↑↑↑*/}
+
+        {/* ----------- draftProductItemsUI -------- */}
+        <div className="my-2 flex">
+          <span className="text- border-b text-base font-bold">
+            追加可能な注文
+          </span>
+        </div>
+        <Table className="border">
+          <TableHeader>
+            <TableRow className="bg-blue-50 hover:bg-blue-50">
+              <TableHead className="text-shadow-accent-foreground">
+                商品名
+              </TableHead>
+              <TableHead className="">単価</TableHead>
+              <TableHead>数量</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {filteredProduct.map((product) => (
+              <TableRow key={product.id} className="hover:bg-transparent">
+                <TableCell className="">{product.name}</TableCell>
+                <TableCell>{formatYen(product.price)}</TableCell>
+                <TableCell>
+                  {/* onBlurで後日調整 */}
+                  <Input
+                    type="number"
+                    className="w-13 text-center"
+                    value={draftQuantities[product.id] ?? 1}
+                    onChange={(e) =>
+                      handleDraftChange(product.id, Number(e.target.value))
+                    }
+                  />
+                  <span className="ml-2">個</span>
+                </TableCell>
+                <TableCell>
+                  <div>
+                    <Button
+                      type="button"
+                      onClick={() => handleAddProduct(product)}
+                    >
+                      追加する
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        <div className="my-5 text-center">
           <Button
             type="submit"
             disabled={isSubmitting || items.length === 0}
@@ -206,16 +272,13 @@ function OrderItemsEditor({
           >
             変更を保存する
           </Button>
-          {items.length === 0 && (
-            <div className="mt-5 text-sm text-red-400">
-              商品を選択してください
-            </div>
-          )}
         </div>
       </form>
     </>
   );
 }
+
+//* ----------- OrderItemsEdit -------- *//
 
 export default function OrderItemsEdit() {
   const { id } = useParams();
