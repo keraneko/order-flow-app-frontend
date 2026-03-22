@@ -25,6 +25,9 @@ export interface OrderShow {
   pickupStore: StoreSummary | null;
   deliveryAddress?: string;
   deliveryPostalCode?: string;
+  deliveryDate: string;
+  deliveryFrom: string;
+  deliveryTo: string;
   note?: string;
   totalAmount: number;
   customer: Customer;
