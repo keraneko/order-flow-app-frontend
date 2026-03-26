@@ -21,8 +21,8 @@ function OrderItemsTable({ order }: OrderItemsTableProps) {
         <TableHeader>
           <TableRow className="bg-blue-50 hover:bg-blue-50">
             <TableHead className="">商品名</TableHead>
-            <TableHead>数量</TableHead>
             <TableHead className="">単価</TableHead>
+            <TableHead>数量</TableHead>
             <TableHead className="">小計</TableHead>
           </TableRow>
         </TableHeader>
@@ -31,8 +31,8 @@ function OrderItemsTable({ order }: OrderItemsTableProps) {
           {order.items.map((item) => (
             <TableRow key={item.product.id} className="hover:bg-transparent">
               <TableCell className="">{item.product.name}</TableCell>
-              <TableCell>{item.quantity}個</TableCell>
               <TableCell>{formatYen(item.unitPrice)}</TableCell>
+              <TableCell>{item.quantity}個</TableCell>
               <TableCell className="">
                 {formatYen(item.unitPrice * item.quantity)}
               </TableCell>

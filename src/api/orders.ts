@@ -58,6 +58,9 @@ interface OrderApiShow {
   pickup_store: StoreSummary | null;
   delivery_address?: string;
   delivery_postal_code?: string;
+  delivery_date: string;
+  delivery_from: string;
+  delivery_to: string;
   note?: string;
   customer: CustomerApi;
   items: OrderItemsApi[];
@@ -71,6 +74,9 @@ const toOrderShow = (o: OrderApiShow): OrderShow => ({
   pickupStore: o.pickup_store,
   deliveryAddress: o.delivery_address,
   deliveryPostalCode: o.delivery_postal_code,
+  deliveryDate: o.delivery_date,
+  deliveryFrom: o.delivery_from,
+  deliveryTo: o.delivery_to,
   note: o.note,
   customer: toCustomer(o.customer),
   items: o.items.map(toOrderItems),
@@ -86,4 +92,39 @@ export async function getOrder(id: number): Promise<OrderShow> {
   const data = (await res.json()) as OrderApiShow;
 
   return toOrderShow(data);
+}
+
+export interface UpdateOrderItemsPayload {
+  items: {
+    product_id: number;
+    quantity: number;
+  }[];
+}
+export async function updateOrderItems(
+  orderId: number,
+  payload: UpdateOrderItemsPayload,
+) {
+  const res = await fetch(`/api/orders/${orderId}/items`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      // apiの処理を書いてる途中で終わってます
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const data: unknown = await res.json();
+    const message =
+      typeof data === 'object' &&
+      data !== null &&
+      'message' in data &&
+      typeof data.message === 'string'
+        ? data.message
+        : '注文の更新に失敗しました';
+    throw new Error(message);
+  }
+
+  return;
 }

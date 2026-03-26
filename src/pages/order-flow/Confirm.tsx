@@ -19,6 +19,7 @@ import { useCart } from '@/context/cart/useCart';
 import { useCustomer } from '@/context/customer/useCustomer';
 import { useFulfillment } from '@/context/fulfillment/useFulfillment';
 import { useOrder } from '@/context/order/useOrder';
+import { formatDay } from '@/utils/formatDay';
 
 function Confirm() {
   const navigate = useNavigate();
@@ -128,7 +129,7 @@ function Confirm() {
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4 border-t py-4">
-        <div>納品日:{fulfillment.deliveryDate}</div>
+        <div>納品日:{formatDay(fulfillment.deliveryDate)}</div>
         <div>
           <p>
             納品方法:{' '}

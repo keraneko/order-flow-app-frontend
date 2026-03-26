@@ -25,6 +25,9 @@ export interface OrderShow {
   pickupStore: StoreSummary | null;
   deliveryAddress?: string;
   deliveryPostalCode?: string;
+  deliveryDate: string;
+  deliveryFrom: string;
+  deliveryTo: string;
   note?: string;
   totalAmount: number;
   customer: Customer;
@@ -36,4 +39,11 @@ export interface Order {
   orderedAt: string;
   status: OrderStatus;
   totalAmount: number;
+}
+
+export interface OrderEditItem {
+  productId: number;
+  productName: string;
+  quantity: number;
+  price: number;
 }
