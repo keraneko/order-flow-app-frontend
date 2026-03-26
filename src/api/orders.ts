@@ -115,7 +115,15 @@ export async function updateOrderItems(
   });
 
   if (!res.ok) {
-    throw new Error('注文の更新に失敗しました');
+    const data: unknown = await res.json();
+    const message =
+      typeof data === 'object' &&
+      data !== null &&
+      'message' in data &&
+      typeof data.message === 'string'
+        ? data.message
+        : '注文の更新に失敗しました';
+    throw new Error(message);
   }
 
   return;

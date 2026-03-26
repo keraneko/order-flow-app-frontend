@@ -79,8 +79,9 @@ function OrderItemsEditor({
 
       toast.success('更新に成功しました');
       void navigate(`/orders/${orderId}`);
-    } catch {
-      toast.error('更新に失敗しました');
+    } catch (e) {
+      const message = e instanceof Error ? e.message : '更新に失敗しました';
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

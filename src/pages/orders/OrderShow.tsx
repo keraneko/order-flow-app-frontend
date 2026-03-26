@@ -44,7 +44,7 @@ function IndexOrderPageTest() {
       <h2 className="mb-5 border-b">注文番号 #{order.id}</h2>
 
       {/* 注文サマリ */}
-      <OrderSummary order={order} />
+      <OrderSummary order={order} orderId={orderId} />
 
       {/* 顧客情報 ＆ 配送情報 */}
       <div className="grid grid-cols-2 gap-5">
@@ -124,14 +124,16 @@ function IndexOrderPageTest() {
         {/* 注文詳細 */}
         <div>
           <OrderItemsTable order={order} />
-          <div className="text-right">
-            <Link
-              to={`/orders/${order.id}/items/edit`}
-              className="border-b text-sm text-violet-600"
-            >
-              注文商品を変更する→
-            </Link>
-          </div>
+          {order.status === 'received' && (
+            <div className="text-right">
+              <Link
+                to={`/orders/${order.id}/items/edit`}
+                className="border-b text-sm text-violet-600"
+              >
+                注文商品を変更する→
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>
