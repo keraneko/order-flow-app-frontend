@@ -110,7 +110,7 @@ function OrderSummary({ order, orderId }: OrderSummaryProps) {
                     <option value="completed">完了</option>
                     <option value="canceled">キャンセル</option>
                   </select>
-                  <button type="submit">
+                  <button type="submit" disabled={isSubmitting}>
                     <Badge variant="outline">保存</Badge>
                   </button>
 
@@ -127,10 +127,6 @@ function OrderSummary({ order, orderId }: OrderSummaryProps) {
               )}
             </div>
           </div>
-          {/* <div className="my-2 flex flex-col justify-center border-l px-4 text-left">
-          <p>合計金額</p>
-          <p>{formatYen(order.totalAmount)}</p>
-        </div> */}
         </div>
       </form>
     </>
