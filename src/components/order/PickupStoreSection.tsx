@@ -38,7 +38,8 @@ export default function PickupStoreSection({
     const buildPayload = () => {
       if (order.deliveryType === 'pickup') {
         const pickupPayload = {
-          pickup_store_id: draftPickupStore?.pickupStoreId,
+          pickup_store_id:
+            draftPickupStore?.pickupStoreId ?? order.pickupStore?.id,
         };
 
         return pickupPayload;
@@ -127,11 +128,11 @@ export default function PickupStoreSection({
             )}
           </div>
         </div>
-        <div className="flex px-2 py-1">
-          <Label className="pr-4 text-gray-500">受取店舗:</Label>
+        <div className="px-2 py-1">
+          <Label className="pr-4 text-xs text-gray-500">受取店舗:</Label>
           <select
             disabled={!isEditing}
-            className="flex-1 rounded-xl border p-2"
+            className="w-full rounded-md border p-2"
             value={
               selectedPickupStoreId !== undefined
                 ? String(selectedPickupStoreId)

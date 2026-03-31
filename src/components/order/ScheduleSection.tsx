@@ -123,8 +123,8 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
             )}
           </div>
           <div>
-            <div className="flex px-2 py-1">
-              <Label className="pr-4 text-gray-500">納品日:</Label>
+            <div className="px-2 py-1">
+              <Label className="pr-4 text-xs text-gray-500">納品日:</Label>
               <Input
                 className="flex-1"
                 disabled={!isEditing}
@@ -138,9 +138,9 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
             {/* deliveryの時のUI */}
 
             <div>
-              <div className="flex px-2 py-1">
-                <Label className="pr-4 text-gray-500">納品時間:</Label>
-                <div className="text-base">
+              <div className="px-2 py-1">
+                <Label className="pr-4 text-xs text-gray-500">納品時間:</Label>
+                <div className="flex text-base">
                   <Input
                     disabled={!isEditing}
                     type="time"

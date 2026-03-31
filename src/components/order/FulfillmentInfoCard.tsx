@@ -2,6 +2,7 @@ import PickupStoreSection from '@/components/order/PickupStoreSection';
 import { Label } from '@/components/ui/label';
 import type { OrderShow } from '@/types/order';
 
+import DeliveryAddressSection from './DeliveryAddressSection';
 import { ScheduleSection } from './ScheduleSection';
 
 interface FulfillmentInfoCardProps {
@@ -22,13 +23,10 @@ export default function FulfillmentInfoCard({
 
         {order.deliveryType === 'delivery' && (
           <div>
-            <div className="flex items-start p-2">
-              <div>
-                <ScheduleSection order={order} orderId={orderId} />
-                <Label className="py-1 text-gray-500">配送先住所:</Label>
-                <Label className="py-1">〒 {order.deliveryPostalCode}</Label>
-                <Label className="py-1 text-sm">{order.deliveryAddress}</Label>
-              </div>
+            <div className="p-2">
+              {/* 配達時の責務 */}
+              <ScheduleSection order={order} orderId={orderId} />
+              <DeliveryAddressSection order={order} orderId={orderId} />
             </div>
           </div>
         )}
