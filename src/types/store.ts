@@ -23,3 +23,7 @@ export interface StoreSummary {
   id: number;
   name: string;
 }
+
+export interface PickupStoreUpdate {
+  pickupStoreId: number;
+}
