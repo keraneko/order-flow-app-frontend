@@ -80,12 +80,8 @@ function OrderSummary({ order, orderId }: OrderSummaryProps) {
               {!isEditting && (
                 <div className="flex justify-around">
                   <OrderStatusBadge status={order.status} />
-                  <button
-                    onClick={() => setIsEditting(true)}
-                    type="button"
-                    className="border-b text-xs text-violet-600"
-                  >
-                    変更
+                  <button onClick={() => setIsEditting(true)} type="button">
+                    <Badge variant="outline">編集</Badge>
                   </button>
                 </div>
               )}

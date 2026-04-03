@@ -10,6 +10,7 @@ import Carts from './pages/order-flow/Carts';
 import Confirm from './pages/order-flow/Confirm';
 import Customers from './pages/order-flow/Customers';
 import OrderIndexPage from './pages/orders/IndexOrders';
+import OrderDeliveryTypeEditPage from './pages/orders/OrderDeliveryTypeEditPage';
 import OrderItemsEdit from './pages/orders/OrderItemsEdit';
 import OrderShowPage from './pages/orders/OrderShow';
 import CreateProductPage from './pages/products/CreateProduct';
@@ -44,6 +45,10 @@ export default function AppRoutes() {
           <Route path="/orders" element={<OrderIndexPage />} />
           <Route path="/orders/:id" element={<OrderShowPage />} />
           <Route path="/orders/:id/items/edit" element={<OrderItemsEdit />} />
+          <Route
+            path="/orders/:id/delivery-type/edit"
+            element={<OrderDeliveryTypeEditPage />}
+          />
         </Route>
       </Routes>
     </ErrorBoundary>
