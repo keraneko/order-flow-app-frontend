@@ -1,11 +1,10 @@
 import { Link, useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Phone, User } from 'lucide-react';
 import { getOrder } from '@/api/orders';
 import FulfillmentInfoCard from '@/components/order/FulfillmentInfoCard';
+import OrderCustomer from '@/components/order/OrderCustomer';
 import OrderItemsTable from '@/components/order/OrderItemsTable';
 import OrderSummary from '@/components/order/OrderSummary';
-import { Label } from '@/components/ui/label';
 import type { OrderShow } from '@/types/order';
 
 function IndexOrderPageTest() {
@@ -45,29 +44,10 @@ function IndexOrderPageTest() {
       {/* 注文サマリ */}
       <OrderSummary order={order} orderId={orderId} />
 
-      {/* 顧客情報 ＆ 配送情報 */}
-
       {/* 顧客情報 */}
       <div className="grid grid-cols-2 gap-5">
         <div>
-          <div className="rounded-sm border">
-            <Label className="h-10 border-b pl-4 font-semibold">顧客情報</Label>
-            <div className="flex flex-col justify-around">
-              <div className="flex items-start border-b p-2">
-                <div>
-                  <User className="text-muted-foreground mx-4 mt-2 h-5 w-5" />
-                </div>
-                <div className="flex flex-col justify-between p-2">
-                  <Label className="pb-2">{order.customer.name} 様</Label>
-                  <Label>{order.customer.address}</Label>
-                </div>
-              </div>
-              <div className="flex p-2">
-                <Phone className="text-muted-foreground mx-4 h-5 w-5" />
-                <Label>{order.customer.phone}</Label>
-              </div>
-            </div>
-          </div>
+          <OrderCustomer order={order} orderId={orderId} />
 
           {/* スケジュール、配送情報 */}
           <FulfillmentInfoCard order={order} orderId={orderId} />
