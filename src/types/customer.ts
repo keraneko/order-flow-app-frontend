@@ -13,3 +13,9 @@ export interface OrderCustomerInput {
   deliveryPostalCode?: string;
   note?: string;
 }
+
+export interface OrderCustomerEdit {
+  name?: string;
+  address?: string;
+  phone?: string;
+}
