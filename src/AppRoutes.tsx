@@ -5,6 +5,7 @@ import Layout from '@/Layoute.tsx';
 import { AppErrorFallback } from './components/errors/AppErrorFallback';
 import DeliveryTypeSelector from './components/order/DeliveryTypeSelector';
 import Home from './pages/Home';
+import Login from './pages/LoginPage';
 import NotFound from './pages/NotFound';
 import Carts from './pages/order-flow/Carts';
 import Confirm from './pages/order-flow/Confirm';
@@ -32,6 +33,7 @@ export default function AppRoutes() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/order/options" element={<DeliveryTypeSelector />} />
           <Route path="/order/cart" element={<Carts />} />
           <Route path="/order/customer" element={<Customers />} />
