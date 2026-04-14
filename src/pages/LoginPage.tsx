@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import { logout, postLogin } from '@/api/auth';
+import { postLogin } from '@/api/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,7 +29,7 @@ export default function Login() {
 
       await postLogin(payload);
       setLoginInput(defaultLogin);
-      void navigate('/');
+      void navigate('/orders');
     } catch (e) {
       const message = e instanceof Error ? e.message : 'ログインに失敗しました';
       toast.error(message);
@@ -82,28 +82,13 @@ export default function Login() {
 
           <Button
             type="button"
-            className="mt-2 w-full rounded-xl bg-violet-600 hover:bg-violet-700"
+            className="mt-2 w-full rounded-xl bg-amber-700 hover:bg-amber-800"
             onClick={(e) => {
               e.preventDefault();
               void handleLogin();
             }}
           >
             ログインする
-          </Button>
-        </div>
-
-        {/* ログアウトは後で移動する*/}
-        <div className="mt-6 text-center">
-          <Button
-            type="button"
-            variant="ghost"
-            className="text-sm text-gray-400"
-            onClick={(e) => {
-              e.preventDefault();
-              void logout();
-            }}
-          >
-            ログアウトする
           </Button>
         </div>
       </div>
