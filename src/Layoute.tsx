@@ -4,7 +4,10 @@ import { ListChevronsUpDown, ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 import { logout } from '@/api/auth';
 import { Button } from '@/components/ui/button.tsx';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+import {
+  currentUserQueryOptions,
+  useCurrentUser,
+} from '@/hooks/useCurrentUser';
 
 export function PublicLayout() {
   const { data, isPending } = useCurrentUser();
@@ -82,7 +85,7 @@ export function AdminLayout() {
     mutationFn: logout,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['currentUser'],
+        queryKey: currentUserQueryOptions().queryKey,
       });
       toast.success('ログアウトしました');
       void navigate('/login');

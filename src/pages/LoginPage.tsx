@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getCurrentUser, postLogin } from '@/api/auth';
+import { postLogin } from '@/api/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { currentUserQueryOptions } from '@/hooks/useCurrentUser';
 
 interface Login {
   loginId: string;
@@ -25,10 +26,7 @@ export default function Login() {
   const mutation = useMutation({
     mutationFn: postLogin,
     onSuccess: async () => {
-      await queryClient.fetchQuery({
-        queryKey: ['currentUser'],
-        queryFn: getCurrentUser,
-      });
+      await queryClient.fetchQuery(currentUserQueryOptions());
       setLoginInput(defaultLogin);
       void navigate('/orders');
     },
