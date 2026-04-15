@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ListChevronsUpDown, ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 import { logout } from '@/api/auth';
@@ -74,22 +75,24 @@ export function PublicLayout() {
 }
 
 export function AdminLayout() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { data } = useCurrentUser();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
+  const mutation = useMutation({
+    mutationFn: logout,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['currentUser'],
+      });
       toast.success('ログアウトしました');
       void navigate('/login');
-    } catch (e) {
+    },
+    onError: (e) => {
       const message =
         e instanceof Error ? e.message : 'ログアウトに失敗しました';
       toast.error(message);
-    }
-  };
-
-  if (!data) return null;
+    },
+  });
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -102,14 +105,15 @@ export function AdminLayout() {
           </Link>
 
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">{data.name}</span>
+            <span className="text-sm text-gray-500">{data?.name ?? ''}</span>
             <Button
+              type="button"
+              disabled={mutation.isPending}
               variant="outline"
               size="sm"
               className="rounded-xl text-gray-500"
-              onClick={(e) => {
-                e.preventDefault();
-                void handleLogout();
+              onClick={() => {
+                mutation.mutate();
               }}
             >
               ログアウト

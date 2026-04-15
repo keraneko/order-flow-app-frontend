@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { postLogin } from '@/api/auth';
+import { getCurrentUser, postLogin } from '@/api/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,24 +18,33 @@ const defaultLogin: Login = {
 };
 
 export default function Login() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [loginInput, setLoginInput] = useState<Login>(defaultLogin);
 
-  const handleLogin = async () => {
-    try {
-      const payload = {
-        login_id: loginInput.loginId,
-        password: loginInput.password,
-      };
-
-      await postLogin(payload);
+  const mutation = useMutation({
+    mutationFn: postLogin,
+    onSuccess: async () => {
+      await queryClient.fetchQuery({
+        queryKey: ['currentUser'],
+        queryFn: getCurrentUser,
+      });
       setLoginInput(defaultLogin);
       void navigate('/orders');
-    } catch (e) {
+    },
+    onError: (e) => {
       const message = e instanceof Error ? e.message : 'ログインに失敗しました';
       toast.error(message);
-    }
-  };
+    },
+  });
+
+  function handleLogin() {
+    const payload = {
+      login_id: loginInput.loginId,
+      password: loginInput.password,
+    };
+    mutation.mutate(payload);
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -82,10 +92,10 @@ export default function Login() {
 
           <Button
             type="button"
+            disabled={mutation.isPending}
             className="mt-2 w-full rounded-xl bg-amber-700 hover:bg-amber-800"
-            onClick={(e) => {
-              e.preventDefault();
-              void handleLogin();
+            onClick={() => {
+              handleLogin();
             }}
           >
             ログインする
