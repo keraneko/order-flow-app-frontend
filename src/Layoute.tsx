@@ -88,7 +88,7 @@ export function AdminLayout() {
         queryKey: currentUserQueryOptions().queryKey,
       });
       toast.success('ログアウトしました');
-      void navigate('/login');
+      void navigate('/login', { replace: true });
     },
     onError: (e) => {
       const message =

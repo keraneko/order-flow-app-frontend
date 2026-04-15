@@ -1,6 +1,3 @@
-// useCurrentUser を使って判定
-// 未ログインなら /login
-// ログイン済みなら通す
 import { Navigate, Outlet } from 'react-router';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 

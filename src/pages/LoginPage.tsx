@@ -28,7 +28,7 @@ export default function Login() {
     onSuccess: async () => {
       await queryClient.fetchQuery(currentUserQueryOptions());
       setLoginInput(defaultLogin);
-      void navigate('/orders');
+      void navigate('/orders', { replace: true });
     },
     onError: (e) => {
       const message = e instanceof Error ? e.message : 'ログインに失敗しました';
