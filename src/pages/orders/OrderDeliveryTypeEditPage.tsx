@@ -303,7 +303,7 @@ function OrderDeliveryTypeEditer({
             <Button
               type="button"
               disabled={isSubmitting || isSameDeliveryType}
-              className="mb-3 w-full rounded-xl bg-violet-600 hover:bg-violet-700"
+              className="mb-3 w-full rounded-xl bg-amber-700 hover:bg-amber-800"
             >
               {isSubmitting ? '保存中...' : '保存する'}
             </Button>

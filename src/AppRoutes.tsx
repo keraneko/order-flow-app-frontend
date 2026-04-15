@@ -1,10 +1,11 @@
 import { ErrorBoundary } from 'react-error-boundary';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import Layout from '@/Layoute.tsx';
+import { AdminLayout, PublicLayout } from '@/Layoute.tsx';
 
 import { AppErrorFallback } from './components/errors/AppErrorFallback';
 import DeliveryTypeSelector from './components/order/DeliveryTypeSelector';
 import Home from './pages/Home';
+import Login from './pages/LoginPage';
 import NotFound from './pages/NotFound';
 import Carts from './pages/order-flow/Carts';
 import Confirm from './pages/order-flow/Confirm';
@@ -16,6 +17,7 @@ import OrderShowPage from './pages/orders/OrderShow';
 import CreateProductPage from './pages/products/CreateProduct';
 import ProductsPage from './pages/products/IndexProducts';
 import UpdateProductPage from './pages/products/UpdateProduct';
+import { ProtectedRoute } from './pages/ProtectedRoute';
 import CreateStorePage from './pages/stores/CreateStore';
 import StoresPage from './pages/stores/IndexStores';
 import UpdateStorePage from './pages/stores/UpdateStore';
@@ -29,27 +31,35 @@ export default function AppRoutes() {
       resetKeys={[location.pathname]}
     >
       <Routes>
-        <Route element={<Layout />}>
+        {/* login責務 */}
+        <Route path="/login" element={<Login />} />
+        <Route element={<PublicLayout />}>
+          {/* 公開用Route */}
           <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
           <Route path="/order/options" element={<DeliveryTypeSelector />} />
           <Route path="/order/cart" element={<Carts />} />
           <Route path="/order/customer" element={<Customers />} />
           <Route path="/order/confirm" element={<Confirm />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/products/new" element={<CreateProductPage />} />
-          <Route path="/products/:id/edit" element={<UpdateProductPage />} />
-          <Route path="/stores" element={<StoresPage />} />
-          <Route path="/stores/new" element={<CreateStorePage />} />
-          <Route path="/stores/:storeId/edit" element={<UpdateStorePage />} />
-          <Route path="/orders" element={<OrderIndexPage />} />
-          <Route path="/orders/:id" element={<OrderShowPage />} />
-          <Route path="/orders/:id/items/edit" element={<OrderItemsEdit />} />
-          <Route
-            path="/orders/:id/delivery-type/edit"
-            element={<OrderDeliveryTypeEditPage />}
-          />
         </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            {/* 管理用Route */}
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/products/new" element={<CreateProductPage />} />
+            <Route path="/products/:id/edit" element={<UpdateProductPage />} />
+            <Route path="/stores" element={<StoresPage />} />
+            <Route path="/stores/new" element={<CreateStorePage />} />
+            <Route path="/stores/:storeId/edit" element={<UpdateStorePage />} />
+            <Route path="/orders" element={<OrderIndexPage />} />
+            <Route path="/orders/:id" element={<OrderShowPage />} />
+            <Route path="/orders/:id/items/edit" element={<OrderItemsEdit />} />
+            <Route
+              path="/orders/:id/delivery-type/edit"
+              element={<OrderDeliveryTypeEditPage />}
+            />
+          </Route>
+        </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </ErrorBoundary>
   );
