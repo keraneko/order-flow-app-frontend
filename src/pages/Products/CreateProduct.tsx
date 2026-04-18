@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
 import { toast } from 'sonner';
 import ProductForm from '@/components/product/ProductForm';
+import { apiClient } from '@/lib/axios';
 import type { ProductFormValues } from '@/types/product';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 import { normalizeNumberString } from '@/utils/NumberString';
 
 const createProductInput: ProductFormValues = {
@@ -39,15 +41,28 @@ function CreateProductPage() {
         formData.append('image', productInput.imageFile);
       }
 
-      const res = await fetch('/api/products', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: formData,
-      });
+      await apiClient.post('/api/products', formData);
 
-      if (!res.ok) {
-        if (res.status === 422) {
-          toast.error(await getFirstValidationMessage(res));
+      toast.success('登録しました');
+      void navigate('/products');
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 422) {
+          // const data = e.response?.data as {
+          //   errors?: Record<string, string[]>;
+          // };
+
+          // const firstMessage =
+          //  = data.errors
+          //   ? Object.values(data.errors)[0]?.[0]
+          //   : undefined;
+
+          toast.error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '入力内容が間違っています',
+          );
 
           return;
         }
@@ -55,8 +70,8 @@ function CreateProductPage() {
 
         return;
       }
-      toast.success('登録しました');
-      void navigate('/products');
+
+      toast.error('登録に失敗しました');
     } finally {
       setIsSubmitting(false);
     }
