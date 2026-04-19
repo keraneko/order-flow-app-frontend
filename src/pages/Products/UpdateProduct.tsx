@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import { toast } from 'sonner';
 import type { ProductApi } from '@/api/products';
 import ProductForm from '@/components/product/ProductForm';
+import { apiClient } from '@/lib/axios';
 import NotFound from '@/pages/NotFound';
 import type { ProductFormValues } from '@/types/product';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 import { normalizeNumberString } from '@/utils/NumberString';
 
 const updateProductInput: ProductFormValues = {
@@ -94,25 +96,18 @@ function UpdateProductPage() {
         formData.append('image', productInput.imageFile);
       }
 
-      const res = await fetch(`/api/products/${id}`, {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        if (res.status === 422) {
-          toast.error(await getFirstValidationMessage(res));
-
-          return;
-        }
-        toast.error('更新に失敗しました');
-
-        return;
-      }
+      await apiClient.post(`/api/products/${id}`, formData);
 
       toast.success('更新しました');
       void navigate('/products');
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 422) {
+          toast.error(getFirstAxiosValidationMessage(e.response?.data));
+        }
+      }
     } finally {
       setIsSubmitting(false);
     }
