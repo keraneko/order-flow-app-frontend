@@ -105,7 +105,10 @@ function UpdateProductPage() {
         const status = e.response?.status;
 
         if (status === 422) {
-          toast.error(getFirstAxiosValidationMessage(e.response?.data));
+          toast.error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '入力内容が間違っています',
+          );
         }
       }
     } finally {

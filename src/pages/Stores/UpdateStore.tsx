@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import axios from 'axios';
 import { toast } from 'sonner';
 import type { StoreApi } from '@/api/stores';
 import StoreForm from '@/components/store/StoreForm';
+import { apiClient } from '@/lib/axios';
 import NotFound from '@/pages/NotFound';
 import type { StoreFormValue } from '@/types/store';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 
 const updateStoreInput: StoreFormValue = {
   code: '',
@@ -87,28 +89,21 @@ function UpdateStorePage() {
         is_active: storeInput.isActive,
       };
 
-      const res = await fetch(`/api/stores/${storeId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        if (res.status === 422) {
-          toast.error(getFirstValidationMessage(res));
-
-          return;
-        }
-        toast.error('登録に失敗しました');
-
-        return;
-      }
+      await apiClient.patch(`/api/stores/${storeId}`, payload);
 
       toast.success('登録しました');
       void navigate('/stores');
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 422) {
+          toast.error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '入力内容が間違っています',
+          );
+        }
+      }
     } finally {
       setIsSubmitting(false);
     }
