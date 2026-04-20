@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
 import { toast } from 'sonner';
 import StoreForm from '@/components/store/StoreForm';
+import { apiClient } from '@/lib/axios';
 import type { StoreFormValue } from '@/types/store';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 
 const createStoreInput: StoreFormValue = {
   code: '',
@@ -35,30 +37,21 @@ function CreateStorePage() {
         is_active: storeInput.isActive,
       };
 
-      const res = await fetch('/api/stores', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      await apiClient.post('/api/stores', payload);
 
-      if (!res.ok) {
-        if (res.status === 422) {
-          toast.error(await getFirstValidationMessage(res));
-
-          return;
-        }
-        toast.error('登録に失敗しました');
-
-        return;
-      }
       toast.success('登録しました');
       void navigate('/stores');
     } catch (e) {
-      console.error(e);
-      toast.error('通信に失敗しました（APIに接続できません）');
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 422) {
+          toast.error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '入力内容が間違っています',
+          );
+        }
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -66,7 +59,7 @@ function CreateStorePage() {
 
   return (
     <>
-      <h1>店舗登録</h1>
+      <h2>店舗登録</h2>
       <StoreForm
         value={storeInput}
         onChange={setStoreInput}
