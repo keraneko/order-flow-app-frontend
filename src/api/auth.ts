@@ -1,11 +1,29 @@
 import axios from 'axios';
 import { apiClient } from '@/lib/axios';
 
-interface CurrentUser {
+interface CurrentUserApi {
   id: number;
   name: string;
   login_id: string;
+  role: 'admin' | 'store_user';
+  store_id: number | null;
 }
+
+interface CurrentUser {
+  id: number;
+  name: string;
+  loginId: string;
+  role: 'admin' | 'store_user';
+  storeId: number | null;
+}
+
+const toCurrentUser = (user: CurrentUserApi): CurrentUser => ({
+  id: user.id,
+  name: user.name,
+  loginId: user.login_id,
+  role: user.role,
+  storeId: user.store_id,
+});
 
 interface LoginPayload {
   login_id: string;
@@ -14,9 +32,9 @@ interface LoginPayload {
 
 export async function getCurrentUser(): Promise<CurrentUser> {
   try {
-    const res = await apiClient.get<CurrentUser>('/api/user');
+    const res = await apiClient.get<CurrentUserApi>('/api/user');
 
-    return res.data;
+    return toCurrentUser(res.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(`HTTP ${error.response?.status ?? 'unknown'}`);
