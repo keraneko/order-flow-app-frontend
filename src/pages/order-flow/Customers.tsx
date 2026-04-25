@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -16,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCart } from '@/context/cart/useCart';
 import { useCustomer } from '@/context/customer/useCustomer';
 import { useFulfillment } from '@/context/fulfillment/useFulfillment';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { type OrderCustomerInput } from '@/types/customer';
 
 function Customers() {
@@ -23,6 +25,23 @@ function Customers() {
   const { customer, updateCustomer } = useCustomer();
   const { fulfillment, updateFulfillment } = useFulfillment();
   const { items } = useCart();
+  const { data: user } = useCurrentUser();
+
+  useEffect(() => {
+    if (fulfillment.deliveryType !== 'pickup') return;
+
+    if (fulfillment.pickupStoreId !== null) return;
+
+    if (user?.storeId == null) return;
+
+    updateFulfillment({ pickupStoreId: user.storeId });
+  }, [
+    fulfillment.deliveryType,
+    fulfillment.pickupStoreId,
+    user?.storeId,
+    updateFulfillment,
+  ]);
+
   const {
     register,
     handleSubmit,
@@ -46,20 +65,6 @@ function Customers() {
   if (isLoading) return <div>読み込み中…</div>;
 
   if (isError) return <div>エラー: {error.message}</div>;
-
-  // //itemsもしくはorderStoreIdがなければcustomerページを表示させない
-  // if (items.length === 0 || fulfillment.orderStoreId === null)
-  //   return (
-  //     <div>
-  //       <span>順番通りに操作してください</span>
-  //       <Button
-  //         variant="outline"
-  //         onClick={() => void navigate('/order/options')}
-  //       >
-  //         戻る
-  //       </Button>
-  //     </div>
-  //   );
 
   return (
     <>
