@@ -19,3 +19,13 @@ export function getFirstAxiosValidationMessage(
 
   return;
 }
+
+export function getAxiosMessage(data: unknown): string | undefined {
+  if (!isRecord(data)) return;
+
+  const message = data.message;
+
+  if (typeof message !== 'string') return;
+
+  return message;
+}
