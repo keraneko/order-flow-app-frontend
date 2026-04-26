@@ -39,7 +39,7 @@ export default function DeliveryAddressSection({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDraftDeliveryAddress((prev) => ({
-      ...prev,
+      ...(prev ?? {}),
       [name]: value,
     }));
   };
