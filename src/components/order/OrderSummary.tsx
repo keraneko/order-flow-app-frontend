@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { toast } from 'sonner';
 import OrderStatusBadge from '@/components/order/OrderStatusBadge';
 import { Badge } from '@/components/ui/badge';
+import { apiClient } from '@/lib/axios';
 import type { OrderShow, OrderStatus } from '@/types/order';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 import { formatDay } from '@/utils/formatDay';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
 
 interface OrderSummaryProps {
   order: OrderShow;
@@ -14,7 +16,7 @@ interface OrderSummaryProps {
 
 function OrderSummary({ order, orderId }: OrderSummaryProps) {
   const queryClient = useQueryClient();
-  const [isEditting, setIsEditting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(
     order.status,
@@ -26,32 +28,36 @@ function OrderSummary({ order, orderId }: OrderSummaryProps) {
     setIsSubmitting(true);
     try {
       const payload = { status: selectedStatus };
-      const res = await fetch(`/api/orders/${order.id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      await apiClient.patch(`/api/orders/${order.id}/status`, payload);
 
-      if (!res.ok) {
-        if (res.status === 422) {
-          toast.error(getFirstValidationMessage(res));
-        }
-
-        return;
-      }
-      toast.success('登録しました');
+      toast.success('更新しました');
       await queryClient.invalidateQueries({
         queryKey: ['orders', orderId],
         exact: true,
       });
 
-      setIsEditting(false);
+      setIsEditing(false);
     } catch (e) {
-      const message = e instanceof Error ? e.message : '更新に失敗しました';
-      toast.error(message);
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 403) {
+          return toast.error(
+            '現在のユーザーでこの注文を更新する権限がありません',
+          );
+        }
+
+        if (status === 422) {
+          return toast.error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '入力内容が間違っています',
+          );
+        }
+
+        return toast.error('更新に失敗しました');
+      }
+
+      toast.error('更新に失敗しました');
     } finally {
       setIsSubmitting(false);
     }
@@ -77,15 +83,15 @@ function OrderSummary({ order, orderId }: OrderSummaryProps) {
           <div className="my-2 flex flex-col justify-center border-l px-4 text-left">
             <p>ステータス</p>
             <div className="">
-              {!isEditting && (
+              {!isEditing && (
                 <div className="flex justify-around">
                   <OrderStatusBadge status={order.status} />
-                  <button onClick={() => setIsEditting(true)} type="button">
+                  <button onClick={() => setIsEditing(true)} type="button">
                     <Badge variant="outline">編集</Badge>
                   </button>
                 </div>
               )}
-              {isEditting && (
+              {isEditing && (
                 <div className="flex justify-around text-xs">
                   <select
                     value={selectedStatus}
@@ -112,7 +118,7 @@ function OrderSummary({ order, orderId }: OrderSummaryProps) {
 
                   <button
                     onClick={() => {
-                      setIsEditting(false);
+                      setIsEditing(false);
                       setSelectedStatus(order.status);
                     }}
                     type="button"
