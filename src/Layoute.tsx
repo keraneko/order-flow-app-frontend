@@ -2,12 +2,19 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ListChevronsUpDown, ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
+import type { UserRole } from '@/api/auth';
 import { logout } from '@/api/auth';
 import { Button } from '@/components/ui/button.tsx';
 import {
   currentUserQueryOptions,
   useCurrentUser,
 } from '@/hooks/useCurrentUser';
+
+interface NavItem {
+  to: string;
+  label: string;
+  roles: UserRole[];
+}
 
 export function PublicLayout() {
   const { data, isPending } = useCurrentUser();
@@ -97,6 +104,16 @@ export function AdminLayout() {
     },
   });
 
+  const navItems: NavItem[] = [
+    { to: '/orders', label: '注文一覧', roles: ['admin', 'store_user'] },
+    { to: '/products', label: '商品一覧', roles: ['admin'] },
+    { to: '/stores', label: '店舗一覧', roles: ['admin'] },
+  ];
+
+  const visibleNabItems = navItems.filter((item) =>
+    data?.role ? item.roles.includes(data.role) : false,
+  );
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-10 border-b bg-white">
@@ -128,11 +145,7 @@ export function AdminLayout() {
       <nav className="border-b bg-white">
         <div className="mx-auto max-w-4xl px-4">
           <ul className="flex list-none gap-1 py-2">
-            {[
-              { to: '/orders', label: '注文一覧' },
-              { to: '/products', label: '商品一覧' },
-              { to: '/stores', label: '店舗一覧' },
-            ].map(({ to, label }) => (
+            {visibleNabItems.map(({ to, label }) => (
               <li key={to}>
                 <NavLink to={to}>
                   {({ isActive }) => (
