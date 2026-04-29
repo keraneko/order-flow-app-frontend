@@ -44,7 +44,8 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
       if (order.deliveryType === 'pickup') {
         const pickupPayload = {
           delivery_date: draftSchedule?.deliveryDate ?? order.deliveryDate,
-          delivery_from: draftSchedule?.deliveryFrom ?? order.deliveryFrom,
+          delivery_from:
+            draftSchedule?.deliveryFrom ?? formatTime(order.deliveryFrom),
         };
 
         return pickupPayload;
@@ -53,8 +54,10 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
       if (order.deliveryType === 'delivery') {
         const deliveryPayload = {
           delivery_date: draftSchedule?.deliveryDate ?? order.deliveryDate,
-          delivery_from: draftSchedule?.deliveryFrom ?? order.deliveryFrom,
-          delivery_to: draftSchedule?.deliveryTo ?? order.deliveryTo,
+          delivery_from:
+            draftSchedule?.deliveryFrom ?? formatTime(order.deliveryFrom),
+          delivery_to:
+            draftSchedule?.deliveryTo ?? formatTime(order.deliveryTo),
         };
 
         return deliveryPayload;
