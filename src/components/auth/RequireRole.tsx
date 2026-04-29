@@ -19,8 +19,10 @@ export function RequireRole({ allowedRoles, children }: RequireRoleProps) {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  if (!user) return <Navigate to="/login" replace />;
+
   if (!user.role || !allowedRoles.includes(user.role))
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/orders" replace />;
 
   return <>{children}</>;
 }
