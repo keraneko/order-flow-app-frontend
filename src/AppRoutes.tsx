@@ -10,7 +10,6 @@ import Login from './pages/LoginPage';
 import NotFound from './pages/NotFound';
 import Carts from './pages/order-flow/Carts';
 import Confirm from './pages/order-flow/Confirm';
-import Customers from './pages/order-flow/Customers';
 import OrderIndexPage from './pages/orders/IndexOrders';
 import OrderDeliveryTypeEditPage from './pages/orders/OrderDeliveryTypeEditPage';
 import OrderItemsEdit from './pages/orders/OrderItemsEdit';
@@ -35,15 +34,46 @@ export default function AppRoutes() {
         {/* login責務 */}
         <Route path="/login" element={<Login />} />
         <Route element={<PublicLayout />}>
-          {/* 公開用Route */}
+          {/* StoreUserのみ注文可能 */}
           <Route path="/" element={<Home />} />
-          <Route path="/order/options" element={<DeliveryTypeSelector />} />
-          <Route path="/order/cart" element={<Carts />} />
-          <Route path="/order/customer" element={<Customers />} />
-          <Route path="/order/confirm" element={<Confirm />} />
         </Route>
+
         <Route element={<ProtectedRoute />}>
           <Route element={<AdminLayout />}>
+            {/* 注文関連Route */}
+            <Route
+              path="/order/options"
+              element={
+                <RequireRole allowedRoles={['store_user']}>
+                  <DeliveryTypeSelector />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/order/cart"
+              element={
+                <RequireRole allowedRoles={['store_user']}>
+                  <Carts />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/order/customer"
+              element={
+                <RequireRole allowedRoles={['store_user']}>
+                  <Carts />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/order/confirm"
+              element={
+                <RequireRole allowedRoles={['store_user']}>
+                  <Confirm />
+                </RequireRole>
+              }
+            />
+
             {/* 管理用Route */}
             <Route
               path="/products"
