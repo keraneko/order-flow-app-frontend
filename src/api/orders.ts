@@ -1,3 +1,5 @@
+import axios from 'axios';
+import { apiClient } from '@/lib/axios';
 import type {
   OrderIndex,
   OrderItem,
@@ -5,6 +7,10 @@ import type {
   OrderStatus,
 } from '@/types/order';
 import type { StoreSummary } from '@/types/store';
+import {
+  getAxiosMessage,
+  getFirstAxiosValidationMessage,
+} from '@/utils/apiError';
 
 import { type CustomerApi, toCustomer } from './customers';
 import { type ProductApi, toProduct } from './products';
@@ -104,27 +110,28 @@ export async function updateOrderItems(
   orderId: number,
   payload: UpdateOrderItemsPayload,
 ) {
-  const res = await fetch(`/api/orders/${orderId}/items`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      // apiの処理を書いてる途中で終わってます
-    },
-    body: JSON.stringify(payload),
-  });
+  try {
+    await apiClient.patch(`/api/orders/${orderId}/items`, payload);
+  } catch (e) {
+    if (axios.isAxiosError(e)) {
+      const status = e.response?.status;
 
-  if (!res.ok) {
-    const data: unknown = await res.json();
-    const message =
-      typeof data === 'object' &&
-      data !== null &&
-      'message' in data &&
-      typeof data.message === 'string'
-        ? data.message
-        : '注文の更新に失敗しました';
-    throw new Error(message);
+      if (status === 403) {
+        throw new Error('現在のユーザーでこの注文を更新する権限がありません');
+      }
+
+      if (status === 422) {
+        throw new Error(
+          getFirstAxiosValidationMessage(e.response?.data) ??
+            getAxiosMessage(e.response?.data) ??
+            '入力内容が間違っています',
+        );
+      }
+      throw new Error(
+        getAxiosMessage(e.response?.data) ?? '注文の更新に失敗しました',
+      );
+    }
+
+    throw new Error('注文の更新に失敗しました');
   }
-
-  return;
 }

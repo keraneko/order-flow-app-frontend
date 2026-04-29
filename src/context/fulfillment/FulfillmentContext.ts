@@ -1,7 +1,6 @@
 import { createContext } from 'react';
 
 export interface FulfillmentType {
-  orderStoreId: number | null;
   pickupStoreId: number | null;
   deliveryType: 'pickup' | 'delivery';
   deliveryDate: string;

@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { apiClient } from '@/lib/axios';
 import type { OrderShow } from '@/types/order';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 import { formatTime } from '@/utils/formatTime';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+
+import { TimeSelect } from './form/TimeSelect';
 
 interface ScheduleSectionProps {
   order: OrderShow;
@@ -29,17 +33,19 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setDraftSchedule((prev) => ({ ...prev, [name]: value }));
+    setDraftSchedule((prev) => ({ ...(prev ?? {}), [name]: value }));
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
     const buildPayload = () => {
       if (order.deliveryType === 'pickup') {
         const pickupPayload = {
           delivery_date: draftSchedule?.deliveryDate ?? order.deliveryDate,
-          delivery_from: draftSchedule?.deliveryFrom ?? order.deliveryFrom,
+          delivery_from:
+            draftSchedule?.deliveryFrom ?? formatTime(order.deliveryFrom),
         };
 
         return pickupPayload;
@@ -48,8 +54,10 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
       if (order.deliveryType === 'delivery') {
         const deliveryPayload = {
           delivery_date: draftSchedule?.deliveryDate ?? order.deliveryDate,
-          delivery_from: draftSchedule?.deliveryFrom ?? order.deliveryFrom,
-          delivery_to: draftSchedule?.deliveryTo ?? order.deliveryTo,
+          delivery_from:
+            draftSchedule?.deliveryFrom ?? formatTime(order.deliveryFrom),
+          delivery_to:
+            draftSchedule?.deliveryTo ?? formatTime(order.deliveryTo),
         };
 
         return deliveryPayload;
@@ -57,22 +65,7 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
     };
 
     try {
-      const res = await fetch(`/api/orders/${orderId}/schedule`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(buildPayload()),
-      });
-
-      if (!res.ok) {
-        if (res.status === 422) {
-          toast.error(getFirstValidationMessage(res));
-        }
-
-        return;
-      }
+      await apiClient.patch(`/api/orders/${orderId}/schedule`, buildPayload());
       toast.success('変更しました');
       await queryClient.invalidateQueries({
         queryKey: ['orders', orderId],
@@ -81,8 +74,25 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
       setIsEditing(false);
       setDraftSchedule(null);
     } catch (e) {
-      const message = e instanceof Error ? e.message : '更新に失敗しました';
-      toast.error(message);
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 403) {
+          return toast.error(
+            '現在のユーザーでこの注文を変更する権限がありません',
+          );
+        }
+
+        if (status === 422) {
+          return toast.error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '入力内容が間違っています',
+          );
+        }
+
+        return toast.error('更新に失敗しました');
+      }
+      toast.error('変更に失敗しました');
     } finally {
       setIsSubmitting(false);
     }
@@ -141,27 +151,35 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
               <div className="px-2 py-1">
                 <Label className="pr-4 text-xs text-gray-500">納品時間:</Label>
                 <div className="flex text-base">
-                  <Input
+                  {/* deliveryFrom */}
+                  <TimeSelect
                     disabled={!isEditing}
-                    type="time"
-                    name="deliveryFrom"
                     value={
                       draftSchedule?.deliveryFrom ??
                       formatTime(order.deliveryFrom)
                     }
-                    onChange={handleChange}
+                    onChange={(value) => {
+                      setDraftSchedule((prev) => ({
+                        ...(prev ?? {}),
+                        deliveryFrom: value,
+                      }));
+                    }}
                   />
                   {order.deliveryType === 'delivery' && <span>~</span>}
                   {order.deliveryType === 'delivery' && (
-                    <Input
+                    // deliveryFrom
+                    <TimeSelect
                       disabled={!isEditing}
-                      type="time"
-                      name="deliveryTo"
                       value={
                         draftSchedule?.deliveryTo ??
                         formatTime(order.deliveryTo)
                       }
-                      onChange={handleChange}
+                      onChange={(value) => {
+                        setDraftSchedule((prev) => ({
+                          ...(prev ?? {}),
+                          deliveryTo: value,
+                        }));
+                      }}
                     />
                   )}
                 </div>

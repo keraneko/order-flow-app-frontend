@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { apiClient } from '@/lib/axios';
 import type { OrderShow } from '@/types/order';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 
 import { Badge } from '../ui/badge';
 
@@ -37,12 +39,13 @@ export default function DeliveryAddressSection({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDraftDeliveryAddress((prev) => ({
-      ...prev,
+      ...(prev ?? {}),
       [name]: value,
     }));
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
     const buildPayload = () => {
@@ -60,22 +63,11 @@ export default function DeliveryAddressSection({
     };
 
     try {
-      const res = await fetch(`/api/orders/${orderId}/destination`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(buildPayload()),
-      });
+      await apiClient.patch(
+        `/api/orders/${orderId}/destination`,
+        buildPayload(),
+      );
 
-      if (!res.ok) {
-        if (res.status === 422) {
-          toast.error(getFirstValidationMessage(res));
-        }
-
-        return;
-      }
       toast.success('変更しました');
       await queryClient.invalidateQueries({
         queryKey: ['orders', orderId],
@@ -84,8 +76,25 @@ export default function DeliveryAddressSection({
       setIsEditing(false);
       setDraftDeliveryAddress(null);
     } catch (e) {
-      const message = e instanceof Error ? e.message : '更新に失敗しました';
-      toast.error(message);
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 403) {
+          return toast.error(
+            '現在のユーザーでこの注文を更新する権限がありません',
+          );
+        }
+
+        if (status === 422) {
+          return toast.error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '入力内容が間違っています',
+          );
+        }
+
+        return toast.error('更新に失敗しました');
+      }
+      toast.error('更新に失敗しました');
     } finally {
       setIsSubmitting(false);
     }

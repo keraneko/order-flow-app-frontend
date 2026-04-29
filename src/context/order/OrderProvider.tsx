@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import axios from 'axios';
+import { apiClient } from '@/lib/axios';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 
 import type { Order } from './OrderContext';
 import { OrderContext } from './OrderContext';
@@ -30,14 +32,12 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     const fulfillmentPayload =
       fulfillment.deliveryType === 'pickup'
         ? {
-            orderStoreId: fulfillment.orderStoreId,
             pickupStoreId: fulfillment.pickupStoreId,
             deliveryType: fulfillment.deliveryType,
             deliveryDate: fulfillment.deliveryDate,
             deliveryFrom: fulfillment.deliveryFrom,
           }
         : {
-            orderStoreId: fulfillment.orderStoreId,
             deliveryType: fulfillment.deliveryType,
             deliveryDate: fulfillment.deliveryDate,
             deliveryFrom: fulfillment.deliveryFrom,
@@ -59,25 +59,29 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const createOrder = async (order: Order) => {
-    const payload = buildOrderPayload(order);
+    try {
+      const payload = buildOrderPayload(order);
 
-    const res = await fetch('/api/orders', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+      await apiClient.post('/api/orders', payload);
 
-    if (!res.ok) {
-      if (res.status === 422) {
-        const message = await getFirstValidationMessage(res);
-        throw new Error(message);
+      setOrder(order);
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 422) {
+          throw new Error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '入力内容が間違っています',
+          );
+        }
+        throw new Error(
+          status !== undefined ? `HTTP: ${status}` : '注文の登録に失敗しました',
+        );
       }
-      throw new Error(`HTTP ${res.status}`);
+
+      throw new Error('注文の登録に失敗しました');
     }
-    setOrder(order);
   };
 
   const resetOrder = () => {
