@@ -1,19 +1,21 @@
 import axios from 'axios';
 import { apiClient } from '@/lib/axios';
 
-interface CurrentUserApi {
+export type UserRole = 'admin' | 'store_user';
+
+export interface CurrentUserApi {
   id: number;
   name: string;
   login_id: string;
-  role: 'admin' | 'store_user';
+  role: UserRole | null;
   store_id: number | null;
 }
 
-interface CurrentUser {
+export interface CurrentUser {
   id: number;
   name: string;
   loginId: string;
-  role: 'admin' | 'store_user';
+  role: UserRole | null;
   storeId: number | null;
 }
 
