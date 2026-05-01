@@ -8,8 +8,10 @@ import DeliveryTypeSelector from './components/order/DeliveryTypeSelector';
 import Home from './pages/Home';
 import Login from './pages/LoginPage';
 import NotFound from './pages/NotFound';
-import Carts from './pages/order-flow/Carts';
+import CartList from './pages/order-flow/CartPage';
 import Confirm from './pages/order-flow/Confirm';
+import Customers from './pages/order-flow/Customers';
+import CartProducts from './pages/order-flow/ProductSelectPage';
 import OrderIndexPage from './pages/orders/IndexOrders';
 import OrderDeliveryTypeEditPage from './pages/orders/OrderDeliveryTypeEditPage';
 import OrderItemsEdit from './pages/orders/OrderItemsEdit';
@@ -50,18 +52,27 @@ export default function AppRoutes() {
               }
             />
             <Route
-              path="/order/cart"
+              path="/order/products"
               element={
                 <RequireRole allowedRoles={['store_user']}>
-                  <Carts />
+                  <CartProducts />
                 </RequireRole>
               }
             />
             <Route
+              path="/order/cart"
+              element={
+                <RequireRole allowedRoles={['store_user']}>
+                  <CartList />
+                </RequireRole>
+              }
+            />
+
+            <Route
               path="/order/customer"
               element={
                 <RequireRole allowedRoles={['store_user']}>
-                  <Carts />
+                  <Customers />
                 </RequireRole>
               }
             />
@@ -102,7 +113,7 @@ export default function AppRoutes() {
             <Route
               path="/stores"
               element={
-                <RequireRole allowedRoles={['admin']}>
+                <RequireRole allowedRoles={['store_user']}>
                   <StoresPage />
                 </RequireRole>
               }
@@ -110,7 +121,7 @@ export default function AppRoutes() {
             <Route
               path="/stores/new"
               element={
-                <RequireRole allowedRoles={['admin']}>
+                <RequireRole allowedRoles={['store_user']}>
                   <CreateStorePage />
                 </RequireRole>
               }
@@ -118,7 +129,7 @@ export default function AppRoutes() {
             <Route
               path="/stores/:storeId/edit"
               element={
-                <RequireRole allowedRoles={['admin']}>
+                <RequireRole allowedRoles={['store_user']}>
                   <UpdateStorePage />
                 </RequireRole>
               }

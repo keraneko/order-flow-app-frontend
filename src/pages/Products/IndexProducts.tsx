@@ -98,41 +98,40 @@ function ProductsPage() {
       </div>
       <div className="grid w-full grid-cols-3 gap-2">
         {filteredProducts.map((item) => (
-          <Card key={item.id} className="flex h-80 flex-col p-0">
-            <div className="relative m-auto">
+          <Card key={item.id} className="flex flex-col p-0">
+            {/* 画像 */}
+            <div className="flex h-44 items-center justify-center rounded-t-xl bg-gray-50">
               {item.image ? (
                 <img
                   src={`http://localhost/storage/${item.image}`}
                   alt={item.name}
-                  className="h-44 rounded bg-gray-100 object-contain"
+                  className="h-44 w-full rounded-t-xl object-contain"
                 />
               ) : (
-                <div>Not Image</div>
+                <span className="text-sm text-gray-400">画像なし</span>
               )}
             </div>
-            <div className="flex justify-between p-1">
+
+            {/* 商品情報 */}
+            <div className="flex items-center justify-between px-3 py-2">
               <p className="font-semibold">{item.name}</p>
-              <p className="text-sm text-gray-600">{item.price}円</p>
-              {/* {item.isActive ?
-                    <p className="border bg-blue-400 rounded text-white text-base">販売中</p> :
-                    <p className="border bg-red-400 rounded text-white text-base">販売停止中</p>} */}
+              <p className="text-sm text-gray-500">{item.price}円</p>
             </div>
-            <div className="flex justify-between">
+
+            <div className="mt-auto flex justify-between gap-2 p-3 pt-0">
               <Button
-                className="m-2"
+                variant="outline"
+                className="flex-1 rounded-xl"
                 onClick={() => void navigate(`/products/${item.id}/edit`)}
               >
-                編集する
+                編集
               </Button>
-
               <Button
-                className={`mt-2 ${item.isActive ? 'bg-red-400' : 'bg-blue-400'}`}
-                onClick={() => {
-                  void handleRestore(item.id, !item.isActive);
-                }}
+                className={`flex-1 rounded-xl ${item.isActive ? 'bg-red-400 hover:bg-red-500' : 'bg-amber-700 hover:bg-amber-800'}`}
+                onClick={() => void handleRestore(item.id, !item.isActive)}
                 disabled={!!submittingIds[item.id]}
               >
-                {item.isActive ? '販売停止にする' : '販売中にする'}
+                {item.isActive ? '販売停止' : '販売中にする'}
               </Button>
             </div>
           </Card>
