@@ -146,7 +146,7 @@ function CartProducts() {
               </div>
               <Button
                 className="rounded-xl bg-amber-700 px-6 hover:bg-amber-800"
-                onClick={() => void navigate('/order/cartList')}
+                onClick={() => void navigate('/order/cart')}
               >
                 カートを確認する →
               </Button>
