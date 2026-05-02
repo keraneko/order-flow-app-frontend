@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { toast } from 'sonner';
 import { getProducts } from '@/api/products';
 import { Button } from '@/components/ui/button.tsx';
 import { Card } from '@/components/ui/card';
+import { apiClient } from '@/lib/axios';
 import { type Product } from '@/types/product';
-import { getFirstValidationMessage } from '@/utils/LaravelValidationError';
+import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 
 type VisibilityFilter = 'visible' | 'hidden' | 'all';
 
@@ -20,36 +22,40 @@ function ProductsPage() {
     {},
   );
 
-  const handleRestore = async (id: number, nextvisible: boolean) => {
+  const handleUpdateSalesStatus = async (id: number, nextActive: boolean) => {
     if (submittingIds[id]) return;
 
     setSubmittingIds((prev) => ({ ...prev, [id]: true }));
     try {
-      const res = await fetch(`/api/products/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({ is_active: nextvisible }),
+      await apiClient.patch(`/api/products/${id}/sales-status`, {
+        is_active: nextActive,
       });
-
-      if (!res.ok) {
-        if (res.status === 422) {
-          toast.error(await getFirstValidationMessage(res));
-
-          return;
-        }
-        toast.error('更新に失敗しました');
-
-        return;
-      }
-
       setProducts((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, isActive: nextvisible } : p)),
+        prev.map((p) => (p.id === id ? { ...p, isActive: nextActive } : p)),
       );
 
       toast.success('更新しました');
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const status = e.response?.status;
+
+        if (status === 403) {
+          return toast.error(
+            '現在のユーザーでこの商品を更新する権限がありません',
+          );
+        }
+
+        if (status === 422) {
+          return toast.error(
+            getFirstAxiosValidationMessage(e.response?.data) ??
+              '更新に失敗しました',
+          );
+        }
+
+        return toast.error('更新に失敗しました');
+      }
+
+      return toast.error('更新に失敗しました');
     } finally {
       setSubmittingIds((prev) => ({ ...prev, [id]: false }));
     }
@@ -93,7 +99,9 @@ function ProductsPage() {
           <option value="all">すべて</option>
         </select>
         <Link to={'/products/new'}>
-          <Button className="bg-blue-400 text-xl">新規登録</Button>
+          <Button className="bg-blue-500 text-xl hover:bg-blue-600">
+            新規登録
+          </Button>
         </Link>
       </div>
       <div className="grid w-full grid-cols-3 gap-2">
@@ -127,11 +135,13 @@ function ProductsPage() {
                 編集
               </Button>
               <Button
-                className={`flex-1 rounded-xl ${item.isActive ? 'bg-red-400 hover:bg-red-500' : 'bg-amber-700 hover:bg-amber-800'}`}
-                onClick={() => void handleRestore(item.id, !item.isActive)}
+                className={`flex-1 rounded-xl ${item.isActive ? 'bg-red-400 hover:bg-red-500' : 'bg-blue-500 hover:bg-blue-600'}`}
+                onClick={() =>
+                  void handleUpdateSalesStatus(item.id, !item.isActive)
+                }
                 disabled={!!submittingIds[item.id]}
               >
-                {item.isActive ? '販売停止' : '販売中にする'}
+                {item.isActive ? '販売停止にする' : '販売中にする'}
               </Button>
             </div>
           </Card>
