@@ -20,6 +20,7 @@ import { useCustomer } from '@/context/customer/useCustomer';
 import { useFulfillment } from '@/context/fulfillment/useFulfillment';
 import { useOrder } from '@/context/order/useOrder';
 import { formatDay } from '@/utils/formatDay';
+import { formatYen } from '@/utils/formatYen';
 
 function Confirm() {
   const navigate = useNavigate();
@@ -64,10 +65,13 @@ function Confirm() {
   )?.name;
 
   return (
-    <>
-      <div className="flex pb-4">
-        <Table className="">
-          <TableHeader>
+    <div className="mx-auto flex max-w-2xl flex-col gap-6 py-6">
+      <h2 className="text-lg font-bold">注文内容の確認</h2>
+
+      {/* 商品一覧 */}
+      <div className="overflow-hidden rounded-xl border">
+        <Table>
+          <TableHeader className="bg-gray-50">
             <TableRow>
               <TableHead></TableHead>
               <TableHead>商品名</TableHead>
@@ -76,113 +80,142 @@ function Confirm() {
               <TableHead>小計</TableHead>
             </TableRow>
           </TableHeader>
-          {items.map((item) => (
-            <TableBody className="border-b" key={item.id}>
-              <TableRow>
-                <TableCell className="w-25">
+          <TableBody>
+            {items.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>
                   {item.image ? (
                     <img
-                      className="h-20 w-20 shrink rounded-md object-cover"
+                      className="h-16 w-16 shrink-0 rounded-lg object-contain"
                       src={`http://localhost/storage/${item.image}`}
                       alt={item.name}
                     />
                   ) : (
-                    <div className="h-20 w-20 shrink rounded-md object-cover">
-                      Not Image
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-xs text-gray-400">
+                      画像なし
                     </div>
                   )}
                 </TableCell>
-                <TableCell>{item.name}</TableCell>
+                <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell>{item.quantity}個</TableCell>
-                <TableCell>¥{item.price}</TableCell>
-                <TableCell>
-                  ¥{(item.price * item.quantity).toLocaleString('ja-JP')}
+                <TableCell>{formatYen(item.price)}</TableCell>
+                <TableCell className="font-semibold text-amber-700">
+                  {formatYen(item.price * item.quantity)}
                 </TableCell>
               </TableRow>
-            </TableBody>
-          ))}
+            ))}
+          </TableBody>
         </Table>
 
-        <div className="mt-2 flex h-60 w-1/2 flex-col justify-between rounded border bg-gray-100">
-          <div className="flex justify-between p-2">
-            <p>商品小計({totalItem}点)</p>
-            <p className="text-xl font-medium text-red-400">
-              ¥{totalPrice.toLocaleString('ja-JP')}円
-            </p>
-          </div>
-          <div className="flex flex-col p-2">
-            <Button
-              disabled={isSubmitting}
-              onClick={() => {
-                void handleConfirm();
-              }}
-              className="mb-1 h-15 w-full bg-rose-500 text-xl font-medium hover:bg-rose-800"
-            >
-              注文を確定する
-            </Button>
-            <Link to="/order/cart">
-              <Button className="h-15 w-full bg-gray-500 text-xl font-medium hover:bg-gray-800">
-                カートに戻る
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-4 border-t py-4">
-        <div>納品日:{formatDay(fulfillment.deliveryDate)}</div>
-        <div>
-          <p>
-            納品方法:{' '}
-            <span className="font-black">
-              {fulfillment.deliveryType === 'pickup'
-                ? '店舗で受け渡し'
-                : '配達'}
-            </span>
+        {/* 合計 */}
+        <div className="flex items-center justify-between border-t bg-amber-50 px-4 py-3">
+          <p className="text-sm text-gray-500">商品小計（{totalItem}点）</p>
+          <p className="text-xl font-bold text-amber-700">
+            {formatYen(totalPrice)}
           </p>
         </div>
-        <div>
-          納品時間:
-          {fulfillment.deliveryType === 'pickup'
-            ? fulfillment.deliveryFrom
-            : `${fulfillment.deliveryFrom}〜${fulfillment.deliveryTo}`}
+      </div>
+
+      {/* 受取・配達情報 */}
+      <div className="flex flex-col gap-3 rounded-xl border p-4">
+        <p className="font-semibold">受取情報</p>
+
+        <div className="grid grid-cols-2 gap-y-2 text-sm">
+          <span className="text-gray-500">納品日</span>
+          <span className="font-medium">
+            {formatDay(fulfillment.deliveryDate)}
+          </span>
+
+          <span className="text-gray-500">納品方法</span>
+          <span className="font-medium">
+            {fulfillment.deliveryType === 'pickup' ? '店舗受取' : '配達'}
+          </span>
+
+          <span className="text-gray-500">納品時間</span>
+          <span className="font-medium">
+            {fulfillment.deliveryType === 'pickup'
+              ? fulfillment.deliveryFrom
+              : `${fulfillment.deliveryFrom}〜${fulfillment.deliveryTo}`}
+          </span>
+
+          {fulfillment.deliveryType === 'pickup' && (
+            <>
+              <span className="text-gray-500">受取店舗</span>
+              <span className="font-medium">{storeName}</span>
+            </>
+          )}
+
+          {fulfillment.deliveryType === 'delivery' && (
+            <>
+              <span className="text-gray-500">郵便番号</span>
+              <span className="font-medium">{customer.deliveryPostalCode}</span>
+
+              <span className="text-gray-500">配達先住所</span>
+              <span className="font-medium">{customer.deliveryAddress}</span>
+            </>
+          )}
         </div>
       </div>
-      <div className="pb-4">
-        {fulfillment.deliveryType === 'pickup' && (
-          <div className="py-2">
-            <p>
-              納品先: <span className="font-black">{storeName}</span>
-            </p>
-          </div>
-        )}
-        {fulfillment.deliveryType === 'delivery' && (
-          <div className="">
-            <div>郵便番号:{customer.deliveryPostalCode}</div>
-            <div>配達先住所:{customer.deliveryAddress}</div>
-          </div>
-        )}
-      </div>
-      <div>
-        <p>お客様情報</p>
-        <Label htmlFor="name" className="py-2">
-          名前
-        </Label>
-        <Input name="name" value={customer.name} readOnly />
-        <Label htmlFor="address" className="py-2">
-          住所
-        </Label>
-        <Input name="address" value={customer.address} readOnly />
-        <Label htmlFor="phone" className="py-2">
-          電話番号
-        </Label>
-        <Input name="phone" value={customer.phone} readOnly />
 
-        <Label className="py-2" id="note">
-          備考
-        </Label>
-        <Textarea disabled value={customer.note}></Textarea>
+      {/* お客様情報 */}
+      <div className="flex flex-col gap-3 rounded-xl border p-4">
+        <p className="font-semibold">お客様情報</p>
+
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-xs text-gray-500">名前</Label>
+            <Input
+              className="rounded-xl bg-gray-50"
+              value={customer.name}
+              readOnly
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-xs text-gray-500">住所</Label>
+            <Input
+              className="rounded-xl bg-gray-50"
+              value={customer.address}
+              readOnly
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-xs text-gray-500">電話番号</Label>
+            <Input
+              className="rounded-xl bg-gray-50"
+              value={customer.phone}
+              readOnly
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-xs text-gray-500">備考</Label>
+            <Textarea
+              className="rounded-xl bg-gray-50"
+              value={customer.note}
+              disabled
+            />
+          </div>
+        </div>
       </div>
-    </>
+
+      {/* ボタン */}
+      <div className="flex flex-col gap-2">
+        <Button
+          disabled={isSubmitting}
+          onClick={() => void handleConfirm()}
+          className="h-12 w-full rounded-xl bg-amber-700 text-base font-medium hover:bg-amber-800 disabled:bg-gray-300"
+        >
+          {isSubmitting ? '送信中...' : '注文を確定する'}
+        </Button>
+        <Link to="/order/cart">
+          <Button
+            variant="outline"
+            className="h-12 w-full rounded-xl text-gray-500"
+          >
+            カートに戻る
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 }
 

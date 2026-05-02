@@ -28,63 +28,87 @@ function DeliveryTypeSelector() {
   const isDisabled = !(fulfillment.deliveryDate && fulfillment.deliveryFrom);
 
   return (
-    <>
-      <RadioGroup
-        value={fulfillment.deliveryType}
-        onValueChange={handleDeliveryTypeChange}
-        className="my-5"
-      >
-        <div className="flex gap-3">
-          <RadioGroupItem value="pickup" id="pickup" />
-          <Label htmlFor="pickup">店舗受取</Label>
-        </div>
-        <div className="flex gap-3">
-          <RadioGroupItem value="delivery" id="delivery" />
-          <Label htmlFor="delivery">配達</Label>
-        </div>
-      </RadioGroup>
+    <div className="mx-auto max-w-lg py-6">
+      <h2 className="mb-6 text-lg font-bold">受取方法・日時の選択</h2>
 
-      <div className="flex gap-4">
-        <div>
-          <Label>日時</Label>
+      {/* 受取方法 */}
+      <div className="mb-6 flex flex-col gap-1.5">
+        <Label>受取方法</Label>
+        <RadioGroup
+          value={fulfillment.deliveryType}
+          onValueChange={handleDeliveryTypeChange}
+          className="mt-1 flex flex-col gap-2"
+        >
+          <label
+            htmlFor="pickup"
+            className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-colors ${
+              fulfillment.deliveryType === 'pickup'
+                ? 'border-amber-700 bg-amber-50'
+                : 'border-gray-200'
+            }`}
+          >
+            <RadioGroupItem value="pickup" id="pickup" />
+            店舗受取
+          </label>
+
+          <label
+            htmlFor="delivery"
+            className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-colors ${
+              fulfillment.deliveryType === 'delivery'
+                ? 'border-amber-700 bg-amber-50'
+                : 'border-gray-200'
+            }`}
+          >
+            <RadioGroupItem value="delivery" id="delivery" />
+            配達
+          </label>
+        </RadioGroup>
+      </div>
+
+      {/* 日時・時間 */}
+      <div className="mb-6 flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <Label>日付</Label>
           <Input
-            value={fulfillment.deliveryDate}
             type="date"
             name="deliveryDate"
+            value={fulfillment.deliveryDate}
             onChange={handleChange}
+            className="rounded-xl"
           />
         </div>
-        <div>
-          <Label>受取時間</Label>
-          <TimeSelect
-            value={fulfillment.deliveryFrom}
-            onChange={(value) => {
-              updateFulfillment({ deliveryFrom: value });
-            }}
-            label="受取時間"
-          />
-        </div>
-        {fulfillment.deliveryType === 'delivery' && (
-          <div>
-            <Label>配達時間</Label>
+
+        <div className="flex gap-4">
+          <div className="flex flex-1 flex-col gap-1.5">
+            <Label>受取時間</Label>
             <TimeSelect
-              value={fulfillment.deliveryTo}
-              onChange={(value) => {
-                updateFulfillment({ deliveryTo: value });
-              }}
-              label="配達時間"
+              value={fulfillment.deliveryFrom}
+              onChange={(value) => updateFulfillment({ deliveryFrom: value })}
+              label="受取時間"
             />
           </div>
-        )}
+
+          {fulfillment.deliveryType === 'delivery' && (
+            <div className="flex flex-1 flex-col gap-1.5">
+              <Label>配達時間</Label>
+              <TimeSelect
+                value={fulfillment.deliveryTo}
+                onChange={(value) => updateFulfillment({ deliveryTo: value })}
+                label="配達時間"
+              />
+            </div>
+          )}
+        </div>
       </div>
+
       <Button
-        onClick={() => void navigate('/order/cart')}
+        onClick={() => void navigate('/order/products')}
         disabled={isDisabled}
-        className="m-10"
+        className="h-12 w-full rounded-xl bg-amber-700 text-base font-medium hover:bg-amber-800 disabled:bg-gray-300"
       >
-        商品選択画面へ進む
+        商品選択へ進む →
       </Button>
-    </>
+    </div>
   );
 }
 
