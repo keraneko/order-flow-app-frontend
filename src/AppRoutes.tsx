@@ -113,7 +113,7 @@ export default function AppRoutes() {
             <Route
               path="/stores"
               element={
-                <RequireRole allowedRoles={['store_user']}>
+                <RequireRole allowedRoles={['admin']}>
                   <StoresPage />
                 </RequireRole>
               }
@@ -121,7 +121,7 @@ export default function AppRoutes() {
             <Route
               path="/stores/new"
               element={
-                <RequireRole allowedRoles={['store_user']}>
+                <RequireRole allowedRoles={['admin']}>
                   <CreateStorePage />
                 </RequireRole>
               }
@@ -129,7 +129,7 @@ export default function AppRoutes() {
             <Route
               path="/stores/:storeId/edit"
               element={
-                <RequireRole allowedRoles={['store_user']}>
+                <RequireRole allowedRoles={['admin']}>
                   <UpdateStorePage />
                 </RequireRole>
               }
