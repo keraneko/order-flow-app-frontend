@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { apiClient } from '@/lib/axios';
 import type { OrderShow } from '@/types/order';
 import { getFirstAxiosValidationMessage } from '@/utils/apiError';
+import { getTodayDateInputValue } from '@/utils/date';
 import { formatTime } from '@/utils/formatTime';
 
 import { TimeSelect } from './form/TimeSelect';
@@ -139,6 +140,7 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
                 className="flex-1"
                 disabled={!isEditing}
                 value={draftSchedule?.deliveryDate ?? order.deliveryDate}
+                min={getTodayDateInputValue()}
                 type="date"
                 name="deliveryDate"
                 onChange={handleChange}
