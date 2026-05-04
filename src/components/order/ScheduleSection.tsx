@@ -7,7 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { apiClient } from '@/lib/axios';
 import type { OrderShow } from '@/types/order';
-import { getFirstAxiosValidationMessage } from '@/utils/apiError';
+import {
+  getAxiosMessage,
+  getFirstAxiosValidationMessage,
+} from '@/utils/apiError';
 import { getTodayDateInputValue } from '@/utils/date';
 import { formatTime } from '@/utils/formatTime';
 
@@ -77,21 +80,28 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
     } catch (e) {
       if (axios.isAxiosError(e)) {
         const status = e.response?.status;
+        const validationMessage = getFirstAxiosValidationMessage(
+          e.response?.data,
+        );
+        const apiMessage = getAxiosMessage(e.response?.data);
 
         if (status === 403) {
-          return toast.error(
-            '現在のユーザーでこの注文を変更する権限がありません',
-          );
+          toast.error('現在のユーザーでこの注文を変更する権限がありません');
+
+          return;
         }
 
         if (status === 422) {
-          return toast.error(
-            getFirstAxiosValidationMessage(e.response?.data) ??
-              '入力内容が間違っています',
+          toast.error(
+            validationMessage ?? apiMessage ?? '入力内容が間違っています',
           );
+
+          return;
         }
 
-        return toast.error('更新に失敗しました');
+        toast.error('更新に失敗しました');
+
+        return;
       }
       toast.error('変更に失敗しました');
     } finally {
