@@ -91,19 +91,33 @@ function UpdateStorePage() {
 
       await apiClient.patch(`/api/stores/${storeId}`, payload);
 
-      toast.success('登録しました');
+      toast.success('更新しました');
       void navigate('/stores');
     } catch (e) {
       if (axios.isAxiosError(e)) {
         const status = e.response?.status;
+
+        if (status === 403) {
+          toast.error('現在のユーザーでは更新する権限がありません');
+
+          return;
+        }
 
         if (status === 422) {
           toast.error(
             getFirstAxiosValidationMessage(e.response?.data) ??
               '入力内容が間違っています',
           );
+
+          return;
         }
+
+        toast.error('更新に失敗しました');
+
+        return;
       }
+
+      toast.error('更新に失敗しました');
     } finally {
       setIsSubmitting(false);
     }
