@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import type { CheckedState } from '@radix-ui/react-checkbox';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { StoreFormValue } from '@/types/store';
-import { normalizeNumberString } from '@/utils/NumberString';
 
 interface StoreFormProps {
   value: StoreFormValue;
@@ -22,76 +20,36 @@ function StoreForm({
   submitLabel,
   isSubmitting,
 }: StoreFormProps) {
-  //errors
-  const [errors, setErrors] = useState<{
-    code?: string;
-    name?: string;
-    postalCode?: string;
-    prefecture?: string;
-    city?: string;
-    addressLine?: string;
-  }>({});
-  const validate = () => {
-    const nextErrors: typeof errors = {};
-
-    if (!value.code) {
-      nextErrors.code = '店舗コードは必須です';
-    } else {
-      const row = normalizeNumberString(value.code).trim();
-
-      if (!row) {
-        nextErrors.code = '店舗コードは必須です';
-      } else if (!/^\d{6}$/.test(row)) {
-        nextErrors.code = '店舗コードは6桁の数字で入力してください';
-      }
-    }
-
-    if (!value.name) nextErrors.name = '店舗名は必須です';
-
-    if (!value.postalCode) nextErrors.postalCode = '郵便番号は必須です';
-
-    if (!value.prefecture) nextErrors.prefecture = '都道府県は必須です';
-
-    if (!value.city) nextErrors.city = '市町村は必須です';
-
-    if (!value.addressLine) nextErrors.addressLine = '番地以下は必須です';
-
-    setErrors(nextErrors);
-
-    return Object.keys(nextErrors).length === 0;
-  };
-
   const updateValue = (updates: Partial<StoreFormValue>) => {
     onChange({ ...value, ...updates });
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    void onSubmit();
+  };
+
   return (
     <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          if (!validate()) return;
-          void onSubmit();
-        }}
-      >
+      <form onSubmit={handleSubmit}>
         <Label htmlFor="code" className="py-2">
           店舗コード
         </Label>
         <Input
+          id="code"
           name="code"
           value={value.code}
           onChange={(e) => {
             updateValue({ code: e.target.value });
-            setErrors((prev) => ({ ...prev, code: undefined }));
           }}
         />
-        {errors.code && <p className="text-sm text-red-500">{errors.code}</p>}
 
         <Label htmlFor="name" className="py-2">
           店舗名
         </Label>
         <Input
+          id="name"
           name="name"
           value={value.name}
           onChange={(e) => {
@@ -103,6 +61,7 @@ function StoreForm({
           郵便番号
         </Label>
         <Input
+          id="postalCode"
           name="postalCode"
           value={value.postalCode}
           onChange={(e) => {
@@ -114,6 +73,7 @@ function StoreForm({
           都道府県
         </Label>
         <Input
+          id="prefecture"
           name="prefecture"
           value={value.prefecture}
           onChange={(e) => {
@@ -125,6 +85,7 @@ function StoreForm({
           市町村
         </Label>
         <Input
+          id="city"
           name="city"
           value={value.city}
           onChange={(e) => {
@@ -136,6 +97,7 @@ function StoreForm({
           番地以降
         </Label>
         <Input
+          id="addressLine"
           name="addressLine"
           value={value.addressLine}
           onChange={(e) => {
@@ -154,7 +116,7 @@ function StoreForm({
             }}
           />
           <Label htmlFor="isActive" className="py-2">
-            公開しない
+            店舗を非公開にする
           </Label>
         </div>
 
