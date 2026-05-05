@@ -38,8 +38,8 @@ function OrderItemsTable({ order }: OrderItemsTableProps) {
               </TableCell>
             </TableRow>
           ))}
-          <TableRow className="hover:bg-transparent">
-            <TableCell colSpan={4} className="pr-4 text-right">
+          <TableRow className="bg-amber-50 font-medium hover:bg-transparent">
+            <TableCell colSpan={4} className="pr-4 text-right text-amber-700">
               合計 {formatYen(order.totalAmount)}
             </TableCell>
           </TableRow>

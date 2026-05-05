@@ -5,7 +5,6 @@ import { Phone, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { apiClient } from '@/lib/axios';
 import type { OrderCustomerEdit } from '@/types/customer';
 import type { OrderShow } from '@/types/order';
@@ -121,99 +120,106 @@ export default function OrderCustomer({ order, orderId }: OrderCustomerProps) {
   };
 
   return (
-    <>
-      <div className="rounded-sm border">
-        <div className="flex items-center justify-between border-b">
-          <Label className="flex h-10 items-center pl-4 font-semibold">
-            顧客情報
-          </Label>
+    <div className="rounded-xl border">
+      {/* ヘッダー */}
+      <div className="flex items-center justify-between border-b px-4 py-2">
+        <span className="font-semibold">顧客情報</span>
 
-          <div className="pr-4">
-            {!isEditing && (
-              <button type="button" onClick={() => setIsEditing(true)}>
-                <Badge variant="outline">編集</Badge>
+        <div>
+          {!isEditing && (
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              disabled={order.status !== 'received'}
+              className={
+                order.status !== 'received'
+                  ? 'cursor-not-allowed opacity-30 grayscale'
+                  : 'cursor-pointer'
+              }
+            >
+              <Badge variant="outline">編集</Badge>
+            </button>
+          )}
+          {isEditing && (
+            <div className="flex gap-2">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button
+                    disabled={isSubmitting}
+                    className={isSubmitting ? 'opacity-40' : ''}
+                  >
+                    <Badge variant="outline">
+                      {isSubmitting ? '保存中...' : '保存'}
+                    </Badge>
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>データを更新しますか？</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      顧客情報は共通の顧客データとして管理されています。更新すると他の注文にも影響する可能性があります。保存しますか？
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => void handleSubmit()}>
+                      変更を保存する
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setDraftCustomer(null);
+                }}
+              >
+                <Badge variant="destructive">中止</Badge>
               </button>
-            )}
-            {isEditing && (
-              <div className="flex gap-2">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <button disabled={isSubmitting}>
-                      <Badge variant="outline">
-                        {isSubmitting ? '保存中...' : '保存'}
-                      </Badge>
-                    </button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        データを更新しますか？
-                      </AlertDialogTitle>
-
-                      <AlertDialogDescription>
-                        顧客情報は共通の顧客データとして管理されています。更新すると他の注文にも影響する可能性があります。保存しますか？
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>キャンセル</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => {
-                          void handleSubmit();
-                        }}
-                      >
-                        変更を保存する
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsEditing(false);
-                    setDraftCustomer(null);
-                  }}
-                >
-                  <Badge variant="destructive">中止</Badge>
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-col justify-around">
-          <div className="flex items-start border-b p-2">
-            <User className="text-muted-foreground mx-4 mt-3 h-5 w-5 shrink-0" />
-            <div className="flex w-full flex-col gap-2 p-2">
-              <Input
-                name="name"
-                value={customerName ? customerName : ''}
-                disabled={!isEditing}
-                onChange={handleChange}
-                placeholder="名前"
-              />
-              <Input
-                name="address"
-                value={customerAddress ? customerAddress : ''}
-                disabled={!isEditing}
-                onChange={handleChange}
-                placeholder="住所"
-              />
             </div>
-          </div>
-          <div className="flex items-center p-2">
-            <Phone className="text-muted-foreground mx-4 h-5 w-5 shrink-0" />
-            <div className="flex-1 px-2">
-              <Input
-                name="phone"
-                value={customerPhone ? customerPhone : ''}
-                disabled={!isEditing}
-                onChange={handleChange}
-                placeholder="電話番号"
-              />
-            </div>
-          </div>
+          )}
         </div>
       </div>
-    </>
+
+      {/* 名前・住所 */}
+      <div className="flex items-start border-b p-2">
+        <User className="text-muted-foreground mx-4 mt-3 h-5 w-5 shrink-0" />
+        <div className="flex w-full flex-col gap-2 p-2">
+          <Input
+            name="name"
+            value={customerName ?? ''}
+            disabled={!isEditing}
+            onChange={handleChange}
+            placeholder="名前"
+            className="rounded-xl disabled:bg-gray-50 disabled:text-gray-500"
+          />
+          <Input
+            name="address"
+            value={customerAddress ?? ''}
+            disabled={!isEditing}
+            onChange={handleChange}
+            placeholder="住所"
+            className="rounded-xl disabled:bg-gray-50 disabled:text-gray-500"
+          />
+        </div>
+      </div>
+
+      {/* 電話番号 */}
+      <div className="flex items-center p-2">
+        <Phone className="text-muted-foreground mx-4 h-5 w-5 shrink-0" />
+        <div className="flex-1 px-2">
+          <Input
+            name="phone"
+            value={customerPhone ?? ''}
+            disabled={!isEditing}
+            onChange={handleChange}
+            placeholder="電話番号"
+            className="rounded-xl disabled:bg-gray-50 disabled:text-gray-500"
+          />
+        </div>
+      </div>
+    </div>
   );
 }

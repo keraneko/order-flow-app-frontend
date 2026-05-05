@@ -113,44 +113,57 @@ export default function PickupStoreSection({
   if (!stores) return <span>データがありません</span>;
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void handleSubmit();
-        }}
-      >
-        <div className="flex-1 text-right">
-          {/* 編集ボタン */}
-          <div className="pr-4 text-right">
-            {!isEditing && (
-              <button type="button" onClick={() => setIsEditing(true)}>
-                <Badge variant="outline">編集</Badge>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        void handleSubmit();
+      }}
+    >
+      <div className="pb-3">
+        {/* 編集ボタン */}
+        <div className="flex items-center justify-end py-1 pr-1">
+          {!isEditing && (
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              disabled={order.status !== 'received'}
+              className={
+                order.status !== 'received'
+                  ? 'cursor-not-allowed opacity-30 grayscale'
+                  : 'cursor-pointer'
+              }
+            >
+              <Badge variant="outline">編集</Badge>
+            </button>
+          )}
+          {isEditing && (
+            <div className="flex gap-2">
+              <button
+                disabled={isSubmitting}
+                type="submit"
+                className={isSubmitting ? 'opacity-40' : ''}
+              >
+                <Badge variant="outline">保存</Badge>
               </button>
-            )}
-            {isEditing && (
-              <div className="flex justify-end">
-                <button className="mr-2" disabled={isSubmitting} type="submit">
-                  <Badge variant="outline">保存</Badge>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsEditing(false);
-                    setDraftPickupStore(null);
-                  }}
-                >
-                  <Badge variant="destructive">中止</Badge>
-                </button>
-              </div>
-            )}
-          </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setDraftPickupStore(null);
+                }}
+              >
+                <Badge variant="destructive">中止</Badge>
+              </button>
+            </div>
+          )}
         </div>
-        <div className="px-2 py-1">
-          <Label className="pr-4 text-xs text-gray-500">受取店舗:</Label>
+
+        {/* 受取店舗 */}
+        <div className="flex flex-col gap-1 px-2 py-1">
+          <Label className="text-xs text-gray-500">受取店舗</Label>
           <select
             disabled={!isEditing}
-            className="w-full rounded-md border p-2"
+            className="w-full rounded-xl border p-2 disabled:bg-gray-50 disabled:text-gray-500"
             value={
               selectedPickupStoreId !== undefined
                 ? String(selectedPickupStoreId)
@@ -166,7 +179,7 @@ export default function PickupStoreSection({
             ))}
           </select>
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 }

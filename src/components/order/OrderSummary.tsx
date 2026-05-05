@@ -73,74 +73,97 @@ function OrderSummary({ order, orderId }: OrderSummaryProps) {
   };
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void handleStatusSubmit();
-        }}
-      >
-        <div className="mb-5 grid grid-cols-3 gap-4 rounded-sm border shadow-xs">
-          <div className="my-2 flex flex-col justify-center px-4 text-left">
-            <p>注文ID</p>
-            <p>#{order.id}</p>
-          </div>
-          <div className="my-2 flex flex-col justify-center border-l px-4 text-left">
-            <p>注文日</p>
-            <p>{formatDay(order.orderedAt)}</p>
-          </div>
-          <div className="my-2 flex flex-col justify-center border-l px-4 text-left">
-            <p>ステータス</p>
-            <div className="">
-              {!isEditing && (
-                <div className="flex justify-around">
-                  <OrderStatusBadge status={order.status} />
-                  <button onClick={() => setIsEditing(true)} type="button">
-                    <Badge variant="outline">編集</Badge>
-                  </button>
-                </div>
-              )}
-              {isEditing && (
-                <div className="flex justify-around text-xs">
-                  <select
-                    value={selectedStatus}
-                    className="border text-center"
-                    onChange={(e) => {
-                      const value = e.target.value;
-
-                      if (
-                        value === 'received' ||
-                        value === 'completed' ||
-                        value === 'canceled'
-                      ) {
-                        setSelectedStatus(value);
-                      }
-                    }}
-                  >
-                    <option value="received">受注</option>
-                    <option value="completed">完了</option>
-                    <option value="canceled">キャンセル</option>
-                  </select>
-                  <button type="submit" disabled={isSubmitting}>
-                    <Badge variant="outline">保存</Badge>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setIsEditing(false);
-                      setSelectedStatus(order.status);
-                    }}
-                    type="button"
-                  >
-                    <Badge variant="destructive">中止</Badge>
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        void handleStatusSubmit();
+      }}
+    >
+      <div className="mb-5 grid grid-cols-3 gap-4 rounded-xl border shadow-sm">
+        <div className="my-3 flex flex-col justify-center px-4">
+          <p className="text-xs text-gray-500">注文ID</p>
+          <p className="font-medium">#{order.id}</p>
         </div>
-      </form>
-    </>
+
+        <div className="my-3 flex flex-col justify-center border-l px-4">
+          <p className="text-xs text-gray-500">注文日</p>
+          <p className="font-medium">{formatDay(order.orderedAt)}</p>
+        </div>
+
+        <div className="my-3 flex flex-col justify-center border-l px-4">
+          <p className="text-xs text-gray-500">ステータス</p>
+
+          {/* 表示モード */}
+          {!isEditing && (
+            <div className="pt-1">
+              <div className="flex items-center gap-2">
+                <OrderStatusBadge status={order.status} />
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                  disabled={order.status !== 'received'}
+                >
+                  <Badge
+                    variant="outline"
+                    className={
+                      order.status !== 'received'
+                        ? 'cursor-not-allowed opacity-40'
+                        : 'hover:bg-gray-100'
+                    }
+                  >
+                    編集
+                  </Badge>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 編集モード */}
+          {isEditing && (
+            <div className="flex items-center gap-2 pt-1">
+              <select
+                value={selectedStatus}
+                className="rounded border px-1 py-0.5 text-xs"
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  if (
+                    value === 'received' ||
+                    value === 'completed' ||
+                    value === 'canceled'
+                  ) {
+                    setSelectedStatus(value);
+                  }
+                }}
+              >
+                <option value="received">受注</option>
+                <option value="completed">完了</option>
+                <option value="canceled">キャンセル</option>
+              </select>
+
+              <button type="submit" disabled={isSubmitting}>
+                <Badge
+                  variant="outline"
+                  className={isSubmitting ? 'opacity-40' : 'hover:bg-gray-100'}
+                >
+                  保存
+                </Badge>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setSelectedStatus(order.status);
+                }}
+              >
+                <Badge variant="destructive">中止</Badge>
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </form>
   );
 }
 

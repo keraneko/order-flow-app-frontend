@@ -111,23 +111,36 @@ export default function DeliveryAddressSection({
   };
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void handleSubmit();
-        }}
-      >
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        void handleSubmit();
+      }}
+    >
+      <div className="pb-3">
         {/* 編集ボタン */}
-        <div className="pr-4 text-right">
+        <div className="flex items-center justify-end py-1 pr-1">
           {!isEditing && (
-            <button type="button" onClick={() => setIsEditing(true)}>
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              disabled={order.status !== 'received'}
+              className={
+                order.status !== 'received'
+                  ? 'cursor-not-allowed opacity-30 grayscale'
+                  : 'cursor-pointer'
+              }
+            >
               <Badge variant="outline">編集</Badge>
             </button>
           )}
           {isEditing && (
-            <div className="flex justify-end">
-              <button className="mr-2" disabled={isSubmitting} type="submit">
+            <div className="flex gap-2">
+              <button
+                disabled={isSubmitting}
+                type="submit"
+                className={isSubmitting ? 'opacity-40' : ''}
+              >
                 <Badge variant="outline">保存</Badge>
               </button>
               <button
@@ -142,36 +155,31 @@ export default function DeliveryAddressSection({
             </div>
           )}
         </div>
-        <div>
-          <Label className="p-2 text-gray-500">配送先住所:</Label>
-          <div className="p-2">
-            <Label className="text-xs text-gray-500">郵便番号:</Label>
+
+        {/* 配送先住所 */}
+        <div className="flex flex-col gap-3 px-2 py-1">
+          <div className="flex flex-col gap-1">
+            <Label className="text-xs text-gray-500">郵便番号</Label>
             <Input
               disabled={!isEditing}
-              className="py-1"
-              value={
-                inputDeliveryPostalCode !== undefined
-                  ? inputDeliveryPostalCode
-                  : ''
-              }
+              value={inputDeliveryPostalCode ?? ''}
               name="deliveryPostalCode"
               onChange={handleChange}
+              className="rounded-xl disabled:bg-gray-50 disabled:text-gray-500"
             />
           </div>
-          <div className="p-2">
-            <Label className="text-xs text-gray-500">住所:</Label>
+          <div className="flex flex-col gap-1">
+            <Label className="text-xs text-gray-500">住所</Label>
             <Input
               disabled={!isEditing}
-              className="flex-1 py-1"
-              value={
-                inputDeliveryAddress !== undefined ? inputDeliveryAddress : ''
-              }
+              value={inputDeliveryAddress ?? ''}
               name="deliveryAddress"
               onChange={handleChange}
+              className="rounded-xl disabled:bg-gray-50 disabled:text-gray-500"
             />
           </div>
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 }
