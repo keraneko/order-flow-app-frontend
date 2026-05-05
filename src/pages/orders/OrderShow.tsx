@@ -31,44 +31,51 @@ function IndexOrderPageTest() {
   if (!order) return <span>データがありません</span>;
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
+      {/* 戻るボタン */}
       <button
-        className="mb-3 border-b text-xs text-gray-500 hover:text-blue-400"
+        className="flex w-fit items-center gap-1 text-sm text-gray-400 transition-colors hover:text-amber-700"
         onClick={() => void navigate('/orders')}
       >
-        ←注文一覧に戻る
+        ← 注文一覧に戻る
       </button>
 
-      <h2 className="mb-5 border-b">注文番号 #{order.id}</h2>
+      {/* ページタイトル */}
+      <h2 className="border-b pb-3 text-xl font-bold">注文番号 #{order.id}</h2>
 
-      {/* 注文サマリ */}
+      {/* ① 注文サマリ */}
       <OrderSummary order={order} orderId={orderId} />
 
-      {/* 顧客情報 */}
-      <div className="grid grid-cols-2 gap-5">
-        <div>
-          <OrderCustomer order={order} orderId={orderId} />
-
-          {/* スケジュール、配送情報 */}
-          <FulfillmentInfoCard order={order} orderId={orderId} />
+      {/* 編集不可バナー */}
+      {order.status !== 'received' && (
+        <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500">
+          {order.status === 'completed'
+            ? '完了済みのため、内容の編集はできません'
+            : 'キャンセル済みのため、内容の編集はできません'}
         </div>
+      )}
 
-        {/* 注文詳細 */}
-        <div>
-          <OrderItemsTable order={order} />
-          {order.status === 'received' && (
-            <div className="text-right">
-              <Link
-                to={`/orders/${order.id}/items/edit`}
-                className="border-b text-sm text-violet-600"
-              >
-                注文商品を変更する→
-              </Link>
-            </div>
-          )}
-        </div>
+      {/* ② 商品テーブル */}
+      <div className="flex flex-col gap-2">
+        <OrderItemsTable order={order} />
+        {order.status === 'received' && (
+          <div className="text-right">
+            <Link
+              to={`/orders/${order.id}/items/edit`}
+              className="text-sm text-amber-700 transition-colors hover:text-amber-800 hover:underline"
+            >
+              注文商品を変更する →
+            </Link>
+          </div>
+        )}
       </div>
-    </>
+
+      {/* ③ 顧客情報 | 受取先情報 */}
+      <div className="grid grid-cols-2 items-start gap-5">
+        <OrderCustomer order={order} orderId={orderId} />
+        <FulfillmentInfoCard order={order} orderId={orderId} />
+      </div>
+    </div>
   );
 }
 

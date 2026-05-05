@@ -110,96 +110,101 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
   };
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          void handleSubmit();
-        }}
-      >
-        <div className="border-b">
-          {/* 編集ボタン */}
-          <div className="pr-4 text-right">
-            {!isEditing && (
-              <button type="button" onClick={() => setIsEditing(true)}>
-                <Badge variant="outline">編集</Badge>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        void handleSubmit();
+      }}
+    >
+      <div className="border-b pb-3">
+        {/* 編集ボタン */}
+        <div className="flex items-center justify-end py-1 pr-1">
+          {!isEditing && (
+            <button
+              disabled={order.status !== 'received'}
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className={
+                order.status !== 'received'
+                  ? 'cursor-not-allowed opacity-30 grayscale'
+                  : 'cursor-pointer'
+              }
+            >
+              <Badge variant="outline">編集</Badge>
+            </button>
+          )}
+          {isEditing && (
+            <div className="flex gap-2">
+              <button
+                disabled={isSubmitting}
+                type="submit"
+                className={isSubmitting ? 'opacity-40' : ''}
+              >
+                <Badge variant="outline">保存</Badge>
               </button>
-            )}
-            {isEditing && (
-              <div className="flex justify-end">
-                <button className="mr-2" disabled={isSubmitting} type="submit">
-                  <Badge variant="outline">保存</Badge>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsEditing(false);
-                    setDraftSchedule(null);
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setDraftSchedule(null);
+                }}
+              >
+                <Badge variant="destructive">中止</Badge>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* 納品日 */}
+        <div className="flex flex-col gap-1 px-2 py-1">
+          <Label className="text-xs text-gray-500">納品日</Label>
+          <Input
+            disabled={!isEditing}
+            value={draftSchedule?.deliveryDate ?? order.deliveryDate}
+            min={getTodayDateInputValue()}
+            type="date"
+            name="deliveryDate"
+            onChange={handleChange}
+            className="rounded-xl disabled:bg-gray-50 disabled:text-gray-500"
+          />
+        </div>
+
+        {/* 納品時間 */}
+        <div className="flex flex-col gap-1 px-2 py-1">
+          <Label className="text-xs text-gray-500">納品時間</Label>
+          <div className="flex items-center gap-2">
+            <TimeSelect
+              disabled={!isEditing}
+              value={
+                draftSchedule?.deliveryFrom ?? formatTime(order.deliveryFrom)
+              }
+              onChange={(value) => {
+                setDraftSchedule((prev) => ({
+                  ...(prev ?? {}),
+                  deliveryFrom: value,
+                }));
+              }}
+            />
+            {order.deliveryType === 'delivery' && (
+              <>
+                <span className="text-gray-400">〜</span>
+                <TimeSelect
+                  disabled={!isEditing}
+                  value={
+                    draftSchedule?.deliveryTo ?? formatTime(order.deliveryTo)
+                  }
+                  onChange={(value) => {
+                    setDraftSchedule((prev) => ({
+                      ...(prev ?? {}),
+                      deliveryTo: value,
+                    }));
                   }}
-                >
-                  <Badge variant="destructive">中止</Badge>
-                </button>
-              </div>
+                />
+              </>
             )}
-          </div>
-          <div>
-            <div className="px-2 py-1">
-              <Label className="pr-4 text-xs text-gray-500">納品日:</Label>
-              <Input
-                className="flex-1"
-                disabled={!isEditing}
-                value={draftSchedule?.deliveryDate ?? order.deliveryDate}
-                min={getTodayDateInputValue()}
-                type="date"
-                name="deliveryDate"
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* deliveryの時のUI */}
-
-            <div>
-              <div className="px-2 py-1">
-                <Label className="pr-4 text-xs text-gray-500">納品時間:</Label>
-                <div className="flex text-base">
-                  {/* deliveryFrom */}
-                  <TimeSelect
-                    disabled={!isEditing}
-                    value={
-                      draftSchedule?.deliveryFrom ??
-                      formatTime(order.deliveryFrom)
-                    }
-                    onChange={(value) => {
-                      setDraftSchedule((prev) => ({
-                        ...(prev ?? {}),
-                        deliveryFrom: value,
-                      }));
-                    }}
-                  />
-                  {order.deliveryType === 'delivery' && <span>~</span>}
-                  {order.deliveryType === 'delivery' && (
-                    // deliveryFrom
-                    <TimeSelect
-                      disabled={!isEditing}
-                      value={
-                        draftSchedule?.deliveryTo ??
-                        formatTime(order.deliveryTo)
-                      }
-                      onChange={(value) => {
-                        setDraftSchedule((prev) => ({
-                          ...(prev ?? {}),
-                          deliveryTo: value,
-                        }));
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 }
