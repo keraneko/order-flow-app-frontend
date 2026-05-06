@@ -51,6 +51,12 @@ function CartProducts() {
 
   return (
     <>
+      <button
+        onClick={() => void navigate('/order/options')}
+        className="mb-2 text-sm text-gray-500 hover:text-amber-700"
+      >
+        ← 受け取り方法の選択に戻る
+      </button>
       <h2 className="py-4 text-lg font-bold">商品一覧</h2>
       <div className="grid w-full grid-cols-3 gap-3">
         {visibleProducts.map((item) => (

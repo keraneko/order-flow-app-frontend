@@ -118,36 +118,44 @@ function CartList() {
   };
 
   return (
-    <div className="flex flex-col gap-1">
-      <h2 className="py-4 text-lg font-bold">カート</h2>
+    <>
+      <button
+        onClick={() => void navigate('/order/products')}
+        className="mb-2 text-sm text-gray-400 transition-colors hover:text-amber-700"
+      >
+        ← 商品選択に戻る
+      </button>
+      <div className="flex flex-col gap-1">
+        <h2 className="py-4 text-lg font-bold">カート</h2>
 
-      {items.length === 0 ? (
-        <p className="py-10 text-center text-sm text-gray-400">
-          カートに商品がありません
-        </p>
-      ) : (
-        items.map((item) => <CartItems key={item.id} item={item} />)
-      )}
-
-      {/* 合計・次へ */}
-      <div className="mt-2 rounded-xl border bg-gray-50 p-4">
-        {cartError && items.length === 0 && (
-          <p className="mb-2 text-sm text-red-500">{cartError}</p>
-        )}
-        <div className="mb-3 flex items-center justify-between">
-          <p className="text-sm text-gray-500">商品小計（{totalItem}点）</p>
-          <p className="text-lg font-bold text-amber-700">
-            ¥{totalPrice.toLocaleString('ja-JP')}円
+        {items.length === 0 ? (
+          <p className="py-10 text-center text-sm text-gray-400">
+            カートに商品がありません
           </p>
+        ) : (
+          items.map((item) => <CartItems key={item.id} item={item} />)
+        )}
+
+        {/* 合計・次へ */}
+        <div className="mt-2 rounded-xl border bg-gray-50 p-4">
+          {cartError && items.length === 0 && (
+            <p className="mb-2 text-sm text-red-500">{cartError}</p>
+          )}
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm text-gray-500">商品小計（{totalItem}点）</p>
+            <p className="text-lg font-bold text-amber-700">
+              ¥{totalPrice.toLocaleString('ja-JP')}円
+            </p>
+          </div>
+          <Button
+            onClick={onNext}
+            className="w-full rounded-xl bg-amber-700 text-base font-medium hover:bg-amber-800"
+          >
+            次へ進む →
+          </Button>
         </div>
-        <Button
-          onClick={onNext}
-          className="w-full rounded-xl bg-amber-700 text-base font-medium hover:bg-amber-800"
-        >
-          次へ進む →
-        </Button>
       </div>
-    </div>
+    </>
   );
 }
 
