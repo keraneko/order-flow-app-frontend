@@ -19,14 +19,23 @@ function DeliveryTypeSelector() {
   };
 
   const handleDeliveryTypeChange = (value: 'pickup' | 'delivery') => {
-    if (value === 'pickup') {
-      updateFulfillment({ deliveryType: value });
-    } else {
-      updateFulfillment({ deliveryType: value });
-    }
+    updateFulfillment({ deliveryType: value });
   };
 
-  const isDisabled = !(fulfillment.deliveryDate && fulfillment.deliveryFrom);
+  const isDelivery = fulfillment.deliveryType === 'delivery';
+
+  const isInvalidDeliveryTime =
+    fulfillment.deliveryFrom >= fulfillment.deliveryTo;
+
+  const isRequiredMissing = isDelivery
+    ? !(
+        fulfillment.deliveryDate &&
+        fulfillment.deliveryFrom &&
+        fulfillment.deliveryTo
+      )
+    : !(fulfillment.deliveryDate && fulfillment.deliveryFrom);
+
+  const isDisabled = isRequiredMissing || isInvalidDeliveryTime;
 
   return (
     <div className="mx-auto max-w-lg py-6">
@@ -66,10 +75,13 @@ function DeliveryTypeSelector() {
         </RadioGroup>
       </div>
 
-      {/* 日時・時間 */}
+      {/* 日付 */}
       <div className="mb-6 flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
-          <Label>日付</Label>
+          <Label>
+            {isDelivery ? '配達希望日' : '受取希望日'}
+            <span className="ml-1 text-xs text-red-400">※必須</span>
+          </Label>
           <Input
             type="date"
             name="deliveryDate"
@@ -80,26 +92,29 @@ function DeliveryTypeSelector() {
           />
         </div>
 
-        <div className="flex gap-4">
-          <div className="flex flex-1 flex-col gap-1.5">
-            <Label>受取時間</Label>
+        {/* 時間 */}
+        <div className="flex flex-col gap-1.5">
+          <Label>
+            {isDelivery ? '配達希望時間' : '受取希望時間'}
+            <span className="ml-1 text-xs text-red-400">※必須</span>
+          </Label>
+          <div className="flex items-center gap-3">
             <TimeSelect
               value={fulfillment.deliveryFrom}
               onChange={(value) => updateFulfillment({ deliveryFrom: value })}
-              label="受取時間"
+              label={isDelivery ? '開始時間' : '受取時間'}
             />
+            {isDelivery && (
+              <>
+                <span className="text-gray-400">〜</span>
+                <TimeSelect
+                  value={fulfillment.deliveryTo}
+                  onChange={(value) => updateFulfillment({ deliveryTo: value })}
+                  label="終了時間"
+                />
+              </>
+            )}
           </div>
-
-          {fulfillment.deliveryType === 'delivery' && (
-            <div className="flex flex-1 flex-col gap-1.5">
-              <Label>配達時間</Label>
-              <TimeSelect
-                value={fulfillment.deliveryTo}
-                onChange={(value) => updateFulfillment({ deliveryTo: value })}
-                label="配達時間"
-              />
-            </div>
-          )}
         </div>
       </div>
 
