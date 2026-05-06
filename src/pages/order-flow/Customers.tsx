@@ -53,7 +53,6 @@ function Customers() {
 
   const onValid = (values: OrderCustomerInput) => {
     updateCustomer(values);
-    console.log(values);
     void navigate('/order/confirm');
   };
 
@@ -86,7 +85,7 @@ function Customers() {
           {/* 名前 */}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="name">
-              名前 <span className="text-xs text-red-400">*必須</span>
+              名前 <span className="text-xs text-red-400">※必須</span>
             </Label>
             <Input
               id="name"
@@ -113,7 +112,7 @@ function Customers() {
           {/* 電話番号 */}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="phone">
-              電話番号 <span className="text-xs text-red-400">*必須</span>
+              電話番号 <span className="text-xs text-red-400">※必須</span>
             </Label>
             <Input
               type="tel"
@@ -140,7 +139,9 @@ function Customers() {
 
           {/* 受取方法 */}
           <div className="flex flex-col gap-1.5">
-            <Label>受取方法</Label>
+            <Label>
+              受取方法 <span className="text-xs text-red-400">※必須</span>
+            </Label>
 
             {fulfillment.deliveryType === 'pickup' && (
               <>
@@ -176,7 +177,9 @@ function Customers() {
             {fulfillment.deliveryType === 'delivery' && (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="deliveryPostalCode">郵便番号</Label>
+                  <Label htmlFor="deliveryPostalCode">
+                    郵便番号 <span className="text-xs text-red-400">※必須</span>
+                  </Label>
                   <Input
                     id="deliveryPostalCode"
                     className="rounded-xl"
@@ -207,7 +210,10 @@ function Customers() {
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="deliveryAddress">配達先住所</Label>
+                  <Label htmlFor="deliveryAddress">
+                    配達先住所{' '}
+                    <span className="text-xs text-red-400">※必須</span>
+                  </Label>
                   <Input
                     id="deliveryAddress"
                     className="rounded-xl"
