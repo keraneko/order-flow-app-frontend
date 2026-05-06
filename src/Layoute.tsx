@@ -42,35 +42,6 @@ export function PublicLayout() {
         </div>
       </header>
 
-      <nav className="border-b bg-white">
-        <div className="mx-auto max-w-4xl px-4">
-          <ul className="flex list-none gap-1 py-2">
-            {[
-              { to: '/order/options', label: 'オプション' },
-              { to: '/order/cart', label: 'カート' },
-              { to: '/order/customer', label: 'お客様情報' },
-              { to: '/order/confirm', label: '確認' },
-            ].map(({ to, label }) => (
-              <li key={to}>
-                <NavLink to={to}>
-                  {({ isActive }) => (
-                    <Button
-                      variant={isActive ? 'default' : 'ghost'}
-                      className={
-                        isActive ? 'bg-amber-700 hover:bg-amber-800' : ''
-                      }
-                      size="sm"
-                    >
-                      {label}
-                    </Button>
-                  )}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-6">
         <Outlet />
       </main>
@@ -108,6 +79,10 @@ export function AdminLayout() {
     { to: '/orders', label: '注文一覧', roles: ['admin', 'store_user'] },
     { to: '/products', label: '商品一覧', roles: ['admin'] },
     { to: '/stores', label: '店舗一覧', roles: ['admin'] },
+    { to: '/order/options', label: 'オプション', roles: ['store_user'] },
+    { to: '/order/cart', label: 'カート', roles: ['store_user'] },
+    { to: '/order/customer', label: 'お客様情報', roles: ['store_user'] },
+    { to: '/order/confirm', label: '確認', roles: ['store_user'] },
   ];
 
   const visibleNabItems = navItems.filter((item) =>
