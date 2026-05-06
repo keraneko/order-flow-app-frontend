@@ -117,17 +117,27 @@ function UpdateProductPage() {
   };
 
   return (
-    <>
-      <h1>商品編集</h1>
-      <ProductForm
-        value={productInput}
-        onChange={setProductInput}
-        onSubmit={handleSubmit}
-        submitLabel="編集を登録する"
-        isSubmitting={isSubmitting}
-        showIsVisible={true}
-      />
-    </>
+    <div className="flex flex-col gap-6">
+      <button
+        className="flex w-fit items-center gap-1 text-sm text-gray-400 transition-colors hover:text-amber-700"
+        onClick={() => void navigate('/products')}
+      >
+        ← 商品一覧に戻る
+      </button>
+
+      <h2 className="border-b pb-3 text-xl font-bold">商品編集</h2>
+
+      <div className="max-w-lg">
+        <ProductForm
+          value={productInput}
+          onChange={setProductInput}
+          onSubmit={handleSubmit}
+          submitLabel="編集を登録する"
+          isSubmitting={isSubmitting}
+          showIsVisible={true}
+        />
+      </div>
+    </div>
   );
 }
 

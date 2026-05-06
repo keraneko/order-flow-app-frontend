@@ -124,16 +124,26 @@ function UpdateStorePage() {
   };
 
   return (
-    <>
-      <h1>店舗編集</h1>
-      <StoreForm
-        value={storeInput}
-        onChange={setStoreInput}
-        onSubmit={handleSubmit}
-        submitLabel="編集を登録する"
-        isSubmitting={isSubmitting}
-      />
-    </>
+    <div className="flex flex-col gap-6">
+      <button
+        className="flex w-fit items-center gap-1 text-sm text-gray-400 transition-colors hover:text-amber-700"
+        onClick={() => void navigate('/stores')}
+      >
+        ← 店舗一覧に戻る
+      </button>
+
+      <h2 className="border-b pb-3 text-xl font-bold">店舗編集</h2>
+
+      <div className="max-w-lg">
+        <StoreForm
+          value={storeInput}
+          onChange={setStoreInput}
+          onSubmit={handleSubmit}
+          submitLabel="編集を登録する"
+          isSubmitting={isSubmitting}
+        />
+      </div>
+    </div>
   );
 }
 

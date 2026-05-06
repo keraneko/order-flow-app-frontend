@@ -50,15 +50,6 @@ function CreateProductPage() {
         const status = e.response?.status;
 
         if (status === 422) {
-          // const data = e.response?.data as {
-          //   errors?: Record<string, string[]>;
-          // };
-
-          // const firstMessage =
-          //  = data.errors
-          //   ? Object.values(data.errors)[0]?.[0]
-          //   : undefined;
-
           toast.error(
             getFirstAxiosValidationMessage(e.response?.data) ??
               '入力内容が間違っています',
@@ -78,16 +69,26 @@ function CreateProductPage() {
   };
 
   return (
-    <>
-      <h1>商品登録</h1>
-      <ProductForm
-        value={productInput}
-        onChange={setProductInput}
-        onSubmit={handleSubmit}
-        submitLabel="登録する"
-        isSubmitting={isSubmitting}
-      />
-    </>
+    <div className="flex flex-col gap-6">
+      <button
+        className="flex w-fit items-center gap-1 text-sm text-gray-400 transition-colors hover:text-amber-700"
+        onClick={() => void navigate('/products')}
+      >
+        ← 商品一覧に戻る
+      </button>
+
+      <h2 className="border-b pb-3 text-xl font-bold">商品登録</h2>
+
+      <div className="max-w-lg">
+        <ProductForm
+          value={productInput}
+          onChange={setProductInput}
+          onSubmit={handleSubmit}
+          submitLabel="登録する"
+          isSubmitting={isSubmitting}
+        />
+      </div>
+    </div>
   );
 }
 
