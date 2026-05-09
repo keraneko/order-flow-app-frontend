@@ -26,27 +26,62 @@ function StoresPage() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <>
-      <div className="flex items-center justify-between py-2">
-        <h2>店舗情報</h2>
-        <Link to={'/stores/new'}>
-          <Button className="">店舗情報を登録する</Button>
+    <div className="flex flex-col gap-6">
+      {/* ヘッダー */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold">店舗一覧</h2>
+        <Link to="/stores/new">
+          <Button className="rounded-xl bg-amber-700 hover:bg-amber-800">
+            店舗を登録する
+          </Button>
         </Link>
       </div>
-      <div className="grid w-full grid-cols-3 gap-2">
+
+      {/* 店舗カード */}
+      <div className="grid grid-cols-3 gap-4">
         {stores.map((store) => (
-          <div key={store.id} className="flex h-80 flex-col p-0">
-            <div className="flex justify-between p-1">
+          <div
+            key={store.id}
+            className="flex flex-col gap-2 rounded-xl border bg-white p-4 shadow-sm"
+          >
+            {/* 店舗名 */}
+            <div className="flex items-start justify-between">
+              <p className="font-semibold">{store.name}</p>
+              {!store.isActive && (
+                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-400">
+                  非公開
+                </span>
+              )}
+            </div>
+
+            {/* 店舗コード */}
+            {store.code && (
+              <p className="text-xs text-gray-400">コード：{store.code}</p>
+            )}
+
+            {/* 住所 */}
+            <p className="text-sm text-gray-500">
+              {store.prefecture}
+              {store.city}
+              {store.addressLine}
+            </p>
+
+            {/* 編集リンク */}
+            <div className="mt-auto pt-2">
               <Link to={`/stores/${store.id}/edit`}>
-                <p className="font-semibold text-blue-500 hover:text-blue-100">
-                  {store.name}
-                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full rounded-xl hover:border-amber-700 hover:text-amber-700"
+                >
+                  詳細確認・編集
+                </Button>
               </Link>
             </div>
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 

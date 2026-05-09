@@ -120,7 +120,11 @@ function StoreForm({
           </Label>
         </div>
 
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="h-12 w-full rounded-xl bg-amber-700 text-base font-medium hover:bg-amber-800 disabled:bg-gray-300"
+        >
           {submitLabel}
         </Button>
       </form>

@@ -5,7 +5,10 @@ import { toast } from 'sonner';
 import StoreForm from '@/components/store/StoreForm';
 import { apiClient } from '@/lib/axios';
 import type { StoreFormValue } from '@/types/store';
-import { getFirstAxiosValidationMessage } from '@/utils/apiError';
+import {
+  getAxiosMessage,
+  getFirstAxiosValidationMessage,
+} from '@/utils/apiError';
 
 const createStoreInput: StoreFormValue = {
   code: '',
@@ -44,14 +47,30 @@ function CreateStorePage() {
     } catch (e) {
       if (axios.isAxiosError(e)) {
         const status = e.response?.status;
+        const validationMessage = getFirstAxiosValidationMessage(
+          e.response?.data,
+        );
+        const apiMessage = getAxiosMessage(e.response?.data);
+
+        if (status === 403) {
+          toast.error('現在のユーザーでは登録する権限がありません');
+
+          return;
+        }
 
         if (status === 422) {
           toast.error(
-            getFirstAxiosValidationMessage(e.response?.data) ??
-              '入力内容が間違っています',
+            validationMessage ?? apiMessage ?? '入力内容が間違っています',
           );
+
+          return;
         }
+        toast.error('登録に失敗しました');
+
+        return;
       }
+
+      toast.error('登録に失敗しました');
     } finally {
       setIsSubmitting(false);
     }
