@@ -44,6 +44,7 @@ function OrderItemsEditor({
   };
 
   const handleChange = (id: number, newQuantity: number) => {
+    setFormError(null);
     setItems((prev) =>
       prev.map((i) =>
         i.productId === id ? { ...i, quantity: newQuantity } : i,
@@ -52,6 +53,7 @@ function OrderItemsEditor({
   };
 
   const removeItem = (id: number) => {
+    setFormError(null);
     setItems((prev) => prev.filter((item) => item.productId !== id));
   };
 
@@ -60,7 +62,6 @@ function OrderItemsEditor({
   }, 0);
 
   const handleSubmit = async () => {
-    if (items.length === 0) return;
     const itemsPayload = items.map((i) => ({
       product_id: i.productId,
       quantity: i.quantity,
@@ -93,10 +94,12 @@ function OrderItemsEditor({
   );
 
   const handleDraftChange = (productId: number, quantity: number) => {
+    setFormError(null);
     setDraftQuantities((prev) => ({ ...prev, [productId]: quantity }));
   };
 
   const handleAddProduct = (product: OrderItemsCandidateProduct) => {
+    setFormError(null);
     const quantity = draftQuantities[product.id] ?? 1;
 
     if (quantity < 1) return;
@@ -151,11 +154,7 @@ function OrderItemsEditor({
           handleAddProduct={handleAddProduct}
         />
         <div className="my-5 text-center">
-          <Button
-            type="submit"
-            disabled={isSubmitting || items.length === 0}
-            variant="outline"
-          >
+          <Button type="submit" disabled={isSubmitting} variant="outline">
             変更を保存する
           </Button>
         </div>
@@ -219,11 +218,11 @@ export default function OrderItemsEdit() {
     <>
       <button
         onClick={() => {
-          void navigate(-1);
+          void navigate(`/orders/${orderId}`);
         }}
         className="mb-3 border-b text-xs text-gray-500 hover:text-blue-400"
       >
-        ←戻る
+        ← 注文詳細へ戻る
       </button>
 
       <OrderItemsEditor

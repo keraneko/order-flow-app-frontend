@@ -26,9 +26,6 @@ export default function CurrentOrderItemsSection({
 }: CurrentOrderItemsSectionProps) {
   return (
     <>
-      {items.length === 0 && (
-        <div className="text-sm text-red-400">商品を選択してください</div>
-      )}
       <div className="my-2 flex">
         <span className="border-b text-base font-bold">現在の注文内容</span>
       </div>
