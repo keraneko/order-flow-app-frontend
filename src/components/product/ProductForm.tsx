@@ -124,15 +124,21 @@ function ProductForm({
             </div>
           )}
         </div>
-        <Label htmlFor="name" className="py-2">
+        <Label htmlFor="image" className="py-2">
           画像
         </Label>
-        <Input name="image" type="file" onChange={handleImageChange} />
+        <Input
+          id="image"
+          name="image"
+          type="file"
+          onChange={handleImageChange}
+        />
 
         <Label htmlFor="name" className="py-2">
           商品名
         </Label>
         <Input
+          id="name"
           name="name"
           value={value.name}
           onChange={(e) => {
@@ -146,6 +152,7 @@ function ProductForm({
           価格
         </Label>
         <Input
+          id="price"
           name="price"
           value={value.price}
           onChange={(e) => {
@@ -187,7 +194,11 @@ function ProductForm({
           </div>
         )}
 
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="h-12 w-full rounded-xl bg-amber-700 text-base font-medium hover:bg-amber-800 disabled:bg-gray-300"
+        >
           {submitLabel}
         </Button>
       </form>
