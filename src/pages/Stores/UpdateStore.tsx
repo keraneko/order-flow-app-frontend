@@ -7,7 +7,10 @@ import StoreForm from '@/components/store/StoreForm';
 import { apiClient } from '@/lib/axios';
 import NotFound from '@/pages/NotFound';
 import type { StoreFormValue } from '@/types/store';
-import { getFirstAxiosValidationMessage } from '@/utils/apiError';
+import {
+  getAxiosMessage,
+  getFirstAxiosValidationMessage,
+} from '@/utils/apiError';
 
 const updateStoreInput: StoreFormValue = {
   code: '',
@@ -96,6 +99,10 @@ function UpdateStorePage() {
     } catch (e) {
       if (axios.isAxiosError(e)) {
         const status = e.response?.status;
+        const validationMessage = getFirstAxiosValidationMessage(
+          e.response?.data,
+        );
+        const apiMessage = getAxiosMessage(e.response?.data);
 
         if (status === 403) {
           toast.error('現在のユーザーでは更新する権限がありません');
@@ -105,13 +112,11 @@ function UpdateStorePage() {
 
         if (status === 422) {
           toast.error(
-            getFirstAxiosValidationMessage(e.response?.data) ??
-              '入力内容が間違っています',
+            validationMessage ?? apiMessage ?? '入力内容が間違っています',
           );
 
           return;
         }
-
         toast.error('更新に失敗しました');
 
         return;
