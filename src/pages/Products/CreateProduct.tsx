@@ -5,7 +5,10 @@ import { toast } from 'sonner';
 import ProductForm from '@/components/product/ProductForm';
 import { apiClient } from '@/lib/axios';
 import type { ProductFormValues } from '@/types/product';
-import { getFirstAxiosValidationMessage } from '@/utils/apiError';
+import {
+  getAxiosMessage,
+  getFirstAxiosValidationMessage,
+} from '@/utils/apiError';
 import { normalizeNumberString } from '@/utils/NumberString';
 
 const createProductInput: ProductFormValues = {
@@ -33,7 +36,7 @@ function CreateProductPage() {
       //Form Data
       const formData = new FormData();
       formData.append('name', productInput.name);
-      formData.append('price', String(num));
+      formData.append('price', raw === '' ? '' : String(num));
       formData.append('is_active', productInput.isActive ? '1' : '0');
       formData.append('is_visible', productInput.isVisible ? '1' : '0');
 
@@ -48,11 +51,20 @@ function CreateProductPage() {
     } catch (e) {
       if (axios.isAxiosError(e)) {
         const status = e.response?.status;
+        const validationMessage = getFirstAxiosValidationMessage(
+          e.response?.data,
+        );
+        const apiMessage = getAxiosMessage(e.response?.data);
+
+        if (status === 403) {
+          toast.error('現在のユーザーでは登録する権限がありません');
+
+          return;
+        }
 
         if (status === 422) {
           toast.error(
-            getFirstAxiosValidationMessage(e.response?.data) ??
-              '入力内容が間違っています',
+            validationMessage ?? apiMessage ?? '入力内容が間違っています',
           );
 
           return;
