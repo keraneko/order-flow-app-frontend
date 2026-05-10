@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getStores } from '@/api/stores';
+import { getActiveStores } from '@/api/stores';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -58,7 +58,7 @@ function Customers() {
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['stores'],
-    queryFn: getStores,
+    queryFn: getActiveStores,
   });
 
   if (isLoading) return <div>読み込み中…</div>;

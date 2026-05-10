@@ -10,6 +10,11 @@ import {
   useCurrentUser,
 } from '@/hooks/useCurrentUser';
 
+import { useCart } from './context/cart/useCart';
+import { useCustomer } from './context/customer/useCustomer';
+import { useFulfillment } from './context/fulfillment/useFulfillment';
+import { useOrder } from './context/order/useOrder';
+
 interface NavItem {
   to: string;
   label: string;
@@ -58,6 +63,10 @@ export function PublicLayout() {
 export function AdminLayout() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { resetFulfillment } = useFulfillment();
+  const { resetOrder } = useOrder();
+  const { clearCart } = useCart();
+  const { resetCustomer } = useCustomer();
   const { data } = useCurrentUser();
   const mutation = useMutation({
     mutationFn: logout,
@@ -66,6 +75,10 @@ export function AdminLayout() {
         queryKey: currentUserQueryOptions().queryKey,
       });
       toast.success('ログアウトしました');
+      resetFulfillment();
+      resetOrder();
+      clearCart();
+      resetCustomer();
       void navigate('/login', { replace: true });
     },
     onError: (e) => {

@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { getOrder } from '@/api/orders';
-import { getStores } from '@/api/stores';
+import { getActiveStores } from '@/api/stores';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +19,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { apiClient } from '@/lib/axios';
 import { type OrderShow } from '@/types/order';
 import type { PickupStoreUpdate, Store } from '@/types/store';
@@ -51,7 +50,7 @@ export default function OrderDeliveryTypeEditPage() {
     error: storeError,
   } = useQuery<Store[]>({
     queryKey: ['orderStores'],
-    queryFn: getStores,
+    queryFn: getActiveStores,
   });
 
   //order
@@ -97,9 +96,7 @@ function OrderDeliveryTypeEditer({
 }: OrderDeliveryTypeEditerProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [draftDeliveryType, setDraftDeliveryType] = useState<
-    'delivery' | 'pickup'
-  >(order.deliveryType);
+
   const [draftPickupStoreId, setDraftPickupStoreId] =
     useState<PickupStoreUpdate | null>(null);
   const [draftDeliveryAddress, setDraftDeliveryAddress] =
@@ -115,10 +112,8 @@ function OrderDeliveryTypeEditer({
   const selectedPickupStoreId =
     draftPickupStoreId?.pickupStoreId ?? order.pickupStore?.id;
 
-  const isSameDeliveryType = draftDeliveryType === order.deliveryType;
-
   const dialogDescription =
-    draftDeliveryType === 'pickup'
+    order.deliveryType === 'delivery'
       ? '受取方法を店舗受取に変更すると、現在の配達先情報は削除されます。保存してよろしいですか？'
       : '受取方法を配達に変更すると、現在の受取店舗情報は削除されます。保存してよろしいですか？';
 
@@ -147,9 +142,9 @@ function OrderDeliveryTypeEditer({
     setIsSubmitting(true);
 
     const buildPayload = () => {
-      if (draftDeliveryType === 'delivery') {
+      if (order.deliveryType === 'pickup') {
         const payload = {
-          delivery_type: draftDeliveryType,
+          delivery_type: 'delivery',
           delivery_postal_code: inputDeliveryPostalCode,
           delivery_address: inputDeliveryAddress,
         };
@@ -157,9 +152,9 @@ function OrderDeliveryTypeEditer({
         return payload;
       }
 
-      if (draftDeliveryType === 'pickup') {
+      if (order.deliveryType === 'delivery') {
         const payload = {
-          delivery_type: draftDeliveryType,
+          delivery_type: 'pickup',
           pickup_store_id: selectedPickupStoreId,
         };
 
@@ -217,46 +212,10 @@ function OrderDeliveryTypeEditer({
     <>
       <div className="mx-auto max-w-lg px-4 py-6">
         {/* ページタイトル */}
-        <h2 className="mb-6 text-lg font-bold">受け渡し情報の変更</h2>
-        {/* 受け渡し方法の選択 */}
-        <div className="mb-6">
-          <Label className="text-muted-foreground mb-2 block text-sm">
-            受け渡し方法
-          </Label>
-          <RadioGroup
-            value={draftDeliveryType}
-            onValueChange={(value) =>
-              setDraftDeliveryType(value as 'pickup' | 'delivery')
-            }
-            className="gap-2"
-          >
-            <label
-              htmlFor="pickup"
-              className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 ${
-                draftDeliveryType === 'pickup'
-                  ? 'border-blue-500'
-                  : 'border-border'
-              }`}
-            >
-              <RadioGroupItem value="pickup" id="pickup" />
-              来店受取
-            </label>
-
-            <label
-              htmlFor="delivery"
-              className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 ${
-                draftDeliveryType === 'delivery'
-                  ? 'border-blue-500'
-                  : 'border-border'
-              }`}
-            >
-              <RadioGroupItem value="delivery" id="delivery" />
-              配送
-            </label>
-          </RadioGroup>
-        </div>
+        <h2 className="mb-6 text-lg font-bold">受け渡し方法の変更する</h2>
+        <p></p>
         {/* 来店受取のとき: 店舗選択 */}
-        {draftDeliveryType === 'pickup' && (
+        {order.deliveryType === 'delivery' && (
           <div className="mb-6">
             <Label className="text-muted-foreground mb-2 block text-sm">
               受取店舗
@@ -280,7 +239,7 @@ function OrderDeliveryTypeEditer({
           </div>
         )}
         {/* 配送のとき: 住所入力 */}
-        {draftDeliveryType === 'delivery' && (
+        {order.deliveryType === 'pickup' && (
           <div className="mb-6 space-y-4">
             <div>
               <Label className="text-muted-foreground mb-2 block text-sm">
@@ -320,7 +279,7 @@ function OrderDeliveryTypeEditer({
           <AlertDialogTrigger asChild>
             <Button
               type="button"
-              disabled={isSubmitting || isSameDeliveryType}
+              disabled={isSubmitting}
               className="mb-3 w-full rounded-xl bg-amber-700 hover:bg-amber-800"
             >
               {isSubmitting ? '保存中...' : '保存する'}

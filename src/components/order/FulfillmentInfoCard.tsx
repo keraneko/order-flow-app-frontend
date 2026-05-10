@@ -42,7 +42,9 @@ export default function FulfillmentInfoCard({
         >
           <Badge variant="outline" className="flex items-center gap-1">
             <Pencil className="h-3 w-3" />
-            変更
+            {order.deliveryType === 'delivery'
+              ? '来店に変更する'
+              : '配達に変更する'}
           </Badge>
         </Link>
       </div>
