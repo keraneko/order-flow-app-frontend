@@ -35,7 +35,9 @@ function DeliveryTypeSelector() {
       )
     : !(fulfillment.deliveryDate && fulfillment.deliveryFrom);
 
-  const isDisabled = isRequiredMissing || isInvalidDeliveryTime;
+  const isDisabled = isDelivery
+    ? isRequiredMissing || isInvalidDeliveryTime
+    : isRequiredMissing;
 
   return (
     <div className="mx-auto max-w-lg py-6">

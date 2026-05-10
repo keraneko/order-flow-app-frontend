@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { getStores } from '@/api/stores';
+import { getActiveStores } from '@/api/stores';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { apiClient } from '@/lib/axios';
@@ -103,7 +103,7 @@ export default function PickupStoreSection({
     error,
   } = useQuery<Store[]>({
     queryKey: ['pickupStoreUpdate'],
-    queryFn: getStores,
+    queryFn: getActiveStores,
   });
 
   if (isPending) return <span>読み込み中...</span>;
@@ -161,23 +161,33 @@ export default function PickupStoreSection({
         {/* 受取店舗 */}
         <div className="flex flex-col gap-1 px-2 py-1">
           <Label className="text-xs text-gray-500">受取店舗</Label>
-          <select
-            disabled={!isEditing}
-            className="w-full rounded-xl border p-2 disabled:bg-gray-50 disabled:text-gray-500"
-            value={
-              selectedPickupStoreId !== undefined
-                ? String(selectedPickupStoreId)
-                : ''
-            }
-            onChange={(e) => handleChange(e.target.value)}
-          >
-            <option value="">選択してください</option>
-            {stores.map((store) => (
-              <option key={store.id} value={String(store.id)}>
-                {store.name}
-              </option>
-            ))}
-          </select>
+
+          <p className="py-1 font-medium">
+            {order.pickupStore?.name ?? '未設定'}
+          </p>
+
+          {/* 編集モードのみ：変更先表示 */}
+          {isEditing && (
+            <div className="flex flex-col gap-1">
+              <Label className="text-xs text-gray-400">変更先の店舗</Label>
+              <select
+                className="w-full rounded-xl border p-2"
+                value={
+                  selectedPickupStoreId !== undefined
+                    ? String(selectedPickupStoreId)
+                    : ''
+                }
+                onChange={(e) => handleChange(e.target.value)}
+              >
+                <option value="">選択してください</option>
+                {stores.map((store) => (
+                  <option key={store.id} value={String(store.id)}>
+                    {store.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </div>
     </form>

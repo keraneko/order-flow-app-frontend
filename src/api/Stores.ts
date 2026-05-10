@@ -30,3 +30,12 @@ export async function getStores(): Promise<Store[]> {
 
   return data.map(toStore);
 }
+
+export async function getActiveStores(): Promise<Store[]> {
+  const res = await fetch('/api/order/stores');
+
+  if (!res.ok) throw new Error(`HTTP${res.status}`);
+  const data = (await res.json()) as StoreApi[];
+
+  return data.map(toStore);
+}

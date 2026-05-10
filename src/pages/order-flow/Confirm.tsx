@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getStores } from '@/api/stores';
+import { getActiveStores } from '@/api/stores';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -58,7 +58,7 @@ function Confirm() {
 
   const { data: stores } = useQuery({
     queryKey: ['stores'],
-    queryFn: getStores,
+    queryFn: getActiveStores,
   });
   const storeName = stores?.find(
     (s) => s.id === fulfillment.pickupStoreId,
