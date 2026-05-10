@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/button';
 import { type Store } from '@/types/store';
 
 function StoresPage() {
-  const [stores, setSores] = useState<Store[]>([]);
+  const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getStores()
       .then((data: Store[]) => {
-        setSores(data);
+        setStores(data);
       })
       .catch((err: unknown) => {
         const message = err instanceof Error ? err.message : String(err);
