@@ -139,9 +139,7 @@ function Customers() {
 
           {/* 受取方法 */}
           <div className="flex flex-col gap-1.5">
-            <Label>
-              受取方法 <span className="text-xs text-red-400">※必須</span>
-            </Label>
+            <h2 className="mb-6 text-lg font-bold">受取方法</h2>
 
             {fulfillment.deliveryType === 'pickup' && (
               <>
@@ -155,6 +153,10 @@ function Customers() {
                     updateFulfillment({ pickupStoreId: Number(value) });
                   }}
                 >
+                  <Label>
+                    受取り店舗{' '}
+                    <span className="text-xs text-red-400">※必須</span>
+                  </Label>
                   <SelectTrigger className="w-full rounded-xl">
                     <SelectValue placeholder="受取店舗を選択" />
                   </SelectTrigger>
