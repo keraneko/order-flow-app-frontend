@@ -11,7 +11,7 @@ import {
   getAxiosMessage,
   getFirstAxiosValidationMessage,
 } from '@/utils/apiError';
-import { getTodayDateInputValue } from '@/utils/date';
+import { getDateInputValueAfterDays } from '@/utils/date';
 import { formatTime } from '@/utils/formatTime';
 
 import { TimeSelect } from './form/TimeSelect';
@@ -161,7 +161,7 @@ export function ScheduleSection({ order, orderId }: ScheduleSectionProps) {
           <Input
             disabled={!isEditing}
             value={draftSchedule?.deliveryDate ?? order.deliveryDate}
-            min={getTodayDateInputValue()}
+            min={getDateInputValueAfterDays(2)}
             type="date"
             name="deliveryDate"
             onChange={handleChange}

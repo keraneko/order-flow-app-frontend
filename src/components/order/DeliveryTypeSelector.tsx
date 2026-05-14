@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useFulfillment } from '@/context/fulfillment/useFulfillment';
-import { getTodayDateInputValue } from '@/utils/date';
+import { getDateInputValueAfterDays } from '@/utils/date';
 
 import { TimeSelect } from './form/TimeSelect';
 
@@ -88,7 +88,7 @@ function DeliveryTypeSelector() {
             type="date"
             name="deliveryDate"
             value={fulfillment.deliveryDate}
-            min={getTodayDateInputValue()}
+            min={getDateInputValueAfterDays(2)}
             onChange={handleChange}
             className="rounded-xl"
           />
