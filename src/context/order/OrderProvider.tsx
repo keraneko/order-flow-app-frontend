@@ -3,14 +3,14 @@ import axios from 'axios';
 import { apiClient } from '@/lib/axios';
 import { getFirstAxiosValidationMessage } from '@/utils/apiError';
 
-import type { Order } from './OrderContext';
+import type { CreateOrderPayload } from './OrderContext';
 import { OrderContext } from './OrderContext';
 
 export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<CreateOrderPayload | null>(null);
 
-  const buildOrderPayload = (order: Order) => {
-    const { customer, fulfillment, items, totalAmount } = order;
+  const buildOrderPayload = (order: CreateOrderPayload) => {
+    const { customer, fulfillment, items } = order;
 
     const customerPayload =
       fulfillment.deliveryType === 'pickup'
@@ -46,7 +46,6 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
 
     const itemsPayload = items.map((i) => ({
       productId: i.id,
-      price: i.price,
       quantity: i.quantity,
     }));
 
@@ -54,11 +53,10 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
       customer: customerPayload,
       fulfillment: fulfillmentPayload,
       items: itemsPayload,
-      totalAmount,
     };
   };
 
-  const createOrder = async (order: Order) => {
+  const createOrder = async (order: CreateOrderPayload) => {
     try {
       const payload = buildOrderPayload(order);
 
