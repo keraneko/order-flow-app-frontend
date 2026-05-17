@@ -150,7 +150,9 @@ function Customers() {
                       : ''
                   }
                   onValueChange={(value) => {
-                    updateFulfillment({ pickupStoreId: Number(value) });
+                    updateFulfillment({
+                      pickupStoreId: value === '' ? null : Number(value),
+                    });
                   }}
                 >
                   <Label>
